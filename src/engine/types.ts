@@ -130,6 +130,31 @@ export interface StyleMetadata {
   relatedStyles?: string[];
   isCustom?: boolean;
   author?: string;
+  version?: string;
+  license?: string;
+  source?: 'official' | 'community' | 'generated' | 'custom';
+  /** When to avoid this style; part of the style documentation. */
+  avoidWhen?: string[];
+  /** Short visual-character summary for documentation. */
+  visualCharacter?: string;
+}
+
+/** Provenance of a procedurally generated style (see engine/generator). */
+export interface GenerationInfo {
+  seed: number;
+  mode: string;
+  personality: string;
+  visualFamily: string;
+  generatorVersion: string;
+  createdAt: string;
+  /** Semantic decisions; kept so the style can be remixed with locks. */
+  recipe: import('./generator/vocab').SemanticRecipe;
+  /** Seed of the style this one was remixed from, if any. */
+  parentSeed?: number;
+  parentId?: string;
+  /** Axes kept from the parent when this style was generated with locks. */
+  keptAxes?: string[];
+  dnaHash: string;
 }
 
 export interface StyleDefinition {
@@ -138,4 +163,5 @@ export interface StyleDefinition {
   svgLanguage?: SVGLanguage;
   behavior?: ComponentBehavior;
   customCssVars?: Record<string, string>;
+  generation?: GenerationInfo;
 }
