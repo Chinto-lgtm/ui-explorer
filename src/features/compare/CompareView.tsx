@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useStyle } from '../../hooks/useStyle';
 import { resolveStyleToCssVars } from '../../engine/resolver';
+import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardBody } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
@@ -37,7 +38,7 @@ export const CompareView: React.FC = () => {
 
       <div className="compare-split">
         {/* Left Panel */}
-        <div className="compare-panel" style={leftCssVars as React.CSSProperties}>
+        <div className="compare-panel" style={leftCssVars as React.CSSProperties} {...getStyleDataAttributes(leftStyle)}>
           <div className="compare-panel-header">
             <select value={leftStyleId} onChange={(e) => setLeftStyleId(e.target.value)} className="shell-select">
               {availableStyles.map((s) => (
@@ -66,7 +67,7 @@ export const CompareView: React.FC = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="compare-panel" style={rightCssVars as React.CSSProperties}>
+        <div className="compare-panel" style={rightCssVars as React.CSSProperties} {...getStyleDataAttributes(rightStyle)}>
           <div className="compare-panel-header">
             <select value={rightStyleId} onChange={(e) => setRightStyleId(e.target.value)} className="shell-select">
               {availableStyles.map((s) => (

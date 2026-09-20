@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import type { StyleDefinition } from '../../engine/types';
 import { resolveStyleToCssVars } from '../../engine/resolver';
+import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import './StylePreviewCard.css';
@@ -37,6 +38,7 @@ export const StylePreviewCard: React.FC<StylePreviewCardProps> = ({ style, size 
     <div
       className={`style-preview style-preview--${size} ${className}`}
       style={vars as React.CSSProperties}
+      {...getStyleDataAttributes(style)}
       onClick={onClick}
       onKeyDown={handleKeyDown}
       role={isInteractive ? 'button' : undefined}

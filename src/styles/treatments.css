@@ -1,0 +1,706 @@
+/* ============================================
+   UI Explorer — Style treatments
+   Bespoke construction per design language. Selectors key off the data
+   attributes every themed container carries (see engine/styleAttributes.ts),
+   so one component implementation renders every style.
+   ============================================ */
+
+/* ---------------------------------------------------------------- */
+/* Behaviour: hover / press                                           */
+/* ---------------------------------------------------------------- */
+
+[data-hover='lift'] .ui-button:hover:not(:disabled) {
+  transform: translateY(-2px) scale(var(--hover-scale));
+  box-shadow: var(--shadow-lg);
+}
+
+[data-hover='press'] .ui-button:active:not(:disabled) {
+  transform: translateY(1px) scale(var(--active-scale));
+  box-shadow: var(--shadow-inset);
+}
+
+[data-hover='shift'] .ui-button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-hover='shift'] .ui-button:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+[data-hover='glow'] .ui-button:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow), var(--shadow-md);
+  filter: brightness(1.12);
+}
+
+[data-hover='glow'] .ui-button--primary:hover:not(:disabled) {
+  box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-glow);
+}
+
+[data-hover='invert'] .ui-button:hover:not(:disabled) {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg);
+  border-color: var(--color-text-primary);
+  transform: none;
+}
+
+[data-hover='none'] .ui-button:hover:not(:disabled) {
+  transform: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* Focus rings                                                        */
+/* ---------------------------------------------------------------- */
+
+[data-focus='glow'] :is(.ui-button, .ui-input, .ui-textarea, .ui-select, .lab-category, [role='button']):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 45%, transparent), var(--shadow-glow);
+}
+
+[data-focus='solid-border'] :is(.ui-button, .ui-input, .ui-textarea, .ui-select):focus-visible {
+  outline: 3px solid var(--color-text-primary);
+  outline-offset: 0;
+}
+
+[data-focus='double-ring'] :is(.ui-button, .ui-input, .ui-textarea, .ui-select):focus-visible {
+  outline: 2px solid var(--color-bg);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--color-text-primary);
+}
+
+/* ---------------------------------------------------------------- */
+/* Card elevation types                                               */
+/* ---------------------------------------------------------------- */
+
+[data-elevation='border'] .ui-card {
+  box-shadow: none;
+  border-width: max(1px, var(--border-width));
+}
+
+[data-elevation='flat'] .ui-card {
+  box-shadow: none;
+}
+
+[data-elevation='inset'] .ui-card {
+  box-shadow: var(--shadow-inset, var(--shadow-md));
+}
+
+[data-elevation='gradient-border'] .ui-card {
+  border-color: transparent;
+  background-image:
+    linear-gradient(var(--color-surface), var(--color-surface)),
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 70%, transparent), color-mix(in srgb, var(--color-highlight) 40%, transparent) 60%, transparent);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* ---------------------------------------------------------------- */
+/* Corner language                                                    */
+/* ---------------------------------------------------------------- */
+
+[data-corner='bevel'] :is(.ui-card, .ui-button, .ui-badge) {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  border-radius: 0;
+}
+
+[data-corner='bevel'] .ui-button {
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+[data-corner='bevel'] .ui-badge {
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+[data-corner='brutalist'] :is(.ui-card, .ui-button, .ui-input, .ui-badge) {
+  border-radius: 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* Material textures (drawn with gradients / inline SVG, no images)   */
+/* ---------------------------------------------------------------- */
+
+[data-texture='scanline'] {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    color-mix(in srgb, var(--color-text-primary) 6%, transparent) 2px,
+    color-mix(in srgb, var(--color-text-primary) 6%, transparent) 3px
+  );
+}
+
+[data-texture='grid'] {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-accent) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 10%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+[data-texture='dot-pattern'] {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-text-primary) 14%, transparent) 1.5px, transparent 1.6px);
+  background-size: 18px 18px;
+}
+
+[data-texture='grain'] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+[data-texture='noise'] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Surface gradient from the material tokens */
+[data-family] .ui-card {
+  background-image: var(--material-gradient);
+}
+
+/* ---------------------------------------------------------------- */
+/* Neumorphism: extruded controls that sink when pressed              */
+/* ---------------------------------------------------------------- */
+
+[data-family='neumorphic'] .ui-button {
+  border: none;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md);
+}
+
+[data-family='neumorphic'] .ui-button--primary {
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+[data-family='neumorphic'] .ui-button:active:not(:disabled) {
+  box-shadow: inset 4px 4px 8px color-mix(in srgb, var(--color-shadow) 100%, transparent), inset -4px -4px 8px var(--color-highlight);
+  transform: scale(0.99);
+}
+
+[data-family='neumorphic'] .ui-input,
+[data-family='neumorphic'] .ui-textarea {
+  border: none;
+  background-color: var(--color-bg);
+  box-shadow: inset 3px 3px 6px var(--color-shadow), inset -3px -3px 6px var(--color-highlight);
+}
+
+[data-family='neumorphic'] .ui-badge {
+  box-shadow: 2px 2px 4px var(--color-shadow), -2px -2px 4px var(--color-highlight);
+}
+
+/* ---------------------------------------------------------------- */
+/* Glass / Aurora / Aero: translucent panes with a light edge         */
+/* ---------------------------------------------------------------- */
+
+[data-family='glass'] .ui-card,
+[data-family='aurora'] .ui-card,
+[data-family='aero'] .ui-card {
+  position: relative;
+  border-color: color-mix(in srgb, #ffffff 25%, transparent);
+  box-shadow: var(--shadow-md), inset 0 1px 0 color-mix(in srgb, #ffffff 35%, transparent);
+}
+
+[data-family='glass'] .ui-card::after,
+[data-family='aurora'] .ui-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, color-mix(in srgb, #ffffff 14%, transparent), transparent 45%);
+}
+
+[data-family='glass'] .ui-card:hover,
+[data-family='aurora'] .ui-card:hover {
+  filter: brightness(1.08);
+}
+
+[data-family='glass'] .ui-button--primary,
+[data-family='aurora'] .ui-button--primary {
+  background-image: linear-gradient(180deg, color-mix(in srgb, #ffffff 22%, transparent), transparent 60%);
+  box-shadow: var(--shadow-md), inset 0 1px 0 color-mix(in srgb, #ffffff 40%, transparent);
+}
+
+[data-family='aurora'] {
+  background-image:
+    radial-gradient(60% 50% at 15% 10%, color-mix(in srgb, var(--color-accent) 28%, transparent), transparent 70%),
+    radial-gradient(50% 45% at 85% 85%, color-mix(in srgb, var(--color-accent-hover) 24%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 70% 20%, color-mix(in srgb, #22d3ee 16%, transparent), transparent 70%);
+  background-attachment: fixed;
+}
+
+/* Aero: glossy top-half highlight on every control */
+[data-family='aero'] .ui-button,
+[data-family='aero'] .ui-badge {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 50%, transparent 51%);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-family='aero'] .ui-card {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06) 40%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Clay: pillowy surfaces that squash when pressed                    */
+/* ---------------------------------------------------------------- */
+
+[data-family='clay'] .ui-button {
+  border: none;
+  box-shadow: var(--shadow-md), inset -4px -4px 10px rgba(0, 0, 0, 0.1), inset 4px 4px 10px rgba(255, 255, 255, 0.6);
+}
+
+[data-family='clay'] .ui-button:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-sm), inset 4px 4px 12px rgba(0, 0, 0, 0.15), inset -2px -2px 8px rgba(255, 255, 255, 0.5);
+}
+
+[data-family='clay'] .ui-input,
+[data-family='clay'] .ui-textarea {
+  border: none;
+  box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.08), inset -4px -4px 10px rgba(255, 255, 255, 0.7);
+}
+
+[data-family='clay'] .ui-badge {
+  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* ---------------------------------------------------------------- */
+/* Neo Brutalism / Memphis / Bauhaus: hard shadows, physical shift    */
+/* ---------------------------------------------------------------- */
+
+[data-family='brutal'] .ui-card:hover,
+[data-family='memphis'] .ui-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-family='brutal'] .ui-input:focus,
+[data-family='brutal'] .ui-textarea:focus {
+  box-shadow: 4px 4px 0 var(--color-text-primary);
+  outline: none;
+}
+
+[data-family='memphis'] .ui-card {
+  background-image:
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--color-accent) 35%, transparent) 0 14px, transparent 15px),
+    repeating-linear-gradient(-45deg, transparent 0 10px, color-mix(in srgb, var(--color-text-primary) 6%, transparent) 10px 12px);
+  background-size: 100% 100%, 100% 28px;
+  background-repeat: no-repeat, repeat-x;
+  background-position: 0 0, 0 100%;
+}
+
+[data-family='bauhaus'] .ui-button--primary {
+  border-radius: 0;
+}
+
+[data-family='bauhaus'] .ui-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #e63946 0 33%, #1d4ed8 33% 66%, #f5b700 66%);
+}
+
+/* ---------------------------------------------------------------- */
+/* Neon (Cyberpunk / Vaporwave / Acid / OLED): light instead of shadow */
+/* ---------------------------------------------------------------- */
+
+[data-family='neon'] .ui-card,
+[data-family='vapor'] .ui-card,
+[data-family='acid'] .ui-card {
+  box-shadow: var(--shadow-md), inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+[data-family='neon'] .ui-button--primary,
+[data-family='vapor'] .ui-button--primary,
+[data-family='acid'] .ui-button--primary {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent-text) 70%, transparent);
+  box-shadow: var(--shadow-glow);
+}
+
+[data-family='neon'] .ui-button--outline,
+[data-family='vapor'] .ui-button--outline {
+  text-shadow: 0 0 6px var(--color-accent);
+}
+
+[data-family='neon'] .ui-button:hover:not(:disabled),
+[data-family='vapor'] .ui-button:hover:not(:disabled) {
+  box-shadow: 0 0 6px var(--color-accent), 0 0 24px color-mix(in srgb, var(--color-accent) 70%, transparent);
+}
+
+[data-family='neon'] .ui-card {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+[data-family='neon'] .ui-input:focus,
+[data-family='vapor'] .ui-input:focus {
+  box-shadow: 0 0 0 1px var(--color-accent), 0 0 16px color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+[data-family='vapor'] {
+  background-image:
+    linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--color-accent) 22%, transparent)),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 18%, transparent) 0 1px, transparent 1px 60px),
+    repeating-linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 18%, transparent) 0 1px, transparent 1px 40px);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+}
+
+[data-family='acid'] .ui-card {
+  transform: rotate(-0.4deg);
+}
+
+[data-family='acid'] .ui-card:nth-child(even) {
+  transform: rotate(0.5deg);
+}
+
+[data-family='oled'] .ui-card {
+  border-color: #1f1f1f;
+  box-shadow: 0 0 0 1px #111, var(--shadow-md);
+}
+
+[data-family='oled'] .ui-button--primary {
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Chrome / Y2K: reflective metal that darkens when pushed            */
+/* ---------------------------------------------------------------- */
+
+[data-family='chrome'] .ui-button,
+[data-family='y2k'] .ui-button--primary,
+[data-family='y2k'] .ui-button--secondary {
+  background-image: linear-gradient(180deg, #ffffff 0%, #d9dde3 42%, #8a929c 50%, #c3c9d1 100%);
+  color: #0f172a;
+  border: 1px solid #6b7280;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-md), inset 0 1px 0 #ffffff;
+}
+
+[data-family='chrome'] .ui-button--primary,
+[data-family='y2k'] .ui-button--primary {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 35%, #ffffff) 0%, var(--color-accent) 48%, color-mix(in srgb, var(--color-accent) 70%, #000000) 52%, var(--color-accent-hover) 100%);
+  color: var(--color-accent-text);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Chrome's accent is itself silver: keep the label dark and readable on the metal. */
+[data-family='chrome'] .ui-button--primary {
+  color: #0b0f19;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  border-color: #374151;
+}
+
+[data-family='chrome'] .ui-button:active:not(:disabled),
+[data-family='y2k'] .ui-button:active:not(:disabled) {
+  filter: brightness(0.85);
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+[data-family='chrome'] .ui-card {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 40%, rgba(0, 0, 0, 0.35));
+  border-color: #4b5563;
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+[data-family='chrome'] .ui-badge {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 55%);
+}
+
+[data-family='y2k'] .ui-card {
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.15) 45%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+[data-family='y2k'] {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.9), transparent 25%),
+    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--color-accent) 25%, transparent), transparent 35%);
+}
+
+/* ---------------------------------------------------------------- */
+/* Pixel: stepped edges, no anti-aliased curves, no easing            */
+/* ---------------------------------------------------------------- */
+
+[data-family='pixel'] :is(.ui-card, .ui-button, .ui-input, .ui-textarea, .ui-badge) {
+  border-radius: 0;
+  transition-timing-function: steps(2, end);
+  image-rendering: pixelated;
+}
+
+[data-family='pixel'] .ui-button {
+  box-shadow: 4px 4px 0 var(--color-text-primary);
+  border-width: 3px;
+}
+
+[data-family='pixel'] .ui-button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text-primary);
+}
+
+[data-family='pixel'] .ui-button:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+[data-family='pixel'] .ui-card {
+  box-shadow: 6px 6px 0 var(--color-text-primary);
+  outline: 2px solid var(--color-bg);
+  outline-offset: -6px;
+}
+
+[data-family='pixel'] {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-text-primary) 10%, transparent) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Skeuomorphism: leather ground, linen cards, bevelled buttons       */
+/* ---------------------------------------------------------------- */
+
+[data-family='skeuo'] {
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.06), transparent 60%),
+    repeating-radial-gradient(circle at 30% 40%, transparent 0 3px, rgba(0, 0, 0, 0.08) 3px 4px),
+    repeating-radial-gradient(circle at 70% 60%, transparent 0 4px, rgba(0, 0, 0, 0.06) 4px 5px);
+}
+
+[data-family='skeuo'] .ui-card {
+  position: relative;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 0 0 6px color-mix(in srgb, var(--color-surface) 100%, transparent);
+  outline: 1px dashed rgba(255, 255, 255, 0.25);
+  outline-offset: -8px;
+}
+
+[data-family='skeuo'] .ui-button,
+[data-family='analog'] .ui-button {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0.15) 51%, rgba(0, 0, 0, 0.3));
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+[data-family='skeuo'] .ui-button:active:not(:disabled),
+[data-family='analog'] .ui-button:active:not(:disabled) {
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05));
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  transform: translateY(1px);
+}
+
+[data-family='skeuo'] .ui-input,
+[data-family='analog'] .ui-input {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Analog hardware: brushed aluminium panels with screws */
+[data-family='analog'] .ui-card {
+  position: relative;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 2px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 40%, rgba(0, 0, 0, 0.25));
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+[data-family='analog'] .ui-card::before,
+[data-family='analog'] .ui-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #9ca3af, #1f2937 70%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+[data-family='analog'] .ui-card::before { left: 8px; }
+[data-family='analog'] .ui-card::after { right: 8px; }
+
+/* ---------------------------------------------------------------- */
+/* HUD: reticle brackets on panels, bevelled corners                  */
+/* ---------------------------------------------------------------- */
+
+[data-family='hud'] .ui-card {
+  position: relative;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 30%);
+}
+
+[data-family='hud'] .ui-card::before,
+[data-family='hud'] .ui-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-accent);
+  pointer-events: none;
+}
+
+[data-family='hud'] .ui-card::before {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-family='hud'] .ui-card::after {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-family='hud'] .ui-button--primary {
+  background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------------------------------------------------------------- */
+/* Paper: grain, a folded corner and a soft double rule               */
+/* ---------------------------------------------------------------- */
+
+[data-family='paper'] .ui-card {
+  position: relative;
+  box-shadow: var(--shadow-md), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 20%);
+}
+
+[data-family='paper'] .ui-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 18px 18px 0;
+  border-color: transparent var(--color-bg) color-mix(in srgb, var(--color-text-primary) 12%, var(--color-surface)) transparent;
+}
+
+[data-family='paper'] .ui-button--primary {
+  box-shadow: var(--shadow-sm), inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* ---------------------------------------------------------------- */
+/* Editorial / Swiss / Contrast / Mono: typographic, rule-driven       */
+/* ---------------------------------------------------------------- */
+
+[data-family='editorial'] .ui-card {
+  border-width: 0;
+  border-top: 2px solid var(--color-text-primary);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+[data-family='editorial'] .ui-card__title {
+  font-style: italic;
+}
+
+[data-family='swiss'] .ui-card {
+  border-width: 0;
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+[data-family='swiss'] .ui-button--primary {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+[data-family='contrast'] :is(.ui-card, .ui-button, .ui-input) {
+  border-width: 3px;
+}
+
+[data-family='contrast'] .ui-button:focus-visible {
+  outline: 4px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+[data-family='mono'] .ui-button--primary {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg);
+}
+
+/* ---------------------------------------------------------------- */
+/* Industrial: hazard stripe accents and stencil type                 */
+/* ---------------------------------------------------------------- */
+
+[data-family='industrial'] .ui-card {
+  position: relative;
+  border-radius: 0;
+}
+
+[data-family='industrial'] .ui-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(45deg, var(--color-accent) 0 10px, #111 10px 20px);
+}
+
+[data-family='industrial'] .ui-button--primary {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* Organic / Warm / Fluent / Material / Bento / Flat: light touches    */
+/* ---------------------------------------------------------------- */
+
+[data-family='organic'] .ui-card {
+  border-radius: 28px 18px 26px 16px;
+}
+
+[data-family='organic'] .ui-button--primary {
+  border-radius: 24px 14px 22px 12px;
+}
+
+[data-family='fluent'] .ui-card {
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+}
+
+[data-family='fluent'] .ui-button--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+[data-family='material'] .ui-button--primary {
+  border-radius: var(--radius-full);
+}
+
+[data-family='material'] .ui-button--primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-lg);
+}
+
+[data-family='bento'] .ui-card {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Experimental mode: stronger effects, clearly opt-in                */
+/* ---------------------------------------------------------------- */
+
+[data-experimental='1'] .ui-card {
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-family] .ui-card:hover,
+  [data-family] .ui-button:hover:not(:disabled) {
+    transform: none;
+  }
+}

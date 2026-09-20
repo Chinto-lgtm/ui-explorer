@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useStyle } from '../../hooks/useStyle';
 import { resolveStyleToCssVars } from '../../engine/resolver';
+import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import type { StyleDefinition } from '../../engine/types';
 import { Card, CardHeader, CardTitle, CardBody } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -60,10 +61,11 @@ const DeviceFrame: React.FC<{
   viewport: ViewportId;
   scale: number;
   vars?: Record<string, string>;
+  frameStyle?: StyleDefinition;
   label?: string;
   styleName: string;
   children: ReactNode;
-}> = ({ viewport, scale, vars, label, styleName, children }) => (
+}> = ({ viewport, scale, vars, frameStyle, label, styleName, children }) => (
   <figure className={`lab-device lab-device--${viewport}`}>
     {label && (
       <figcaption className="lab-device__label">
@@ -79,7 +81,7 @@ const DeviceFrame: React.FC<{
         </div>
       )}
       {viewport === 'mobile' && <div className="lab-device__notch" aria-hidden="true" />}
-      <div className="lab-device__screen" style={vars as React.CSSProperties}>
+      <div className="lab-device__screen" style={vars as React.CSSProperties} {...(frameStyle ? getStyleDataAttributes(frameStyle) : {})}>
         {children}
       </div>
     </div>
@@ -417,6 +419,7 @@ export const ComponentsLabPage: React.FC = () => {
                 viewport={viewport}
                 scale={frameScale}
                 vars={resolveStyleToCssVars(style)}
+                frameStyle={style}
                 label={`Style ${COMPARE_SLOTS[index]}`}
                 styleName={style.metadata.name}
               >
@@ -424,7 +427,7 @@ export const ComponentsLabPage: React.FC = () => {
               </DeviceFrame>
             ))
           ) : (
-            <DeviceFrame viewport={viewport} scale={frameScale} styleName={currentStyle.metadata.name}>
+            <DeviceFrame viewport={viewport} scale={frameScale} styleName={currentStyle.metadata.name} frameStyle={currentStyle}>
               {renderShowcase()}
             </DeviceFrame>
           )}

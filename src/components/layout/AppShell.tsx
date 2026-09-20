@@ -12,6 +12,7 @@ import { ShortcutsPanel } from '../../features/shortcuts/ShortcutsPanel';
 import { CompareView } from '../../features/compare/CompareView';
 import { useStyle } from '../../hooks/useStyle';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import './AppShell.css';
 
 export interface AppShellProps {
@@ -22,7 +23,7 @@ export interface AppShellProps {
 export const SAVE_EVENT = 'ui-explorer:save';
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
-  const { resolvedCssVars, isCompareActive, setIsCompareActive } = useStyle();
+  const { resolvedCssVars, renderedStyle, isCompareActive, setIsCompareActive, settings } = useStyle();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,7 +101,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           {isCompareActive ? (
             <CompareView />
           ) : (
-            <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties}>
+            <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...getStyleDataAttributes(renderedStyle)} data-experimental={settings.experimental ? '1' : undefined}>
               {children}
             </div>
           )}

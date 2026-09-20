@@ -28,6 +28,8 @@ interface StyleContextType {
   setStyle: (styleId: string) => void;
   availableStyles: StyleDefinition[];
   resolvedCssVars: Record<string, string>;
+  /** The style actually shown in the canvas: the preview if one is set, else the current style. */
+  renderedStyle: StyleDefinition;
 
   customStyles: StyleDefinition[];
   addCustomStyle: (style: StyleDefinition) => void;
@@ -253,6 +255,7 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setStyle,
         availableStyles,
         resolvedCssVars,
+        renderedStyle,
         customStyles,
         addCustomStyle,
         deleteCustomStyle,

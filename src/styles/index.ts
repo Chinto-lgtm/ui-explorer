@@ -8,8 +8,9 @@ import { sciFiHud, darkOled, chromeMetallic } from './futuristic';
 import { pixelArt, skeuomorphism, skeuomorphicAnalog } from './retro';
 import { bauhaus, organicBiophilic, industrial, paperSkeuomorphic, highContrast, monochrome } from './artistic';
 import { communityStyles } from './community/loader';
+import { withTreatmentDefaults } from './treatmentDefaults';
 
-export const allStyles: StyleDefinition[] = [
+const definitions: StyleDefinition[] = [
   ...communityStyles,
   // Morphism
   neumorphism,
@@ -53,6 +54,9 @@ export const allStyles: StyleDefinition[] = [
   highContrast,
   monochrome
 ];
+
+/** Built-in styles with construction defaults (behaviour, texture, SVG language) applied. */
+export const allStyles: StyleDefinition[] = definitions.map(withTreatmentDefaults);
 
 // Automatically register all built-in styles upon import
 registry.registerMany(allStyles);
