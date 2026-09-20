@@ -1,0 +1,149 @@
+.anatomy-panel {
+  width: 360px;
+  background-color: #0f172a;
+  color: #f1f5f9;
+  border-left: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 40;
+  overflow-y: auto;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.anatomy-header {
+  padding: 1rem 1.25rem;
+  background-color: #111827;
+  border-bottom: 1px solid #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anatomy-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #818cf8;
+}
+
+.anatomy-title-row h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.anatomy-close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.anatomy-close-btn:hover {
+  color: #ffffff;
+}
+
+.anatomy-style-info {
+  padding: 1.25rem;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.anatomy-style-info h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.anatomy-badge {
+  display: inline-block;
+  background-color: #312e81;
+  color: #818cf8;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.anatomy-style-info p {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.anatomy-sections {
+  padding: 1.25rem;
+}
+
+.anatomy-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.anatomy-token-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.anatomy-token-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background-color: #1e293b;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.anatomy-token-row:hover {
+  background-color: #334155;
+}
+
+.token-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  overflow: hidden;
+}
+
+.token-key {
+  color: #818cf8;
+}
+
+.token-val {
+  color: #cbd5e1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.color-swatch-preview {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #475569;
+  flex-shrink: 0;
+}
+
+.token-copy-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 0.25rem;
+  cursor: pointer;
+}

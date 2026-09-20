@@ -1,0 +1,109 @@
+.customizer-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.customizer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.customizer-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.customizer-subtitle {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.customizer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.customizer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .customizer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.customizer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.customizer-field-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.color-picker-row input[type="color"] {
+  width: 36px;
+  height: 36px;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.customizer-preview-panel {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.preview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.preview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.badge-preview {
+  background-color: var(--color-accent);
+  color: var(--color-accent-text, #ffffff);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+}

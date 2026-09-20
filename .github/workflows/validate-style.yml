@@ -1,0 +1,42 @@
+name: Validate Community Style Contributions
+
+on:
+  pull_request:
+    paths:
+      - 'styles/community/**'
+      - 'schemas/**'
+
+jobs:
+  validate-style:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Validate Style Schemas
+        run: |
+          for file in styles/community/**/*.json; do
+            if [ -f "$file" ]; then
+              python tools/style-engine/cli.py validate "$file"
+            fi
+          done
+
+      - name: Run Build & TypeScript Checks
+        run: npm run build
+
+      - name: Run Unit Tests
+        run: npm test

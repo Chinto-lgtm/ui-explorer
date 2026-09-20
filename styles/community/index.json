@@ -1,0 +1,22 @@
+[
+  {
+    "id": "community-aurora-glass",
+    "name": "Aurora Glass Community Edition",
+    "author": "alex_designer",
+    "version": "1.0.0",
+    "category": "Morphism",
+    "description": "Vibrant translucent glass style with holographic aurora gradients.",
+    "tags": ["community", "aurora", "glass"],
+    "path": "styles/community/aurora-glass/style.json"
+  },
+  {
+    "id": "community-retro-cyber",
+    "name": "Neon Arcade Cyberpunk",
+    "author": "hacker_dev",
+    "version": "1.0.0",
+    "category": "Expressive",
+    "description": "High-octane neon cyber aesthetic inspired by 80s arcade cabinets.",
+    "tags": ["community", "cyberpunk", "neon"],
+    "path": "styles/community/retro-cyber/style.json"
+  }
+]

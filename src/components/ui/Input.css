@@ -1,0 +1,87 @@
+.ui-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.ui-input-label {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.ui-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ui-input {
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  transition: all var(--duration-fast) var(--motion-easing);
+}
+
+.ui-input:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+}
+
+.ui-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-glow, rgba(99, 102, 241, 0.2));
+}
+
+.ui-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ui-input--has-icon-left {
+  padding-left: 2.25rem;
+}
+
+.ui-input--has-icon-right {
+  padding-right: 2.25rem;
+}
+
+.ui-input-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.ui-input-icon--left {
+  left: 0.75rem;
+}
+
+.ui-input-icon--right {
+  right: 0.75rem;
+}
+
+.ui-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.ui-input-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error, #ef4444);
+}
+
+.ui-input-helper {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}

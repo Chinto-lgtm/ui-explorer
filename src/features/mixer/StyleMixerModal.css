@@ -1,0 +1,84 @@
+.mixer-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+}
+
+.mixer-modal {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  border-radius: 12px;
+  border: 1px solid #1e293b;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.mixer-modal-header {
+  padding: 1rem 1.5rem;
+  background-color: #111827;
+  border-bottom: 1px solid #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mixer-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #818cf8;
+}
+
+.mixer-title h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.mixer-close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.mixer-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.mixer-controls-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mixer-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: #cbd5e1;
+}
+
+.mixer-preview-col {
+  padding: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
