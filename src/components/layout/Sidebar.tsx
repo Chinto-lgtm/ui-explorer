@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download, GitPullRequest } from 'lucide-react';
+import { LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download, GitPullRequest, Info } from 'lucide-react';
 import './AppShell.css';
 
 export interface SidebarProps {
@@ -72,6 +72,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenMixer, onOpenExport, onO
               <span>Contribute Package</span>
             </button>
           )}
+          <NavLink
+            to="/welcome"
+            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
+          >
+            <Info size={18} />
+            <span>About UI Explorer</span>
+          </NavLink>
         </div>
       </nav>
     </aside>

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 import { registry } from './engine/registry';
 import { resolveStyleToCssVars } from './engine/resolver';
@@ -8,12 +8,32 @@ import { createSeededRandom } from './engine/random/prng';
 import { generateProceduralStyle } from './engine/generator/generator';
 
 describe('UI Explorer — Integration & Engine Tests', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    window.history.replaceState({}, '', '/');
+  });
+
+  it('shows the welcome view on first launch', () => {
+    render(<App />);
+    expect(screen.getByText('The same interface, in thirty design languages.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /explore styles/i })).toBeInTheDocument();
+  });
+
+  it('skips the welcome view once onboarding is complete', () => {
+    localStorage.setItem('ui_explorer_onboarded', '1');
+    render(<App />);
+    expect(screen.queryByText('The same interface, in thirty design languages.')).not.toBeInTheDocument();
+    expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+  });
+
   it('renders the brand title in header', () => {
+    localStorage.setItem('ui_explorer_onboarded', '1');
     render(<App />);
     expect(screen.getByText('UI Explorer')).toBeInTheDocument();
   });
 
   it('renders active style hero on dashboard', () => {
+    localStorage.setItem('ui_explorer_onboarded', '1');
     render(<App />);
     expect(screen.getByText('Neumorphism')).toBeInTheDocument();
   });
