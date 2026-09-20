@@ -9,12 +9,12 @@ import { LAB_SECTIONS } from './sections';
 import {
   Search, Palette, MousePointerClick, TextCursorInput, CheckSquare, Compass, BellRing, Layers,
   LayoutPanelTop, Tag, ListTree, ChartColumn,
-  Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown, X
+  Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown, X, Ruler
 } from 'lucide-react';
 import './ComponentsLabPage.css';
 
 type CategoryId = string;
-type ViewportId = 'desktop' | 'tablet' | 'mobile';
+type ViewportId = 'desktop' | 'tablet' | 'mobile' | 'custom';
 
 const SECTION_ICONS: Record<string, ReactNode> = {
   foundations: <Palette size={16} />,
@@ -35,13 +35,22 @@ const CATEGORIES = LAB_SECTIONS.map((sec) => ({ id: sec.id, label: sec.label, ic
 const VIEWPORTS: { id: ViewportId; label: string; width: string; icon: ReactNode }[] = [
   { id: 'desktop', label: 'Desktop', width: 'Fluid', icon: <Monitor size={16} /> },
   { id: 'tablet', label: 'Tablet', width: '768px', icon: <Tablet size={16} /> },
-  { id: 'mobile', label: 'Mobile', width: '390px', icon: <Smartphone size={16} /> }
+  { id: 'mobile', label: 'Mobile', width: '390px', icon: <Smartphone size={16} /> },
+  { id: 'custom', label: 'Custom', width: 'px', icon: <Ruler size={16} /> }
+];
+
+const WIDTH_PRESETS = [1440, 1280, 1024, 768, 390];
+const BREAKPOINTS: { max: number; name: string; layout: string; sidebar: string; nav: string }[] = [
+  { max: 640, name: 'Phone', layout: '1 column', sidebar: 'Collapsed', nav: 'Mobile drawer' },
+  { max: 1024, name: 'Tablet', layout: '2 columns', sidebar: 'Collapsed', nav: 'Drawer' },
+  { max: 1280, name: 'Laptop', layout: '3 columns', sidebar: 'Expanded', nav: 'Sidebar' },
+  { max: Infinity, name: 'Desktop', layout: 'Fluid grid', sidebar: 'Expanded', nav: 'Sidebar' }
 ];
 
 const COMPARE_SLOTS = ['A', 'B', 'C'] as const;
 
 /** Device frame dimensions in CSS px. Frames render at true size and are zoomed down to fit the stage. */
-const FRAME_SIZE: Record<Exclude<ViewportId, 'desktop'>, { width: number; height: number }> = {
+const FRAME_SIZE: Record<Exclude<ViewportId, 'desktop' | 'custom'>, { width: number; height: number }> = {
   tablet: { width: 768, height: 1024 },
   mobile: { width: 390, height: 780 }
 };
@@ -68,8 +77,11 @@ const DeviceFrame: React.FC<{
   frameStyle?: StyleDefinition;
   label?: string;
   styleName: string;
+  customWidth?: number;
+  rulers?: boolean;
+  screenRef?: React.Ref<HTMLDivElement>;
   children: ReactNode;
-}> = ({ viewport, scale, vars, frameStyle, label, styleName, children }) => (
+}> = ({ viewport, scale, vars, frameStyle, label, styleName, customWidth, rulers, screenRef, children }) => (
   <figure className={`lab-device lab-device--${viewport}`}>
     {label && (
       <figcaption className="lab-device__label">
@@ -77,15 +89,22 @@ const DeviceFrame: React.FC<{
         <span className="lab-device__style-name">{styleName}</span>
       </figcaption>
     )}
-    <div className="lab-device__shell" style={{ zoom: scale }}>
-      {viewport === 'desktop' && (
+    <div className="lab-device__shell" style={{ zoom: scale, ...(viewport === 'custom' && customWidth ? { width: customWidth } : {}) }}>
+      {rulers && (
+        <div className="lab-rulers" aria-hidden="true">
+          {Array.from({ length: Math.ceil((viewport === 'custom' && customWidth ? customWidth : viewport === 'tablet' ? 768 : viewport === 'mobile' ? 390 : 1280) / 100) }, (_, i) => (
+            <span key={i} className="lab-rulers__tick" style={{ left: i * 100 }}>{i * 100}</span>
+          ))}
+        </div>
+      )}
+      {(viewport === 'desktop' || viewport === 'custom') && (
         <div className="lab-device__browser-bar" aria-hidden="true">
           <span /><span /><span />
           <div className="lab-device__url">{styleName}</div>
         </div>
       )}
       {viewport === 'mobile' && <div className="lab-device__notch" aria-hidden="true" />}
-      <div className="lab-device__screen" style={vars as React.CSSProperties} {...(frameStyle ? getStyleDataAttributes(frameStyle) : {})}>
+      <div ref={screenRef} className={`lab-device__screen ${rulers ? 'lab-device__screen--grid' : ''}`} style={vars as React.CSSProperties} {...(frameStyle ? getStyleDataAttributes(frameStyle) : {})}>
         {children}
       </div>
     </div>
@@ -100,6 +119,10 @@ export const ComponentsLabPage: React.FC = () => {
   const [buttonStateDisabled, setButtonStateDisabled] = useState<boolean>(false);
   const [buttonStateLoading, setButtonStateLoading] = useState<boolean>(false);
   const [viewport, setViewport] = useState<ViewportId>('desktop');
+  const [customWidth, setCustomWidth] = useState<number>(1024);
+  const [rulers, setRulers] = useState<boolean>(false);
+  const [inspector, setInspector] = useState<{ width: number; columns: number } | null>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
   const [isCompareEnabled, setIsCompareEnabled] = useState<boolean>(false);
   const [compareIds, setCompareIds] = useState<string[]>(() => {
     // Seed the three slots with the active style followed by the next two distinct styles.
@@ -129,7 +152,7 @@ export const ComponentsLabPage: React.FC = () => {
 
   const frameScale = (() => {
     if (viewport === 'desktop' || stageSize.width === 0) return 1;
-    const { width, height } = FRAME_SIZE[viewport];
+    const { width, height } = viewport === 'custom' ? { width: customWidth, height: 900 } : FRAME_SIZE[viewport];
     const count = isCompareEnabled ? 3 : 1;
     const gap = 24;
     const labelHeight = isCompareEnabled ? 28 : 0;
@@ -140,6 +163,23 @@ export const ComponentsLabPage: React.FC = () => {
 
   const activeCategoryMeta = CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
   const activeViewportMeta = VIEWPORTS.find((v) => v.id === viewport) ?? VIEWPORTS[0];
+
+  // Responsive inspector: measure the live preview so the readout reflects the real layout.
+  useLayoutEffect(() => {
+    const el = screenRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const grid = el.querySelector<HTMLElement>('.lab-grid');
+      const cols = grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length : 1;
+      setInspector({ width: Math.round(el.clientWidth), columns: cols });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [viewport, customWidth, activeCategory, isCompareEnabled]);
+
+  const breakpoint = inspector ? BREAKPOINTS.find((b) => inspector.width <= b.max) ?? BREAKPOINTS[BREAKPOINTS.length - 1] : null;
 
   const compareStyles: StyleDefinition[] = compareIds.map(
     (id) => availableStyles.find((s) => s.metadata.id === id) ?? currentStyle
@@ -162,7 +202,7 @@ export const ComponentsLabPage: React.FC = () => {
     : CATEGORIES;
   const matchedKeywords = (c: typeof CATEGORIES[number]) => (query ? c.keywords.filter((k) => k.includes(query)).slice(0, 3) : []);
 
-  const stageStatus = `${activeCategoryMeta.label} · ${activeViewportMeta.label} ${activeViewportMeta.width}` +
+  const stageStatus = `${activeCategoryMeta.label} · ${activeViewportMeta.label} ${viewport === 'custom' ? `${customWidth}px` : activeViewportMeta.width}` +
     (isCompareEnabled ? ' · Comparing 3 styles' : ` · ${currentStyle.metadata.name}`);
 
   return (
@@ -249,9 +289,40 @@ export const ComponentsLabPage: React.FC = () => {
                 </button>
               ))}
             </div>
-            <p className="lab-hint">
-              Canvas width: <strong>{activeViewportMeta.width}</strong>
-            </p>
+            {viewport === 'custom' && (
+              <div className="lab-custom-width">
+                <input
+                  type="number"
+                  className="lab-search__input"
+                  min={280}
+                  max={2560}
+                  step={10}
+                  value={customWidth}
+                  onChange={(e) => setCustomWidth(Math.max(280, Math.min(2560, Number(e.target.value) || 280)))}
+                  aria-label="Custom viewport width in pixels"
+                />
+                <div className="lab-width-presets">
+                  {WIDTH_PRESETS.map((w) => (
+                    <button key={w} type="button" className={`lab-width-preset ${customWidth === w ? 'lab-width-preset--active' : ''}`} onClick={() => setCustomWidth(w)}>{w}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <label className="lab-switch">
+              <input type="checkbox" checked={rulers} onChange={(e) => setRulers(e.target.checked)} />
+              <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
+              <span className="lab-switch__text">Rulers &amp; grid</span>
+            </label>
+            {inspector && breakpoint && (
+              <dl className="lab-inspector" aria-label="Responsive inspector">
+                <dt>Width</dt><dd>{inspector.width}px</dd>
+                <dt>Breakpoint</dt><dd>{breakpoint.name}</dd>
+                <dt>Card grid</dt><dd>{inspector.columns} column{inspector.columns === 1 ? '' : 's'}</dd>
+                <dt>App layout</dt><dd>{breakpoint.layout}</dd>
+                <dt>Sidebar</dt><dd>{breakpoint.sidebar}</dd>
+                <dt>Navigation</dt><dd>{breakpoint.nav}</dd>
+              </dl>
+            )}
           </LabSection>
 
           <LabSection title="Compare" icon={<Columns3 size={14} />}>
@@ -315,12 +386,15 @@ export const ComponentsLabPage: React.FC = () => {
                 frameStyle={style}
                 label={`Style ${COMPARE_SLOTS[index]}`}
                 styleName={style.metadata.name}
+                customWidth={customWidth}
+                rulers={rulers}
+                screenRef={index === 0 ? screenRef : undefined}
               >
                 {renderShowcase()}
               </DeviceFrame>
             ))
           ) : (
-            <DeviceFrame viewport={viewport} scale={frameScale} styleName={currentStyle.metadata.name} frameStyle={currentStyle}>
+            <DeviceFrame viewport={viewport} scale={frameScale} styleName={currentStyle.metadata.name} frameStyle={currentStyle} customWidth={customWidth} rulers={rulers} screenRef={screenRef}>
               {renderShowcase()}
             </DeviceFrame>
           )}

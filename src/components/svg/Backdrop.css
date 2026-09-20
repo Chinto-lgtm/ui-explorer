@@ -1,0 +1,36 @@
+.ui-backdrop {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg);
+}
+
+.ui-backdrop__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ui-backdrop--animate .ui-backdrop__shape {
+  animation: ui-backdrop-drift calc(var(--duration-slow, 400ms) * 30) ease-in-out infinite alternate;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.ui-backdrop--grid .ui-backdrop__shape,
+.ui-backdrop--noise .ui-backdrop__shape,
+.ui-backdrop--reticle .ui-backdrop__shape:first-child {
+  animation: none;
+}
+
+@keyframes ui-backdrop-drift {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(12px, -10px) rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-backdrop__shape {
+    animation: none !important;
+  }
+}

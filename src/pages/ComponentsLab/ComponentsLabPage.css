@@ -924,3 +924,107 @@
     animation: none;
   }
 }
+
+/* ---------- Custom viewport, rulers, responsive inspector ---------- */
+.lab-custom-width {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.lab-width-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.lab-width-preset {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background-color: #111827;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 0.6875rem;
+  cursor: pointer;
+}
+
+.lab-width-preset:hover {
+  color: #f8fafc;
+}
+
+.lab-width-preset--active {
+  background-color: #312e81;
+  border-color: #4338ca;
+  color: #c7d2fe;
+}
+
+.lab-width-preset:focus-visible {
+  outline: 2px solid #818cf8;
+}
+
+.lab-inspector {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0.25rem 0 0;
+  padding: 0.625rem;
+  border-radius: 6px;
+  background-color: #111827;
+  border: 1px solid #1e293b;
+  font-size: 0.75rem;
+}
+
+.lab-inspector dt {
+  color: #64748b;
+}
+
+.lab-inspector dd {
+  margin: 0;
+  color: #e2e8f0;
+  font-family: JetBrains Mono, monospace;
+}
+
+.lab-device--custom {
+  height: 100%;
+}
+
+.lab-device--custom .lab-device__shell {
+  border-radius: 12px;
+  overflow: hidden;
+  height: 900px;
+  max-height: 100%;
+  flex: none;
+}
+
+.lab-rulers {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  z-index: 2;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, rgba(129, 140, 248, 0.6) 0 1px, transparent 1px 100px);
+}
+
+.lab-device--tablet .lab-rulers,
+.lab-device--mobile .lab-rulers {
+  top: 12px;
+}
+
+.lab-rulers__tick {
+  position: absolute;
+  top: 1px;
+  padding-left: 3px;
+  font-family: JetBrains Mono, monospace;
+  font-size: 9px;
+  color: #a5b4fc;
+}
+
+.lab-device__screen--grid {
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.12) 1px, transparent 1px);
+  background-size: 100px 100px;
+}

@@ -1,0 +1,129 @@
+.labs-blurb {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.labs-controls-host {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Themed canvas inside the chrome stage */
+.labs-canvas {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  border: 1px solid #1e293b;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.labs-slider {
+  padding: 0 0.125rem;
+}
+
+.labs-slider .ui-slider__label,
+.labs-slider .ui-slider__value {
+  color: #94a3b8;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.75rem;
+}
+
+.labs-slider .ui-slider__input {
+  border-color: #334155;
+  background: linear-gradient(90deg, #6366f1 0 var(--slider-pct, 0%), #1f2937 var(--slider-pct, 0%) 100%);
+  box-shadow: none;
+}
+
+.labs-slider .ui-slider__input::-webkit-slider-thumb {
+  background-color: #f8fafc;
+  border-color: #6366f1;
+  box-shadow: none;
+}
+
+.labs-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem;
+}
+
+.labs-btn-grid .ws-btn {
+  text-transform: capitalize;
+}
+
+.labs-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.labs-person__name {
+  display: block;
+  font-weight: var(--font-weight-medium);
+}
+
+.labs-person__email {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.labs-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.labs-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: 1.25rem;
+}
+
+.labs-chart-grid .ui-card {
+  cursor: pointer;
+}
+
+.labs-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.labs-sparklines {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.labs-sparkline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.labs-notifications {
+  max-width: 560px;
+}
+
+@media (max-width: 1023px) {
+  .labs-blurb {
+    display: none;
+  }
+
+  .labs-canvas {
+    padding: 1rem;
+  }
+}

@@ -30,7 +30,7 @@ const PAGES = [
   { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={16} /> },
   { name: 'Style Generator', path: '/generator', icon: <Wand2 size={16} /> },
   { name: 'Components Lab', path: '/components', icon: <Component size={16} /> },
-  { name: 'Data & Interaction', path: '/data', icon: <Database size={16} /> },
+  { name: 'Labs', path: '/data', icon: <Database size={16} /> },
   { name: 'Style Customizer', path: '/customizer', icon: <Sliders size={16} /> },
   { name: 'About UI Explorer', path: '/welcome', icon: <Info size={16} /> }
 ];

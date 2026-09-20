@@ -6,7 +6,7 @@ import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { DashboardPage } from './pages/Dashboard/DashboardPage';
 import { GeneratorPage } from './pages/Generator/GeneratorPage';
 import { ComponentsLabPage } from './pages/ComponentsLab/ComponentsLabPage';
-import { DataInteractionPage } from './pages/DataInteraction/DataInteractionPage';
+import { LabsPage } from './pages/Labs/LabsPage';
 import { CustomizerPage } from './pages/Customizer/CustomizerPage';
 import { WelcomePage } from './pages/Welcome/WelcomePage';
 import { hasCompletedOnboarding } from './config/app';
@@ -18,7 +18,8 @@ const ShellRoutes: React.FC = () => (
       <Route path="/" element={hasCompletedOnboarding() ? <DashboardPage /> : <Navigate to="/welcome" replace />} />
       <Route path="/generator" element={<GeneratorPage />} />
       <Route path="/components" element={<ComponentsLabPage />} />
-      <Route path="/data" element={<DataInteractionPage />} />
+      <Route path="/data" element={<LabsPage />} />
+      <Route path="/labs" element={<LabsPage />} />
       <Route path="/customizer" element={<CustomizerPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,0 +1,80 @@
+.material-lab {
+  position: relative;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.material-lab__backdrop {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+}
+
+.material-lab__backdrop .ui-backdrop {
+  height: 100% !important;
+  border-radius: 0;
+}
+
+.material-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.material-sample {
+  border-radius: var(--radius-lg);
+}
+
+.material-sample__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 190px;
+  padding: 1rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+}
+
+.material-sample--selected .material-sample__card {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.material-sample__card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.material-sample__name {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.material-sample__blurb {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.material-sample__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.material-sample__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin-top: auto;
+  font-family: var(--font-family-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+}
