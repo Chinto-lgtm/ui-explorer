@@ -11,12 +11,15 @@ import { Sparkles, Shuffle, Lock, Unlock, Copy, Check, HelpCircle, Layers } from
 import './GeneratorPage.css';
 
 export const GeneratorPage: React.FC = () => {
-  const { setStyle, addCustomStyle } = useStyle();
+  const { setStyle, addCustomStyle, setPreviewStyle } = useStyle();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const initialSeed = searchParams.get('seed') || '847291';
-  const [seed, setSeed] = useState<string>(initialSeed);
-  const [mode, setMode] = useState<GenerationMode>('Coherent');
+  // Numeric seeds in the URL are used as-is so a shared link reproduces the exact style.
+  const rawSeed = searchParams.get('seed') || '847291';
+  const initialSeed: string | number = /^\d+$/.test(rawSeed) ? Number(rawSeed) : rawSeed;
+  const startInSurpriseMode = searchParams.get('surprise') === '1';
+  const [seed, setSeed] = useState<string>(String(initialSeed));
+  const [mode, setMode] = useState<GenerationMode>(startInSurpriseMode ? 'Experimental' : 'Coherent');
   const [selectedPersonality, setSelectedPersonality] = useState<PersonalityType | 'Random'>('Random');
 
   const [locks, setLocks] = useState<GenerationLocks>({
@@ -51,7 +54,8 @@ export const GeneratorPage: React.FC = () => {
     });
 
     setCurrentResult(res);
-    setStyle(res.style.metadata.id);
+    // Show the generated style in the canvas immediately; it is only saved on "Apply & Save".
+    setPreviewStyle(res.style);
 
     // Persist to history
     setHistory((prev) => {
@@ -65,7 +69,10 @@ export const GeneratorPage: React.FC = () => {
   };
 
   useEffect(() => {
-    runGenerator(initialSeed, 'Coherent');
+    runGenerator(initialSeed, startInSurpriseMode ? 'Experimental' : 'Coherent');
+    // Leaving the page clears the unsaved preview.
+    return () => setPreviewStyle(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGenerateClick = () => {

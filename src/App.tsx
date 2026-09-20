@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { StyleProvider } from './engine/context';
 import { AppShell } from './components/layout/AppShell';
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { DashboardPage } from './pages/Dashboard/DashboardPage';
 import { GeneratorPage } from './pages/Generator/GeneratorPage';
 import { ComponentsLabPage } from './pages/ComponentsLab/ComponentsLabPage';
@@ -26,15 +27,17 @@ const ShellRoutes: React.FC = () => (
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <StyleProvider>
-        <Routes>
-          {/* The welcome view is full-bleed and renders outside the shell. */}
-          <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/*" element={<ShellRoutes />} />
-        </Routes>
-      </StyleProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <StyleProvider>
+          <Routes>
+            {/* The welcome view is full-bleed and renders outside the shell. */}
+            <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/*" element={<ShellRoutes />} />
+          </Routes>
+        </StyleProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 

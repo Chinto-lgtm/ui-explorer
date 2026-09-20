@@ -81,7 +81,7 @@ ${currentStyle.metadata.description}
               <ol className="steps-list">
                 <li>Download your Contribution Package below.</li>
                 <li>Fork the <code>ui-explorer</code> repository on GitHub.</li>
-                <li>Add your files under <code>styles/community/${currentStyle.metadata.id}/</code>.</li>
+                <li>Add your files under <code>{`styles/community/${currentStyle.metadata.id}/`}</code>.</li>
                 <li>Submit a Pull Request for validation.</li>
               </ol>
             </div>

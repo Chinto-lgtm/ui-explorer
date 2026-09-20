@@ -1,60 +1,66 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download, GitPullRequest, Info } from 'lucide-react';
+import {
+  LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
+  GitPullRequest, Info, Keyboard, Star
+} from 'lucide-react';
+import { useStyle } from '../../hooks/useStyle';
 import './AppShell.css';
 
 export interface SidebarProps {
+  isOpen: boolean;
   onOpenMixer: () => void;
   onOpenExport: () => void;
   onOpenContribution?: () => void;
+  onOpenShortcuts: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onOpenMixer, onOpenExport, onOpenContribution }) => {
+const PAGES = [
+  { to: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+  { to: '/generator', label: 'Style Generator', icon: <Wand2 size={18} /> },
+  { to: '/components', label: 'Components Lab', icon: <Component size={18} /> },
+  { to: '/data', label: 'Data & Interaction', icon: <Database size={18} /> },
+  { to: '/customizer', label: 'Style Customizer', icon: <Sliders size={18} /> }
+];
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExport, onOpenContribution, onOpenShortcuts }) => {
+  const { availableStyles, favoriteIds, setStyle, currentStyle } = useStyle();
+  const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
+
   return (
-    <aside className="shell-sidebar">
+    <aside className={`shell-sidebar ${isOpen ? 'shell-sidebar--open' : ''}`} id="shell-sidebar" aria-label="Main navigation">
       <nav className="shell-nav">
         <div className="shell-nav__section">
           <span className="shell-nav__heading">Pages</span>
-          <NavLink
-            to="/"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink
-            to="/generator"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <Wand2 size={18} />
-            <span>Style Generator</span>
-          </NavLink>
-
-          <NavLink
-            to="/components"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <Component size={18} />
-            <span>Components Lab</span>
-          </NavLink>
-
-          <NavLink
-            to="/data"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <Database size={18} />
-            <span>Data & Interaction</span>
-          </NavLink>
-
-          <NavLink
-            to="/customizer"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <Sliders size={18} />
-            <span>Style Customizer</span>
-          </NavLink>
+          {PAGES.map((p) => (
+            <NavLink
+              key={p.to}
+              to={p.to}
+              end={p.to === '/'}
+              className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
+            >
+              {p.icon}
+              <span>{p.label}</span>
+            </NavLink>
+          ))}
         </div>
+
+        {favorites.length > 0 && (
+          <div className="shell-nav__section">
+            <span className="shell-nav__heading">Favorites</span>
+            {favorites.map((s) => (
+              <button
+                key={s.metadata.id}
+                type="button"
+                className={`shell-nav__action ${currentStyle.metadata.id === s.metadata.id ? 'shell-nav__link--active' : ''}`}
+                onClick={() => setStyle(s.metadata.id)}
+              >
+                <Star size={16} />
+                <span className="shell-nav__truncate">{s.metadata.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="shell-nav__section">
           <span className="shell-nav__heading">Tools & Open Source</span>
@@ -72,6 +78,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenMixer, onOpenExport, onO
               <span>Contribute Package</span>
             </button>
           )}
+          <button className="shell-nav__action" onClick={onOpenShortcuts}>
+            <Keyboard size={18} />
+            <span>Keyboard Shortcuts</span>
+          </button>
           <NavLink
             to="/welcome"
             className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}

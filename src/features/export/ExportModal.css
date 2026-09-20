@@ -106,6 +106,8 @@
 }
 
 .import-error-msg {
+  white-space: pre-wrap;
+  font-family: var(--font-family-mono, monospace);
   color: #ef4444;
   font-size: 0.875rem;
 }

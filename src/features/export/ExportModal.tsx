@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useStyle } from '../../hooks/useStyle';
 import { resolveStyleToCssVars } from '../../engine/resolver';
+import { validateStyleDefinition, formatValidationErrors, coerceStyleDefinition } from '../../engine/validate';
 import { Button } from '../../components/ui/Button';
 import { Textarea } from '../../components/ui/Input';
 import { Download, Upload, Copy, Check, X } from 'lucide-react';
@@ -39,14 +40,18 @@ export const ExportModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleImport = () => {
     try {
-      const parsed = JSON.parse(importJsonText);
-      if (!parsed.metadata || !parsed.tokens) {
-        throw new Error('Invalid style schema. Must include metadata and tokens.');
+      const parsed: unknown = JSON.parse(importJsonText);
+      const result = validateStyleDefinition(parsed);
+      if (!result.ok) {
+        throw new Error(formatValidationErrors(result));
       }
-      addCustomStyle(parsed);
+      const style = coerceStyleDefinition(parsed);
+      if (!style) throw new Error('Invalid style.');
+      addCustomStyle({ ...style, metadata: { ...style.metadata, isCustom: true } });
       onClose();
     } catch (err: any) {
-      setImportError(err.message || 'Failed to parse JSON.');
+      setImportError(err instanceof SyntaxError ? `Invalid JSON.
+${err.message}` : (err.message || 'Failed to import style.'));
     }
   };
 

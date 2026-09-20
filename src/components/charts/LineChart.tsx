@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import './Chart.css';
 
 export interface DataPoint {
@@ -21,10 +21,12 @@ export const LineChart: React.FC<LineChartProps> = ({
   color = 'var(--color-accent)',
   gradient = true
 }) => {
+  const gradientId = useId();
   if (!data || data.length === 0) return null;
 
   const width = 500;
-  const padding = 30;
+  // Compact charts (sparklines) need proportionally smaller padding or the plot area collapses.
+  const padding = Math.min(30, Math.max(4, Math.round(height * 0.16)));
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
 
@@ -48,7 +50,7 @@ export const LineChart: React.FC<LineChartProps> = ({
     <div className="ui-chart-container">
       <svg viewBox={`0 0 ${width} ${height}`} className="ui-chart-svg" preserveAspectRatio="none">
         <defs>
-          <linearGradient id="lineChartGradient" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={color} stopOpacity="0.4" />
             <stop offset="100%" stopColor={color} stopOpacity="0.0" />
           </linearGradient>
@@ -70,7 +72,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         })}
 
         {/* Area fill */}
-        {gradient && <path d={areaD} fill="url(#lineChartGradient)" />}
+        {gradient && <path d={areaD} fill={`url(#${gradientId})`} />}
 
         {/* Line stroke */}
         <path d={pathD} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />

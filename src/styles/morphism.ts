@@ -5,7 +5,7 @@ export const neumorphism: StyleDefinition = {
     id: 'neumorphism',
     name: 'Neumorphism',
     category: 'Morphism',
-    description: 'Soft 3D extrusion aesthetics with dual light & dark drop shadows, creating tactile tactile element feel.',
+    description: 'Soft 3D extrusion aesthetics with dual light & dark drop shadows, creating a tactile element feel.',
     tags: ['soft-ui', '3d', 'extruded', 'tactile', 'minimal'],
     personality: 'Tactile, calm, futuristic yet organic, soft depth',
     history: 'Popularized around 2019-2020 as a blend of flat design and classic skeuomorphism.',

@@ -51,3 +51,19 @@
 .compare-panel-content {
   padding: 1.5rem;
 }
+
+/* Stack compare panels on narrow screens */
+@media (max-width: 767px) {
+  .compare-split {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .compare-panel {
+    flex: none;
+    min-height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid #334155;
+    overflow: visible;
+  }
+}
