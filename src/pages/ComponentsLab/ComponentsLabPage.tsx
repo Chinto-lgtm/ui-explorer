@@ -4,29 +4,33 @@ import { useStyle } from '../../hooks/useStyle';
 import { resolveStyleToCssVars } from '../../engine/resolver';
 import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import type { StyleDefinition } from '../../engine/types';
-import { Card, CardHeader, CardTitle, CardBody } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { Input, Textarea } from '../../components/ui/Input';
-import { Badge } from '../../components/ui/Badge';
-import { LineChart } from '../../components/charts/LineChart';
-import { BarChart } from '../../components/charts/BarChart';
+import { ToastProvider } from '../../components/ui/Feedback';
+import { LAB_SECTIONS } from './sections';
 import {
-  Search, Sparkles, Heart, Bell,
-  MousePointerClick, TextCursorInput, LayoutPanelTop, Tag, ChartColumn,
-  Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown
+  Search, Palette, MousePointerClick, TextCursorInput, CheckSquare, Compass, BellRing, Layers,
+  LayoutPanelTop, Tag, ListTree, ChartColumn,
+  Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown, X
 } from 'lucide-react';
 import './ComponentsLabPage.css';
 
-type CategoryId = 'buttons' | 'inputs' | 'cards' | 'badges' | 'charts';
+type CategoryId = string;
 type ViewportId = 'desktop' | 'tablet' | 'mobile';
 
-const CATEGORIES: { id: CategoryId; label: string; icon: ReactNode }[] = [
-  { id: 'buttons', label: 'Buttons & Controls', icon: <MousePointerClick size={16} /> },
-  { id: 'inputs', label: 'Inputs & Form Elements', icon: <TextCursorInput size={16} /> },
-  { id: 'cards', label: 'Cards & Containers', icon: <LayoutPanelTop size={16} /> },
-  { id: 'badges', label: 'Badges & Indicators', icon: <Tag size={16} /> },
-  { id: 'charts', label: 'Data Visualization', icon: <ChartColumn size={16} /> }
-];
+const SECTION_ICONS: Record<string, ReactNode> = {
+  foundations: <Palette size={16} />,
+  buttons: <MousePointerClick size={16} />,
+  inputs: <TextCursorInput size={16} />,
+  selection: <CheckSquare size={16} />,
+  navigation: <Compass size={16} />,
+  feedback: <BellRing size={16} />,
+  overlays: <Layers size={16} />,
+  cards: <LayoutPanelTop size={16} />,
+  badges: <Tag size={16} />,
+  lists: <ListTree size={16} />,
+  charts: <ChartColumn size={16} />
+};
+
+const CATEGORIES = LAB_SECTIONS.map((sec) => ({ id: sec.id, label: sec.label, icon: SECTION_ICONS[sec.id], keywords: sec.keywords }));
 
 const VIEWPORTS: { id: ViewportId; label: string; width: string; icon: ReactNode }[] = [
   { id: 'desktop', label: 'Desktop', width: 'Fluid', icon: <Monitor size={16} /> },
@@ -92,6 +96,7 @@ export const ComponentsLabPage: React.FC = () => {
   const { currentStyle, availableStyles } = useStyle();
 
   const [activeCategory, setActiveCategory] = useState<CategoryId>('buttons');
+  const [search, setSearch] = useState('');
   const [buttonStateDisabled, setButtonStateDisabled] = useState<boolean>(false);
   const [buttonStateLoading, setButtonStateLoading] = useState<boolean>(false);
   const [viewport, setViewport] = useState<ViewportId>('desktop');
@@ -144,148 +149,18 @@ export const ComponentsLabPage: React.FC = () => {
     setCompareIds((prev) => prev.map((existing, i) => (i === index ? id : existing)));
   };
 
-  const renderShowcase = () => {
-    switch (activeCategory) {
-      case 'buttons':
-        return (
-          <div className="lab-grid">
-            <Card>
-              <CardHeader><CardTitle>Button Variants</CardTitle></CardHeader>
-              <CardBody className="lab-component-row">
-                <Button variant="primary" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Primary Button
-                </Button>
-                <Button variant="secondary" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Secondary Button
-                </Button>
-                <Button variant="outline" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Outline Button
-                </Button>
-                <Button variant="ghost" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Ghost Button
-                </Button>
-              </CardBody>
-            </Card>
+  const ActiveSection = (LAB_SECTIONS.find((sec) => sec.id === activeCategory) ?? LAB_SECTIONS[0]).Component;
+  const renderShowcase = () => (
+    <ToastProvider position="bottom-right">
+      <ActiveSection disabled={buttonStateDisabled} loading={buttonStateLoading} />
+    </ToastProvider>
+  );
 
-            <Card>
-              <CardHeader><CardTitle>Status & Special Buttons</CardTitle></CardHeader>
-              <CardBody className="lab-component-row">
-                <Button variant="destructive" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Destructive Action
-                </Button>
-                <Button variant="success" disabled={buttonStateDisabled} isLoading={buttonStateLoading}>
-                  Success Action
-                </Button>
-                <Button variant="floating" icon={<Sparkles size={16} />} disabled={buttonStateDisabled}>
-                  Floating Pill
-                </Button>
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader><CardTitle>Button Sizes & Icons</CardTitle></CardHeader>
-              <CardBody className="lab-component-row">
-                <Button size="sm" icon={<Heart size={14} />} disabled={buttonStateDisabled} isLoading={buttonStateLoading}>Small</Button>
-                <Button size="md" icon={<Sparkles size={16} />} disabled={buttonStateDisabled} isLoading={buttonStateLoading}>Medium</Button>
-                <Button size="lg" icon={<Bell size={18} />} disabled={buttonStateDisabled} isLoading={buttonStateLoading}>Large</Button>
-              </CardBody>
-            </Card>
-          </div>
-        );
-
-      case 'inputs':
-        return (
-          <div className="lab-grid">
-            <Card>
-              <CardHeader><CardTitle>Standard Input Fields</CardTitle></CardHeader>
-              <CardBody className="lab-input-col">
-                <Input label="Email Address" placeholder="alex@example.com" helperText="We will never share your email." />
-                <Input label="Search Library" placeholder="Type to search..." icon={<Search size={16} />} />
-                <Input label="Error State Input" placeholder="Invalid entry" error="Please enter a valid format." />
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader><CardTitle>Textarea & Complex Inputs</CardTitle></CardHeader>
-              <CardBody className="lab-input-col">
-                <Textarea label="Project Description" placeholder="Describe your design tokens or style requirements..." />
-              </CardBody>
-            </Card>
-          </div>
-        );
-
-      case 'cards':
-        return (
-          <div className="lab-grid">
-            <Card variant="default" hoverable>
-              <CardHeader><CardTitle>Default Hoverable Card</CardTitle></CardHeader>
-              <CardBody>Standard surface container responding to active token variables.</CardBody>
-            </Card>
-
-            <Card variant="outlined">
-              <CardHeader><CardTitle>Outlined Card Variant</CardTitle></CardHeader>
-              <CardBody>Card with explicit accent border styling.</CardBody>
-            </Card>
-
-            <Card variant="elevated">
-              <CardHeader><CardTitle>Elevated Shadow Card</CardTitle></CardHeader>
-              <CardBody>Card with prominent box-shadow elevation.</CardBody>
-            </Card>
-          </div>
-        );
-
-      case 'badges':
-        return (
-          <div className="lab-grid">
-            <Card>
-              <CardHeader><CardTitle>Badges & Status Tags</CardTitle></CardHeader>
-              <CardBody className="lab-component-row">
-                <Badge variant="default">Default</Badge>
-                <Badge variant="accent">Accent</Badge>
-                <Badge variant="success">Success</Badge>
-                <Badge variant="warning">Warning</Badge>
-                <Badge variant="error">Error</Badge>
-                <Badge variant="outline">Outline</Badge>
-              </CardBody>
-            </Card>
-          </div>
-        );
-
-      case 'charts':
-        return (
-          <div className="lab-grid">
-            <Card>
-              <CardHeader><CardTitle>Interactive Line Chart</CardTitle></CardHeader>
-              <CardBody>
-                <LineChart
-                  data={[
-                    { label: 'Mon', value: 30 },
-                    { label: 'Tue', value: 75 },
-                    { label: 'Wed', value: 45 },
-                    { label: 'Thu', value: 90 },
-                    { label: 'Fri', value: 120 }
-                  ]}
-                />
-              </CardBody>
-            </Card>
-
-            <Card>
-              <CardHeader><CardTitle>Interactive Bar Chart</CardTitle></CardHeader>
-              <CardBody>
-                <BarChart
-                  data={[
-                    { label: 'Q1', value: 450 },
-                    { label: 'Q2', value: 620 },
-                    { label: 'Q3', value: 810 },
-                    { label: 'Q4', value: 950 }
-                  ]}
-                />
-              </CardBody>
-            </Card>
-          </div>
-        );
-    }
-  };
+  const query = search.trim().toLowerCase();
+  const visibleCategories = query
+    ? CATEGORIES.filter((c) => c.label.toLowerCase().includes(query) || c.keywords.some((k) => k.includes(query)))
+    : CATEGORIES;
+  const matchedKeywords = (c: typeof CATEGORIES[number]) => (query ? c.keywords.filter((k) => k.includes(query)).slice(0, 3) : []);
 
   const stageStatus = `${activeCategoryMeta.label} · ${activeViewportMeta.label} ${activeViewportMeta.width}` +
     (isCompareEnabled ? ' · Comparing 3 styles' : ` · ${currentStyle.metadata.name}`);
@@ -301,8 +176,23 @@ export const ComponentsLabPage: React.FC = () => {
 
         <div className="lab-settings__scroll">
           <LabSection title="Component" icon={<LayoutPanelTop size={14} />}>
+            <div className="lab-search">
+              <Search size={14} className="lab-search__icon" aria-hidden="true" />
+              <input
+                type="search"
+                className="lab-search__input"
+                placeholder="Search components…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search components"
+              />
+              {search && (
+                <button type="button" className="lab-search__clear" onClick={() => setSearch('')} aria-label="Clear search"><X size={12} /></button>
+              )}
+            </div>
             <div className="lab-category-list" role="group" aria-label="Component category">
-              {CATEGORIES.map((cat) => (
+              {visibleCategories.length === 0 && <p className="lab-hint">No component matches "{search}".</p>}
+              {visibleCategories.map((cat) => (
                 <button
                   key={cat.id}
                   type="button"
@@ -311,7 +201,10 @@ export const ComponentsLabPage: React.FC = () => {
                   onClick={() => setActiveCategory(cat.id)}
                 >
                   <span className="lab-category__icon">{cat.icon}</span>
-                  <span>{cat.label}</span>
+                  <span className="lab-category__text">
+                    <span>{cat.label}</span>
+                    {matchedKeywords(cat).length > 0 && <span className="lab-category__hits">{matchedKeywords(cat).join(', ')}</span>}
+                  </span>
                 </button>
               ))}
             </div>
@@ -337,7 +230,7 @@ export const ComponentsLabPage: React.FC = () => {
               <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
               <span className="lab-switch__text">Loading state</span>
             </label>
-            <p className="lab-hint">Applies to button components.</p>
+            <p className="lab-hint">Applies to interactive components in the preview.</p>
           </LabSection>
 
           <LabSection title="Viewport" icon={<Monitor size={14} />}>

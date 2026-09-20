@@ -85,3 +85,48 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
 }
+
+.ui-input-wrapper--error .ui-input {
+  border-color: var(--color-error, #ef4444);
+}
+
+.ui-input-wrapper--success .ui-input {
+  border-color: var(--color-success, #10b981);
+}
+
+.ui-input-icon--success {
+  color: var(--color-success, #10b981);
+}
+
+.ui-input-icon--button {
+  pointer-events: auto;
+  border: none;
+  background: none;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.ui-input-icon--button:hover {
+  color: var(--color-text-primary);
+}
+
+.ui-input-icon--button:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+.ui-input:read-only:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.ui-input[type='number'] {
+  font-family: var(--font-family-mono);
+}
+
+.ui-input[type='date'],
+.ui-input[type='time'] {
+  color-scheme: light dark;
+}

@@ -9,6 +9,10 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: ReactNode;
   iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
+  /** Icon-only button; supply aria-label. */
+  iconOnly?: boolean;
+  /** Transient result state after an action. */
+  state?: 'idle' | 'success' | 'error';
   children?: ReactNode;
 }
 
@@ -19,6 +23,8 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   iconPosition = 'left',
   fullWidth = false,
+  iconOnly = false,
+  state = 'idle',
   children,
   className = '',
   disabled,
@@ -30,6 +36,8 @@ export const Button: React.FC<ButtonProps> = ({
     `ui-button--${size}`,
     fullWidth ? 'ui-button--full' : '',
     isLoading ? 'ui-button--loading' : '',
+    iconOnly ? 'ui-button--icon-only' : '',
+    state !== 'idle' ? `ui-button--state-${state}` : '',
     className
   ].filter(Boolean).join(' ');
 
