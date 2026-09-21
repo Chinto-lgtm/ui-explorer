@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { Suspense, createContext, lazy, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
@@ -10,7 +10,8 @@ import { ChartsLab } from './labs/ChartsLab';
 import { NotificationsLab } from './labs/NotificationsLab';
 import { MotionLab } from './labs/MotionLab';
 import { MaterialLab } from './labs/MaterialLab';
-import { IconLab } from './labs/IconLab';
+// The icon lab pulls in the whole icon set; keep it out of the Labs chunk until it is opened.
+const IconLab = lazy(() => import('./labs/IconLab').then((m) => ({ default: m.IconLab })));
 import { SvgLab } from './labs/SvgLab';
 import '../../components/layout/Workspace.css';
 import './LabsPage.css';
@@ -102,7 +103,7 @@ export const LabsPage: React.FC = () => {
           <div className="ws-stage__body labs-stage">
             <ToastProvider>
               <div className="labs-canvas" key={lab.id}>
-                <lab.Component />
+                <Suspense fallback={<div className="page-loading" role="status">Loading…</div>}><lab.Component /></Suspense>
               </div>
             </ToastProvider>
           </div>

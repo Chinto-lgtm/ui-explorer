@@ -86,6 +86,9 @@ const MOTION_DEPTH: Pair<MotionType, DepthType> = {
   subtle:     { soft: 2, flat: 1, inset: 1 }
 };
 
+/** Raw tables, exported so the Python engine can load the same data. */
+export const PAIR_TABLES = { SURFACE_DEPTH, SURFACE_BORDER, GEOMETRY_SURFACE, DEPTH_BORDER, ICON_SURFACE, MOTION_DEPTH };
+
 const rel = <A extends string, B extends string>(table: Pair<A, B>, a: A, b: B): Relation => table[a]?.[b] ?? 0;
 
 export function surfaceDepthRelation(s: SurfaceType, d: DepthType): Relation { return rel(SURFACE_DEPTH, s, d); }
@@ -144,7 +147,7 @@ export interface CoherenceReport {
   weakestRelation: Relation;
 }
 
-const WEIGHTS: Record<RecipeAxis, number> = {
+export const AXIS_WEIGHTS: Record<RecipeAxis, number> = {
   colors: 1, typography: 1.2, geometry: 1, surface: 1.5, depth: 1.3, borders: 1, icons: 0.8, motion: 0.9, svg: 0.7
 };
 
@@ -165,7 +168,7 @@ export function evaluateRecipe(recipe: SemanticRecipe): CoherenceReport {
   let weighted = 0;
   let totalWeight = 0;
   for (const r of relations) {
-    const w = WEIGHTS[r.axis];
+    const w = AXIS_WEIGHTS[r.axis];
     weighted += ((r.relation + 2) / 4) * w;
     totalWeight += w;
   }
@@ -181,11 +184,13 @@ export function evaluateRecipe(recipe: SemanticRecipe): CoherenceReport {
   };
 }
 
+export const COMPATIBILITY_FACTORS: Record<'Coherent' | 'Experimental', Record<Relation, number>> = {
+  Coherent: { [-2]: 0.05, [-1]: 0.35, 0: 1, 1: 1.6, 2: 2.4 },
+  Experimental: { [-2]: 0.4, [-1]: 0.8, 0: 1, 1: 1.2, 2: 1.4 }
+};
+
 /** Multiplier applied to a candidate's weight according to its relationships with already chosen axes. */
 export function compatibilityFactor(relation: Relation, mode: 'Coherent' | 'Experimental' | 'Extreme'): number {
   if (mode === 'Extreme') return 1;
-  const table: Record<Relation, number> = mode === 'Coherent'
-    ? { [-2]: 0.05, [-1]: 0.35, 0: 1, 1: 1.6, 2: 2.4 }
-    : { [-2]: 0.4, [-1]: 0.8, 0: 1, 1: 1.2, 2: 1.4 };
-  return table[relation];
+  return COMPATIBILITY_FACTORS[mode][relation];
 }

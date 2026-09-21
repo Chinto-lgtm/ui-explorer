@@ -118,7 +118,7 @@ export const StylesPage: React.FC = () => {
   const activeFilterCount = (source !== 'all' ? 1 : 0) + (category !== 'All' ? 1 : 0) + Object.values(facetFilter).filter(Boolean).length;
   const clearFilters = () => { setSource('all'); setCategory('All'); setFacetFilter({}); setQuery(''); };
 
-  const useStyleNow = (s: StyleDefinition) => setStyle(s.metadata.id);
+  const applyStyle = (s: StyleDefinition) => setStyle(s.metadata.id);
   const remix = (s: StyleDefinition) => navigate(`/generator?remix=${encodeURIComponent(s.metadata.id)}`);
   const openDiff = (s: StyleDefinition) => window.dispatchEvent(new CustomEvent('ui-explorer:open-diff', { detail: { a: s.metadata.id, b: currentStyle.metadata.id === s.metadata.id ? undefined : currentStyle.metadata.id } }));
   const share = (s: StyleDefinition) => copy('share', buildShareUrl(s, !s.metadata.isCustom, '/styles'));
@@ -249,7 +249,7 @@ export const StylesPage: React.FC = () => {
                         <span className="styles-badge styles-badge--muted">{f.material} · {f.mood} · {f.depth}</span>
                       </div>
                       <div className="styles-card__actions">
-                        <button type="button" className={`ws-btn ws-btn--sm ${isCurrent ? '' : 'ws-btn--primary'}`} onClick={() => useStyleNow(s)} disabled={isCurrent}>{isCurrent ? <><Check size={12} /> In use</> : <><Play size={12} /> Use</>}</button>
+                        <button type="button" className={`ws-btn ws-btn--sm ${isCurrent ? '' : 'ws-btn--primary'}`} onClick={() => applyStyle(s)} disabled={isCurrent}>{isCurrent ? <><Check size={12} /> In use</> : <><Play size={12} /> Use</>}</button>
                         <button type="button" className="ws-btn ws-btn--sm" onClick={() => { setSelectedId(s.metadata.id); setTab('docs'); }}><BookOpen size={12} /> Details</button>
                       </div>
                     </div>
@@ -280,7 +280,7 @@ export const StylesPage: React.FC = () => {
           </div>
 
           <div className="styles-drawer__actions">
-            <button type="button" className="ws-btn ws-btn--primary ws-btn--sm" onClick={() => useStyleNow(selected)} disabled={selected.metadata.id === currentStyle.metadata.id}><Play size={12} /> {selected.metadata.id === currentStyle.metadata.id ? 'In use' : 'Use'}</button>
+            <button type="button" className="ws-btn ws-btn--primary ws-btn--sm" onClick={() => applyStyle(selected)} disabled={selected.metadata.id === currentStyle.metadata.id}><Play size={12} /> {selected.metadata.id === currentStyle.metadata.id ? 'In use' : 'Use'}</button>
             <button type="button" className="ws-btn ws-btn--sm" onClick={() => remix(selected)}><Wand2 size={12} /> Remix</button>
             <button type="button" className="ws-btn ws-btn--sm" onClick={() => duplicate(selected)}><Copy size={12} /> Duplicate</button>
             <button type="button" className="ws-btn ws-btn--sm" onClick={() => openDiff(selected)}><GitCompareArrows size={12} /> Diff</button>

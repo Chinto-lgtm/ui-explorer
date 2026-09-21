@@ -108,6 +108,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   return (
     <div className="shell-root">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Header
         onOpenCommandPalette={() => setIsCmdPaletteOpen(true)}
         onToggleAnatomy={() => setIsAnatomyOpen(!isAnatomyOpen)}
@@ -129,7 +130,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           onOpenDiff={() => setIsDiffOpen(true)}
         />
 
-        <main className="shell-content" id="main-content">
+        <main className="shell-content" id="main-content" tabIndex={-1}>
           {/* Main preview area applies current style resolved CSS variables */}
           {isCompareActive ? (
             <CompareView onOpenDiff={() => setIsDiffOpen(true)} />

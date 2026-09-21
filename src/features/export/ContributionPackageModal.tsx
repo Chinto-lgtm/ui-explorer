@@ -11,23 +11,36 @@ export const ContributionPackageModal: React.FC<{ onClose: () => void }> = ({ on
   const [license, setLicense] = useState('MIT');
   const [repoUrl, setRepoUrl] = useState('https://github.com/username/ui-explorer');
 
+  // Registry slug and id: community packages are conventionally prefixed.
+  const slug = currentStyle.metadata.id.replace(/^community-/, '');
+  const packageId = `community-${slug}`;
+
+  // metadata.json doubles as the entry to append to styles/community/index.json.
   const metadataJson = JSON.stringify(
     {
-      id: currentStyle.metadata.id,
+      id: packageId,
       name: currentStyle.metadata.name,
       author: authorName,
       version: '1.0.0',
+      license,
       category: currentStyle.metadata.category,
       description: currentStyle.metadata.description,
       tags: currentStyle.metadata.tags,
-      license,
+      path: `styles/community/${slug}/style.json`,
       repository: repoUrl
     },
     null,
     2
   );
 
-  const styleJson = JSON.stringify(currentStyle, null, 2);
+  // style.json is the package itself: provenance lives in metadata so it loads as-is.
+  const { generation: _generation, ...definition } = currentStyle;
+  const { isCustom: _isCustom, ...metadata } = definition.metadata;
+  const styleJson = JSON.stringify(
+    { ...definition, metadata: { ...metadata, id: packageId, author: authorName, version: '1.0.0', license, source: 'community' } },
+    null,
+    2
+  );
 
   const readmeContent = `# ${currentStyle.metadata.name}
 
@@ -40,6 +53,12 @@ Contributed to UI Explorer by **${authorName}**.
 
 ## Description
 ${currentStyle.metadata.description}
+
+## Install
+
+Copy this folder to \`styles/community/${slug}/\` in the UI Explorer repository, append the
+contents of \`metadata.json\` to \`styles/community/index.json\`, run
+\`npm run registry:check\` and open a pull request.
 `;
 
   const handleDownloadFile = (content: string, filename: string) => {

@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { StyleProvider } from './engine/context';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { DashboardPage } from './pages/Dashboard/DashboardPage';
-import { GeneratorPage } from './pages/Generator/GeneratorPage';
-import { ComponentsLabPage } from './pages/ComponentsLab/ComponentsLabPage';
-import { LabsPage } from './pages/Labs/LabsPage';
-import { CustomizerPage } from './pages/Customizer/CustomizerPage';
-import { StylesPage } from './pages/Styles/StylesPage';
 import { WelcomePage } from './pages/Welcome/WelcomePage';
 import { hasCompletedOnboarding } from './config/app';
+
+// Tool pages are code-split so the first paint only carries the shell, the engine and the dashboard.
+const GeneratorPage = lazy(() => import('./pages/Generator/GeneratorPage').then((m) => ({ default: m.GeneratorPage })));
+const ComponentsLabPage = lazy(() => import('./pages/ComponentsLab/ComponentsLabPage').then((m) => ({ default: m.ComponentsLabPage })));
+const LabsPage = lazy(() => import('./pages/Labs/LabsPage').then((m) => ({ default: m.LabsPage })));
+const CustomizerPage = lazy(() => import('./pages/Customizer/CustomizerPage').then((m) => ({ default: m.CustomizerPage })));
+const StylesPage = lazy(() => import('./pages/Styles/StylesPage').then((m) => ({ default: m.StylesPage })));
+
+const PageFallback: React.FC = () => (
+  <div className="page-loading" role="status" aria-live="polite">Loading…</div>
+);
 
 /** Pages that live inside the app shell (header, sidebar, themed canvas). */
 const ShellRoutes: React.FC = () => (
   <AppShell>
+    <Suspense fallback={<PageFallback />}>
     <Routes>
       <Route path="/" element={hasCompletedOnboarding() ? <DashboardPage /> : <Navigate to="/welcome" replace />} />
       <Route path="/styles" element={<StylesPage />} />
@@ -25,6 +32,7 @@ const ShellRoutes: React.FC = () => (
       <Route path="/customizer" element={<CustomizerPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   </AppShell>
 );
 

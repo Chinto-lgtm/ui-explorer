@@ -11,7 +11,10 @@
     "preview": "vite preview",
     "lint": "oxlint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "engine:data": "vite-node scripts/export-engine-data.ts",
+    "engine:test": "python -m unittest discover -s tools/style-engine/tests -t tools/style-engine",
+    "registry:check": "cd tools/style-engine && python -m style_engine registry ../../styles/community/index.json"
   },
   "dependencies": {
     "lucide-react": "^1.47.0",

@@ -165,32 +165,34 @@ const geometryOptions = (p: PersonalityRules) => {
   return Array.from(merged, ([value, weight]) => ({ value, weight }));
 };
 
+const BORDER_BASE: Record<BorderType, number> = { none: 10, subtle: 25, thin: 30, strong: 8, dashed: 3, double: 2, glow: 6 };
+const BORDER_BOOSTS: Record<string, Partial<Record<BorderType, number>>> = {
+  Brutalist: { strong: 60, double: 10, none: 0 }, Memphis: { strong: 45, dashed: 10 }, Industrial: { strong: 35, dashed: 12 },
+  Glass: { subtle: 60, glow: 15, strong: 0 }, Liquid: { subtle: 50, none: 25, strong: 0 }, Clay: { none: 50, subtle: 20, strong: 0 },
+  Cyberpunk: { glow: 45, thin: 25 }, HUD: { thin: 45, glow: 25, dashed: 8 }, Acid: { glow: 35, dashed: 15, strong: 20 },
+  Editorial: { thin: 55, subtle: 10 }, Swiss: { thin: 40, strong: 20 }, Soft: { none: 35, subtle: 40, strong: 0 },
+  Organic: { subtle: 40, none: 30 }, Metal: { thin: 40, double: 10 }, Digital: { strong: 30, thin: 25 }, Bento: { subtle: 45, thin: 30 }, Flat: { thin: 40, subtle: 30 }
+};
+
 /** Border preferences are derived from the personality's visual family rather than listed per personality. */
 const borderOptions = (p: PersonalityRules): { value: BorderType; weight: number }[] => {
   const family = p.visualFamilies[0]?.family ?? 'Flat';
-  const base: Record<BorderType, number> = { none: 10, subtle: 25, thin: 30, strong: 8, dashed: 3, double: 2, glow: 6 };
-  const boosts: Record<string, Partial<Record<BorderType, number>>> = {
-    Brutalist: { strong: 60, double: 10, none: 0 }, Memphis: { strong: 45, dashed: 10 }, Industrial: { strong: 35, dashed: 12 },
-    Glass: { subtle: 60, glow: 15, strong: 0 }, Liquid: { subtle: 50, none: 25, strong: 0 }, Clay: { none: 50, subtle: 20, strong: 0 },
-    Cyberpunk: { glow: 45, thin: 25 }, HUD: { thin: 45, glow: 25, dashed: 8 }, Acid: { glow: 35, dashed: 15, strong: 20 },
-    Editorial: { thin: 55, subtle: 10 }, Swiss: { thin: 40, strong: 20 }, Soft: { none: 35, subtle: 40, strong: 0 },
-    Organic: { subtle: 40, none: 30 }, Metal: { thin: 40, double: 10 }, Digital: { strong: 30, thin: 25 }, Bento: { subtle: 45, thin: 30 }, Flat: { thin: 40, subtle: 30 }
-  };
-  const boost = boosts[family] ?? {};
-  return BORDER_TYPES.map((b) => ({ value: b, weight: boost[b] ?? base[b] }));
+  const boost = BORDER_BOOSTS[family] ?? {};
+  return BORDER_TYPES.map((b) => ({ value: b, weight: boost[b] ?? BORDER_BASE[b] }));
+};
+
+const ICON_BASE: Record<IconType, number> = { outline: 40, filled: 15, duotone: 8, geometric: 8, rounded: 15, '3d': 3, pixel: 2, skeuomorphic: 3 };
+const ICON_BOOSTS: Record<string, Partial<Record<IconType, number>>> = {
+  Digital: { pixel: 60, geometric: 20 }, Brutalist: { geometric: 45, outline: 30 }, Clay: { '3d': 40, rounded: 35 },
+  Metal: { skeuomorphic: 35, filled: 25, '3d': 20 }, Soft: { rounded: 50 }, Organic: { rounded: 45, duotone: 15 },
+  Glass: { duotone: 30, outline: 40 }, HUD: { geometric: 45, outline: 30 }, Cyberpunk: { geometric: 35, outline: 30 },
+  Memphis: { geometric: 40, filled: 25 }, Editorial: { outline: 55 }, Swiss: { geometric: 35, outline: 40 }
 };
 
 const iconOptions = (p: PersonalityRules): { value: IconType; weight: number }[] => {
   const family = p.visualFamilies[0]?.family ?? 'Flat';
-  const base: Record<IconType, number> = { outline: 40, filled: 15, duotone: 8, geometric: 8, rounded: 15, '3d': 3, pixel: 2, skeuomorphic: 3 };
-  const boosts: Record<string, Partial<Record<IconType, number>>> = {
-    Digital: { pixel: 60, geometric: 20 }, Brutalist: { geometric: 45, outline: 30 }, Clay: { '3d': 40, rounded: 35 },
-    Metal: { skeuomorphic: 35, filled: 25, '3d': 20 }, Soft: { rounded: 50 }, Organic: { rounded: 45, duotone: 15 },
-    Glass: { duotone: 30, outline: 40 }, HUD: { geometric: 45, outline: 30 }, Cyberpunk: { geometric: 35, outline: 30 },
-    Memphis: { geometric: 40, filled: 25 }, Editorial: { outline: 55 }, Swiss: { geometric: 35, outline: 40 }
-  };
-  const boost = boosts[family] ?? {};
-  return ICON_TYPES.map((i) => ({ value: i, weight: boost[i] ?? base[i] }));
+  const boost = ICON_BOOSTS[family] ?? {};
+  return ICON_TYPES.map((i) => ({ value: i, weight: boost[i] ?? ICON_BASE[i] }));
 };
 
 const HEADING_PAIRS: Record<string, string> = {
@@ -321,6 +323,9 @@ const MATERIAL_WORDS: Record<SurfaceType, string[]> = {
   flat: ['Grid', 'Plane'], solid: ['Bento', 'Forge'], transparent: ['Signal', 'Pulse'], inset: ['Relief', 'Carve'],
   elevated: ['Float', 'Drift'], experimental: ['Wave', 'Flux']
 };
+
+/** Static tables, exported so the Python engine loads the same data. */
+export const GENERATOR_TABLES = { BORDER_BASE, BORDER_BOOSTS, ICON_BASE, ICON_BOOSTS, HEADING_PAIRS, PREFIX_GROUPS, MATERIAL_WORDS, PERSONALITY_TYPES };
 
 function generateName(prng: PRNG, recipe: SemanticRecipe, colors: DesignTokens['colors']): string {
   const hex = colors.bg.replace('#', '');

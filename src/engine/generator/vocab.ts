@@ -89,7 +89,7 @@ export const GEOMETRY_TYPES: GeometryType[] = ['sharp', 'small', 'medium', 'larg
 /* Personality label → canonical value                                  */
 /* ------------------------------------------------------------------ */
 
-const SURFACE_LABELS: Record<string, SurfaceType> = {
+export const SURFACE_LABELS: Record<string, SurfaceType> = {
   'Aurora Gradient': 'liquid', 'Border Container': 'flat', 'Clay Pillow': 'clay', 'Crisp Solid': 'solid',
   'Dark Metallic': 'metallic', 'Dark Slate': 'solid', 'Distorted Liquid': 'experimental', 'Earthy Matte': 'paper',
   'Fine Border': 'flat', 'Flat': 'flat', 'Frosted Glass': 'frosted', 'Glass Translucent': 'glass',
@@ -99,19 +99,19 @@ const SURFACE_LABELS: Record<string, SurfaceType> = {
   'Subtle Border': 'flat', 'Telemetry Panel': 'transparent', 'Vivid Solid': 'solid'
 };
 
-const DEPTH_LABELS: Record<string, DepthType> = {
+export const DEPTH_LABELS: Record<string, DepthType> = {
   'Border Shadow': 'flat', 'Clay Inner Shadow': 'physical', 'Deep Shadow': 'deep', 'Extreme Glow': 'glowing',
   'Flat Border': 'flat', 'Flat Sharp': 'flat', 'Flat': 'flat', 'Floating': 'floating', 'Gentle Shadow': 'soft',
   'Hard Offset Shadow': 'physical', 'Minimal Shadow': 'soft', 'Neon Glow': 'glowing', 'OLED Shadow': 'deep',
   'Paper Shadow': 'soft', 'Soft Shadow': 'soft', 'Subtle Elevation': 'soft', 'Subtle Glow': 'glowing', 'Subtle Inset': 'inset'
 };
 
-const MOTION_LABELS: Record<string, MotionType> = {
+export const MOTION_LABELS: Record<string, MotionType> = {
   Cinematic: 'expressive', Elastic: 'elastic', Expressive: 'expressive', Instant: 'static',
   Mechanical: 'mechanical', Smooth: 'smooth', Snappy: 'snappy', Subtle: 'subtle'
 };
 
-const SVG_LABELS: Record<string, Partial<GeneratedSvgLanguage>> = {
+export const SVG_LABELS: Record<string, Partial<GeneratedSvgLanguage>> = {
   'Aurora Mesh': { shapeLanguage: 'curves', gradientType: 'aurora', glowLevel: 0.6, curveStrength: 0.8, blurLevel: 0.6 },
   'Blob Curves': { shapeLanguage: 'blobs', gradientType: 'radial', curveStrength: 0.9 },
   'Bold Outline': { shapeLanguage: 'geometry', strokeLanguage: 'bold', gradientType: 'none' },
