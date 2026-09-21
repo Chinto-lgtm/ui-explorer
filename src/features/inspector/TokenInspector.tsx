@@ -67,8 +67,11 @@ export const TokenInspector: React.FC<{ active: boolean; onClose: () => void; on
     return { el: comp, rect: comp.getBoundingClientRect(), name: friendlyName(comp) };
   }, []);
 
+  // Leaving inspect mode drops any outline or open panel (cleanup runs when `active` flips).
+  useEffect(() => () => { setHover(null); setPicked(null); }, [active]);
+
   useEffect(() => {
-    if (!active) { setHover(null); setPicked(null); return; }
+    if (!active) return;
     const onMove = (e: MouseEvent) => {
       if (raf.current) cancelAnimationFrame(raf.current);
       raf.current = requestAnimationFrame(() => setHover(findTarget(e.clientX, e.clientY)));

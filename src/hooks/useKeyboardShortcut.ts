@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 type KeyCombo = {
   key: string;
@@ -11,9 +11,14 @@ type KeyCombo = {
 export function useKeyboardShortcut(
   combo: KeyCombo,
   callback: (e: KeyboardEvent) => void,
-  dependencies: any[] = []
+  // Kept for call-site compatibility; the callback is read through a ref so it is always current.
+  _dependencies: unknown[] = []
 ) {
+  const callbackRef = useRef(callback);
+  useEffect(() => { callbackRef.current = callback; });
+  const { key, ctrlKey, metaKey, altKey, shiftKey } = combo;
   useEffect(() => {
+    const combo = { key, ctrlKey, metaKey, altKey, shiftKey };
     const handleKeyDown = (event: KeyboardEvent) => {
       const matchKey = event.key.toLowerCase() === combo.key.toLowerCase();
       const matchCtrl = combo.ctrlKey ? (event.ctrlKey || event.metaKey) : true;
@@ -22,11 +27,11 @@ export function useKeyboardShortcut(
 
       if (matchKey && matchCtrl && matchAlt && matchShift) {
         event.preventDefault();
-        callback(event);
+        callbackRef.current(event);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [combo.key, combo.ctrlKey, combo.metaKey, combo.altKey, combo.shiftKey, ...dependencies]);
+  }, [key, ctrlKey, metaKey, altKey, shiftKey]);
 }

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Shapes, Sliders } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import {
+  Shapes, Sliders, Home, Search, Bell, Settings, Heart, Star, Mail, Calendar, Camera, Cloud,
+  Folder, Lock, Map, Music, Zap, User, Trash2, Download, Sparkles, Layers
+} from 'lucide-react';
 import { LabControls, useLabStatus } from '../LabsPage';
 import { WorkspaceSection, WorkspaceSegmented } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
@@ -14,7 +16,9 @@ import type { IconType } from '../../../engine/generator/vocab';
 import { ICON_TYPES } from '../../../engine/generator/vocab';
 import './IconLab.css';
 
-const SAMPLE = ['Home', 'Search', 'Bell', 'Settings', 'Heart', 'Star', 'Mail', 'Calendar', 'Camera', 'Cloud', 'Folder', 'Lock', 'Map', 'Music', 'Zap', 'User', 'Trash2', 'Download', 'Sparkles', 'Layers'] as const;
+// Named imports keep the lab to the glyphs it shows instead of bundling the whole icon set.
+const ICONS = { Home, Search, Bell, Settings, Heart, Star, Mail, Calendar, Camera, Cloud, Folder, Lock, Map, Music, Zap, User, Trash2, Download, Sparkles, Layers } as const;
+const SAMPLE = Object.keys(ICONS) as (keyof typeof ICONS)[];
 
 /** Icon style is expressed as stroke, fill, join and filters; the glyphs stay the same. */
 function iconProps(type: IconType, strokeWidth: number, corner: number, opacity: number) {
@@ -45,7 +49,7 @@ export const IconLab: React.FC = () => {
 
   const props = iconProps(type, strokeWidth * weight, corner, opacity);
   const Icon = (name: (typeof SAMPLE)[number], s = size) => {
-    const Comp = Icons[name] as React.ComponentType<Record<string, unknown>>;
+    const Comp = ICONS[name] as React.ComponentType<Record<string, unknown>>;
     return <Comp size={s} {...props} />;
   };
 

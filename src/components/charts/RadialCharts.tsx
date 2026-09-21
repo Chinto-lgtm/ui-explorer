@@ -43,7 +43,12 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data, size = 180, thickn
   const rOuter = size / 2 - 4;
   const rInner = pie ? 0 : rOuter - thickness;
   const gap = smooth ? 0.02 : 0;
-  let angle = -Math.PI / 2;
+  // Arc boundaries are computed up front so nothing is mutated while rendering the paths.
+  const sweeps = data.map((d) => (d.value / total) * Math.PI * 2);
+  const arcs = sweeps.map((sweep, i) => {
+    const from = -Math.PI / 2 + sweeps.slice(0, i).reduce((a, b) => a + b, 0);
+    return { start: from + gap / 2, end: from + sweep - gap / 2 };
+  });
 
   return (
     <div ref={ref} className={`ui-chart-container ui-chart-container--radial ${animate ? 'ui-chart--animate' : ''}`}>
@@ -57,10 +62,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data, size = 180, thickn
           )}
         </defs>
         {data.map((d, i) => {
-          const sweep = (d.value / total) * Math.PI * 2;
-          const start = angle + gap / 2;
-          const end = angle + sweep - gap / 2;
-          angle += sweep;
+          const { start, end } = arcs[i];
           const isHot = hover === i;
           const mid = (start + end) / 2;
           const push = isHot ? 4 : 0;

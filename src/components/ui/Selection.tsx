@@ -377,19 +377,20 @@ export interface ComboboxProps extends BaseSelectProps {
 export const Combobox: React.FC<ComboboxProps> = ({ options, value, onChange, label, placeholder = 'Search…', disabled, emptyText = 'No matches', className = '' }) => {
   const id = useId();
   const selected = options.find((o) => o.value === value);
-  const [query, setQuery] = useState(selected?.label ?? '');
+  const [query, setQueryState] = useState(selected?.label ?? '');
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { setQuery(selected?.label ?? ''); }, [selected]);
+  // Typing resets the highlighted row; no effect needed.
+  const setQuery = (q: string) => { setQueryState(q); setActive(0); };
+  // When the selected value changes from outside, mirror it into the input during render.
+  const [seenValue, setSeenValue] = useState(value);
+  if (seenValue !== value) { setSeenValue(value); setQueryState(selected?.label ?? ''); }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return q ? options.filter((o) => o.label.toLowerCase().includes(q)) : options;
   }, [options, query]);
-
-  useEffect(() => { setActive(0); }, [query]);
 
   useEffect(() => {
     if (!open) return;

@@ -6,7 +6,7 @@
 
 import type { StyleDefinition } from '../../engine/types';
 import { deriveRecipeFromStyle } from '../../engine/generator/generator';
-import { contrastRatio } from '../../components/ui/ColorPicker';
+import { contrastRatio } from '../../engine/color';
 
 export interface AnatomyProperty {
   label: string;

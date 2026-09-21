@@ -11,7 +11,10 @@ function useThemeHost(anchor: React.RefObject<HTMLElement | null>): HTMLElement 
   const [host, setHost] = useState<HTMLElement | null>(null);
   useLayoutEffect(() => {
     const el = anchor.current?.closest<HTMLElement>('[data-style]') ?? null;
-    setHost(el);
+    // The portal target is a DOM lookup that only exists after mount, so this is a genuine
+    // external-system sync; the functional update keeps it to a single extra render.
+    // eslint-disable-next-line react/set-state-in-effect
+    setHost((prev) => (prev === el ? prev : el));
   }, [anchor]);
   return host;
 }

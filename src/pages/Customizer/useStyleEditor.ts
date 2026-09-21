@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { StyleDefinition } from '../../engine/types';
 
 const HISTORY_LIMIT = 100;
@@ -42,9 +42,8 @@ export function useStyleEditor(base: StyleDefinition) {
   /** Re-open the editor on a different base (e.g. header switched style). */
   const reset = useCallback((next: StyleDefinition) => setState(fresh(next)), []);
 
-  useEffect(() => {
-    setState((s) => (s.base.metadata.id === base.metadata.id ? s : fresh(base)));
-  }, [base]);
+  // A different base (header switched style) re-opens the editor; resolved during render, not in an effect.
+  if (state.base.metadata.id !== base.metadata.id) setState(fresh(base));
 
   const commit = useCallback((updater: (prev: StyleDefinition) => StyleDefinition) => {
     setState((s) => ({ ...s, draft: updater(s.draft), past: [...s.past.slice(-(HISTORY_LIMIT - 1)), s.draft], future: [] }));
