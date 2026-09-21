@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: npm ci
+      - run: npm install -g npm@11 && npm ci
 
       - name: Validate every package in the registry
         run: cd tools/style-engine && python -m style_engine registry ../../styles/community/index.json
