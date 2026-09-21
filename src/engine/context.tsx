@@ -220,7 +220,11 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       id,
       name: `${source.metadata.name.replace(/ \(Copy( \d+)?\)$/, '')} (Copy${n > 1 ? ` ${n}` : ''})`,
       category: 'Custom',
-      isCustom: true
+      isCustom: true,
+      source: 'custom',
+      author: undefined,
+      license: undefined,
+      version: undefined
     };
     registry.register(copy);
     persistCustom([...customStyles, copy]);

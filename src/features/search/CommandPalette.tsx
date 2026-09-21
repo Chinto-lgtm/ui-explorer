@@ -30,6 +30,7 @@ interface PaletteItem {
 
 const PAGES = [
   { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={16} /> },
+  { name: 'Styles', path: '/styles', icon: <LayoutDashboard size={16} /> },
   { name: 'Style Generator', path: '/generator', icon: <Wand2 size={16} /> },
   { name: 'Components Lab', path: '/components', icon: <Component size={16} /> },
   { name: 'Labs', path: '/data', icon: <Database size={16} /> },
@@ -57,6 +58,7 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
       { id: 'cmd-mixer', group: 'Commands', label: 'Open Style Mixer', icon: <Shuffle size={16} />, keywords: 'mixer remix hybrid combine', run: () => { actions.openMixer(); close(); } },
       { id: 'cmd-export', group: 'Commands', label: 'Export style', hint: 'Ctrl+Shift+E', icon: <Download size={16} />, keywords: 'export json css download import', run: () => { actions.openExport(); close(); } },
       { id: 'cmd-random', group: 'Commands', label: 'Randomize style', hint: 'Surprise me', icon: <Sparkles size={16} />, keywords: 'random surprise shuffle', run: () => go(`/generator?seed=${Math.floor(Math.random() * 900000) + 100000}&surprise=1`) },
+      { id: 'cmd-gallery', group: 'Commands', label: 'Browse all styles', hint: 'Gallery', icon: <LayoutDashboard size={16} />, keywords: 'styles gallery browse community official map relationships docs', run: () => go('/styles') },
       { id: 'cmd-favorite', group: 'Commands', label: isFavorite(currentStyle.metadata.id) ? `Remove ${currentStyle.metadata.name} from favorites` : `Favorite ${currentStyle.metadata.name}`, icon: <Star size={16} />, keywords: 'favorite star bookmark', run: () => { toggleFavorite(currentStyle.metadata.id); close(); } },
       { id: 'cmd-motion', group: 'Commands', label: settings.reduceMotion ? 'Turn motion back on' : 'Reduce motion', icon: <Zap size={16} />, keywords: 'motion animation reduce accessibility', run: () => { updateSettings({ reduceMotion: !settings.reduceMotion }); close(); } },
       { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } },

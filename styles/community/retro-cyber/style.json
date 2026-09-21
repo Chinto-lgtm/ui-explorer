@@ -1,0 +1,39 @@
+{
+  "extends": "cyberpunk",
+  "metadata": {
+    "id": "community-retro-cyber",
+    "name": "Neon Arcade",
+    "category": "Expressive",
+    "description": "High-octane neon cabinet aesthetic: magenta and cyan phosphor on near-black, chunky borders and a CRT scanline sheen.",
+    "tags": ["community", "cyberpunk", "neon", "arcade", "crt"],
+    "personality": "Loud, nostalgic, electric",
+    "bestUsedFor": ["Game launchers", "Event microsites", "Music players"],
+    "avoidWhen": ["Accessibility-critical forms", "Print-adjacent content"],
+    "visualCharacter": "Phosphor glow on black, thick borders, scanlines",
+    "history": "Extends the built-in Cyberpunk style with an 80s arcade cabinet palette and heavier borders.",
+    "author": "hacker_dev",
+    "version": "1.0.0",
+    "license": "MIT",
+    "source": "community"
+  },
+  "tokens": {
+    "colors": {
+      "bg": "#050010",
+      "surface": "#0f0520",
+      "surfaceHover": "#1a0a33",
+      "accent": "#ff2bd6",
+      "accentHover": "#ff6be6",
+      "textPrimary": "#f8f0ff",
+      "textSecondary": "#c084fc",
+      "border": "#ff2bd6",
+      "glowColor": "#22d3ee"
+    },
+    "shadows": {
+      "sm": "0 0 8px rgba(255, 43, 214, 0.5)",
+      "md": "0 0 20px rgba(255, 43, 214, 0.6)",
+      "lg": "0 0 40px rgba(34, 211, 238, 0.6)",
+      "glow": "0 0 18px rgba(34, 211, 238, 0.9)"
+    },
+    "borders": { "width": "3px", "style": "solid", "color": "#ff2bd6" }
+  }
+}

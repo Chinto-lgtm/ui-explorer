@@ -39,6 +39,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDiffOpen, setIsDiffOpen] = useState(false);
+  const [diffPair, setDiffPair] = useState<{ a?: string; b?: string }>({});
   const [isInspecting, setIsInspecting] = useState(false);
 
   // Shared style links: ?style=<id> or ?style=j.<encoded definition>.
@@ -53,6 +54,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  // Other surfaces (the styles gallery) ask for a diff of a specific pair.
+  useEffect(() => {
+    const onOpenDiff = (e: Event) => { setDiffPair((e as CustomEvent<{ a?: string; b?: string }>).detail ?? {}); setIsDiffOpen(true); };
+    window.addEventListener('ui-explorer:open-diff', onOpenDiff);
+    return () => window.removeEventListener('ui-explorer:open-diff', onOpenDiff);
+  }, []);
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => { setIsSidebarOpen(false); }, [location.pathname]);
@@ -139,7 +147,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       {isExportOpen && <ExportModal onClose={() => setIsExportOpen(false)} />}
       {isContribOpen && <ContributionPackageModal onClose={() => setIsContribOpen(false)} />}
       {isShortcutsOpen && <ShortcutsPanel onClose={() => setIsShortcutsOpen(false)} />}
-      {isDiffOpen && <StyleDiffModal onClose={() => setIsDiffOpen(false)} />}
+      {isDiffOpen && <StyleDiffModal onClose={() => { setIsDiffOpen(false); setDiffPair({}); }} initialA={diffPair.a} initialB={diffPair.b} />}
       <TokenInspector active={isInspecting} onClose={() => setIsInspecting(false)} onOpenAnatomy={() => setIsAnatomyOpen(true)} />
       {isCmdPaletteOpen && (
         <CommandPalette

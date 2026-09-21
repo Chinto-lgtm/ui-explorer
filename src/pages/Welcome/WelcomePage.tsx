@@ -21,13 +21,14 @@ const WALL_STYLE_IDS = [
 const HERO_INTERVAL_MS = 3200;
 
 const FEATURES: { name: string; text: string; to: string }[] = [
-  { name: '30 design styles', text: 'From Neumorphism to Neo Brutalism, each defined as its own token system, not a palette swap.', to: '/' },
+  { name: '30 design styles', text: 'From Neumorphism to Neo Brutalism, each defined as its own token system, not a palette swap.', to: '/styles' },
   { name: 'Interactive components', text: 'Real buttons, inputs, cards, tables and charts that change with the active style.', to: '/components' },
   { name: 'SVG experiments', text: 'Charts and decorative graphics generated live from the style engine.', to: '/data' },
   { name: 'Style Anatomy', text: 'Open any style and read the exact values that make it look the way it does.', to: '/' },
   { name: 'Style Mixer', text: 'Combine the typography of one style with the surfaces and depth of another.', to: '/' },
   { name: 'Custom themes', text: 'Generate a coherent system from a seed, then tune every token by hand.', to: '/generator' },
-  { name: 'Export tools', text: 'Take the result out as JSON tokens or CSS variables, ready for your own project.', to: '/customizer' }
+  { name: 'Export tools', text: 'Take the result out as JSON tokens or CSS variables, ready for your own project.', to: '/customizer' },
+  { name: 'Community registry', text: 'Styles contributed as plain JSON packages on GitHub, validated and loaded at build time.', to: '/styles' }
 ];
 
 const prefersReducedMotion = () =>

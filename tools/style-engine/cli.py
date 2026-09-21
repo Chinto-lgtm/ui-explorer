@@ -6,7 +6,7 @@ import sys
 import argparse
 import json
 from generator import generate_style
-from validator import validate_style_file
+from validator import validate_style_file, validate_registry
 
 def main():
     parser = argparse.ArgumentParser(description="UI Explorer Style Engine Developer Tool")
@@ -18,6 +18,9 @@ def main():
 
     val_parser = subparsers.add_parser("validate", help="Validate style file")
     val_parser.add_argument("file", help="Path to JSON file")
+
+    reg_parser = subparsers.add_parser("registry", help="Validate every package in a community index.json")
+    reg_parser.add_argument("index", nargs="?", default="styles/community/index.json", help="Path to index.json")
 
     args = parser.parse_args()
 
@@ -36,6 +39,15 @@ def main():
             sys.exit(1)
         else:
             print(f"Success: '{args.file}' is valid.")
+
+    elif args.command == "registry":
+        report = validate_registry(args.index)
+        for path, errors in report.items():
+            print(f"{'FAIL' if errors else 'ok  '} {path}")
+            for err in errors:
+                print(f"       - {err}")
+        if any(report.values()):
+            sys.exit(1)
     else:
         parser.print_help()
 

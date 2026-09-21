@@ -1,48 +1,93 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "UI Explorer Style Definition Schema",
+  "$id": "https://github.com/Chinto-lgtm/ui-explorer/schemas/style.schema.json",
+  "title": "UI Explorer Style Definition",
+  "description": "A design-style package as consumed by the UI Explorer engine. Matches the TypeScript StyleDefinition type in src/engine/types.ts. A file may declare `extends` and only override the fields that differ from the parent.",
   "type": "object",
-  "required": ["id", "name", "tokens"],
+  "required": ["metadata", "tokens"],
   "properties": {
-    "id": {
+    "extends": {
       "type": "string",
+      "description": "Id of a built-in style to inherit from; tokens are deep-merged underneath this file.",
       "pattern": "^[a-z0-9-]+$"
-    },
-    "name": {
-      "type": "string"
-    },
-    "version": {
-      "type": "string"
-    },
-    "author": {
-      "type": "string"
-    },
-    "category": {
-      "type": "string",
-      "enum": ["Morphism", "Modern", "Expressive", "Futuristic", "Retro", "Minimalist", "Custom", "Community"]
     },
     "metadata": {
       "type": "object",
-      "required": ["description"],
+      "required": ["id", "name", "category", "description"],
       "properties": {
-        "description": { "type": "string" },
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "category": { "type": "string", "enum": ["Morphism", "Modern", "Expressive", "Futuristic", "Retro", "Minimalist", "Custom"] },
+        "description": { "type": "string", "minLength": 1 },
         "tags": { "type": "array", "items": { "type": "string" } },
         "personality": { "type": "string" },
+        "history": { "type": "string" },
+        "bestUsedFor": { "type": "array", "items": { "type": "string" } },
+        "avoidWhen": { "type": "array", "items": { "type": "string" } },
+        "visualCharacter": { "type": "string" },
+        "principles": { "type": "array", "items": { "type": "string" } },
+        "relatedStyles": { "type": "array", "items": { "type": "string" } },
+        "author": { "type": "string" },
+        "version": { "type": "string", "pattern": "^\d+\.\d+\.\d+$" },
         "license": { "type": "string" },
-        "repository": { "type": "string" }
+        "source": { "type": "string", "enum": ["official", "community", "generated", "custom"] },
+        "isCustom": { "type": "boolean" }
       }
     },
     "tokens": {
       "type": "object",
       "required": ["colors", "typography", "radii", "shadows", "borders", "motion"],
       "properties": {
-        "colors": { "type": "object" },
-        "typography": { "type": "object" },
-        "radii": { "type": "object" },
-        "shadows": { "type": "object" },
-        "borders": { "type": "object" },
-        "motion": { "type": "object" }
+        "colors": {
+          "type": "object",
+          "required": ["bg", "surface", "textPrimary", "textSecondary", "textTertiary", "border", "accent", "accentHover"],
+          "additionalProperties": { "type": "string" }
+        },
+        "typography": {
+          "type": "object",
+          "required": ["fontFamilySans", "fontSizeXs", "fontSizeSm", "fontSizeBase", "fontSizeLg", "fontSizeXl", "fontSize2xl", "fontSize3xl", "fontWeightNormal", "fontWeightMedium", "fontWeightBold", "letterSpacing", "lineHeight"],
+          "properties": {
+            "fontFamilySans": { "type": "string" },
+            "fontFamilyHeading": { "type": "string" },
+            "fontFamilyMono": { "type": "string" },
+            "fontWeightNormal": { "type": ["number", "string"] },
+            "fontWeightMedium": { "type": ["number", "string"] },
+            "fontWeightBold": { "type": ["number", "string"] }
+          }
+        },
+        "radii": { "type": "object", "required": ["sm", "md", "lg", "full"], "additionalProperties": { "type": "string" } },
+        "shadows": { "type": "object", "required": ["sm", "md", "lg"], "additionalProperties": { "type": "string" } },
+        "borders": { "type": "object", "required": ["width", "style", "color"] },
+        "motion": { "type": "object", "required": ["durationFast", "durationNormal", "durationSlow", "easing"] },
+        "materials": { "type": "object" },
+        "icons": { "type": "object" }
       }
+    },
+    "svgLanguage": {
+      "type": "object",
+      "required": ["cornerStyle", "decorativeShapes"],
+      "properties": {
+        "cornerStyle": { "type": "string", "enum": ["sharp", "rounded", "bevel", "brutalist"] },
+        "decorativeShapes": { "type": "boolean" },
+        "patternOverlay": { "type": "string" },
+        "borderDecoration": { "type": "boolean" }
+      }
+    },
+    "behavior": {
+      "type": "object",
+      "required": ["buttonHoverAction", "cardElevationType", "focusRingStyle"],
+      "properties": {
+        "buttonHoverAction": { "type": "string", "enum": ["lift", "press", "glow", "shift", "invert", "none"] },
+        "cardElevationType": { "type": "string", "enum": ["shadow", "border", "gradient-border", "inset", "flat"] },
+        "focusRingStyle": { "type": "string", "enum": ["outline", "glow", "solid-border", "double-ring"] }
+      }
+    },
+    "customCssVars": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "if": { "required": ["extends"] },
+  "then": {
+    "properties": {
+      "tokens": { "required": [] }
     }
   }
 }

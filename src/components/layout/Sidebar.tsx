@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
-  GitPullRequest, Info, Keyboard, Star, GitCompareArrows
+  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import './AppShell.css';
@@ -18,6 +18,7 @@ export interface SidebarProps {
 
 const PAGES = [
   { to: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+  { to: '/styles', label: 'Styles', icon: <Palette size={18} /> },
   { to: '/generator', label: 'Style Generator', icon: <Wand2 size={18} /> },
   { to: '/components', label: 'Components Lab', icon: <Component size={18} /> },
   { to: '/data', label: 'Labs', icon: <Database size={18} /> },

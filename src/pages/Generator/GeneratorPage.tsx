@@ -91,6 +91,8 @@ export const GeneratorPage: React.FC = () => {
   const urlFamily = searchParams.get('family') ?? undefined;
   // A remixed style is reproduced from its full lineage (root to current), encoded in `chain`.
   const urlChain = searchParams.get('chain');
+  // `remix=<style id>` starts a remix of an existing registered style.
+  const urlRemix = searchParams.get('remix');
 
   const [seedInput, setSeedInput] = useState<string>(String(urlSeed));
   const [mode, setMode] = useState<GenerationMode>(urlMode ?? (startInSurpriseMode ? 'Experimental' : 'Coherent'));
@@ -213,6 +215,9 @@ export const GeneratorPage: React.FC = () => {
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Could not reproduce the shared style.');
       }
+    } else if (urlRemix && availableStyles.some((s) => s.metadata.id === urlRemix)) {
+      const base = availableStyles.find((s) => s.metadata.id === urlRemix)!;
+      showResult(remixStyle({ base, seed: randomSeed(), strength: remixStrength, mode: initialMode }));
     } else {
       if (urlFamily) setFamily(urlFamily);
       run(urlSeed, { mode: initialMode, personality: urlPersonality ?? 'Random', useLocks: false, family: urlFamily });

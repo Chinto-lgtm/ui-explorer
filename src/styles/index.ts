@@ -7,11 +7,11 @@ import { neoBrutalism, cyberpunk, vaporwave, memphis, y2kAesthetic, acidGraphics
 import { sciFiHud, darkOled, chromeMetallic } from './futuristic';
 import { pixelArt, skeuomorphism, skeuomorphicAnalog } from './retro';
 import { bauhaus, organicBiophilic, industrial, paperSkeuomorphic, highContrast, monochrome } from './artistic';
-import { communityStyles } from './community/loader';
+import { loadCommunityPackages, type CommunityPackage } from './community/loader';
 import { withTreatmentDefaults } from './treatmentDefaults';
+import { withDocs } from './docs';
 
 const definitions: StyleDefinition[] = [
-  ...communityStyles,
   // Morphism
   neumorphism,
   glassmorphism,
@@ -56,9 +56,15 @@ const definitions: StyleDefinition[] = [
 ];
 
 /** Built-in styles with construction defaults (behaviour, texture, SVG language) applied. */
-export const allStyles: StyleDefinition[] = definitions.map(withTreatmentDefaults);
+export const officialStyles: StyleDefinition[] = definitions.map(withTreatmentDefaults).map(withDocs).map((s) => ({ ...s, metadata: { source: 'official', ...s.metadata } }));
 
-// Automatically register all built-in styles upon import
+/** Community packages from styles/community, resolved against the built-ins so `extends` works. */
+export const communityPackages: CommunityPackage[] = loadCommunityPackages((id) => officialStyles.find((s) => s.metadata.id === id));
+export const communityStyles: StyleDefinition[] = communityPackages.map((p) => withTreatmentDefaults(p.style));
+
+export const allStyles: StyleDefinition[] = [...officialStyles, ...communityStyles];
+
+// Automatically register every built-in and community style upon import
 registry.registerMany(allStyles);
 
 export {

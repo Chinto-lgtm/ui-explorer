@@ -1,22 +1,26 @@
 [
   {
     "id": "community-aurora-glass",
-    "name": "Aurora Glass Community Edition",
+    "name": "Aurora Glass",
     "author": "alex_designer",
     "version": "1.0.0",
+    "license": "MIT",
     "category": "Morphism",
-    "description": "Vibrant translucent glass style with holographic aurora gradients.",
+    "description": "Vibrant translucent glass with holographic aurora gradients.",
     "tags": ["community", "aurora", "glass"],
-    "path": "styles/community/aurora-glass/style.json"
+    "path": "styles/community/aurora-glass/style.json",
+    "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/aurora-glass"
   },
   {
     "id": "community-retro-cyber",
-    "name": "Neon Arcade Cyberpunk",
+    "name": "Neon Arcade",
     "author": "hacker_dev",
     "version": "1.0.0",
+    "license": "MIT",
     "category": "Expressive",
-    "description": "High-octane neon cyber aesthetic inspired by 80s arcade cabinets.",
+    "description": "80s arcade cabinet neon, extending the built-in Cyberpunk style.",
     "tags": ["community", "cyberpunk", "neon"],
-    "path": "styles/community/retro-cyber/style.json"
+    "path": "styles/community/retro-cyber/style.json",
+    "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/retro-cyber"
   }
 ]

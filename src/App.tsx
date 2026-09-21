@@ -8,6 +8,7 @@ import { GeneratorPage } from './pages/Generator/GeneratorPage';
 import { ComponentsLabPage } from './pages/ComponentsLab/ComponentsLabPage';
 import { LabsPage } from './pages/Labs/LabsPage';
 import { CustomizerPage } from './pages/Customizer/CustomizerPage';
+import { StylesPage } from './pages/Styles/StylesPage';
 import { WelcomePage } from './pages/Welcome/WelcomePage';
 import { hasCompletedOnboarding } from './config/app';
 
@@ -16,6 +17,7 @@ const ShellRoutes: React.FC = () => (
   <AppShell>
     <Routes>
       <Route path="/" element={hasCompletedOnboarding() ? <DashboardPage /> : <Navigate to="/welcome" replace />} />
+      <Route path="/styles" element={<StylesPage />} />
       <Route path="/generator" element={<GeneratorPage />} />
       <Route path="/components" element={<ComponentsLabPage />} />
       <Route path="/data" element={<LabsPage />} />

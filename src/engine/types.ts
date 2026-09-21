@@ -141,6 +141,8 @@ export interface StyleMetadata {
   avoidWhen?: string[];
   /** Short visual-character summary for documentation. */
   visualCharacter?: string;
+  /** Design principles the style follows; part of the style documentation. */
+  principles?: string[];
 }
 
 /** Provenance of a procedurally generated style (see engine/generator). */
