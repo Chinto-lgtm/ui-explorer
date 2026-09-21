@@ -7,7 +7,11 @@
     "license": "MIT",
     "category": "Morphism",
     "description": "Vibrant translucent glass with holographic aurora gradients.",
-    "tags": ["community", "aurora", "glass"],
+    "tags": [
+      "community",
+      "aurora",
+      "glass"
+    ],
     "path": "styles/community/aurora-glass/style.json",
     "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/aurora-glass"
   },
@@ -19,8 +23,30 @@
     "license": "MIT",
     "category": "Expressive",
     "description": "80s arcade cabinet neon, extending the built-in Cyberpunk style.",
-    "tags": ["community", "cyberpunk", "neon"],
+    "tags": [
+      "community",
+      "cyberpunk",
+      "neon"
+    ],
     "path": "styles/community/retro-cyber/style.json",
     "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/retro-cyber"
+  },
+  {
+    "id": "community-deep-bloom",
+    "name": "Deep Bloom",
+    "author": "Chinto-lgtm",
+    "version": "1.0.0",
+    "license": "MIT",
+    "category": "Futuristic",
+    "description": "Dark liquid surfaces with a slow accent gradient, glowing depth and a warm bloom-red accent.",
+    "tags": [
+      "community",
+      "dark",
+      "liquid",
+      "glow",
+      "warm"
+    ],
+    "path": "styles/community/deep-bloom/style.json",
+    "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/deep-bloom"
   }
 ]

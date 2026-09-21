@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Deep Bloom preview">
+<title>Deep Bloom</title>
+<defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="20" dy="0" stdDeviation="0" flood-color="rgba(214, 92, 92, 0.45)"/></filter><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="rgba(214, 92, 92, 0.8)"/></filter><linearGradient id="surface-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d65c5c" stop-opacity="0.18"/><stop offset="1" stop-color="#d65c5c" stop-opacity="0"/></linearGradient></defs>
+<rect width="480" height="320" fill="#1c1717"/>
+<circle cx="96" cy="80" r="144" fill="#d65c5c" opacity="0.35"/><circle cx="408" cy="256" r="128" fill="#e08585" opacity="0.3"/>
+<g filter="url(#shadow)">
+<rect x="40" y="48" width="400" height="224" rx="16" fill="#2c2626" fill-opacity="0.95" stroke="#463e3e" stroke-width="1" />
+<rect x="40" y="48" width="400" height="224" rx="16" fill="url(#surface-gradient)"/>
+</g>
+<text x="68" y="92" font-family="Inter, sans-serif" font-size="18" font-weight="700" fill="#f8fafc">Deep Bloom</text>
+<rect x="332" y="74" width="80" height="24" rx="10" fill="#d65c5c"/>
+<text x="372" y="90" font-family="Inter, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#ffffff">Futuristic</text>
+<text x="68" y="132" font-family="Inter, sans-serif" font-size="30" font-weight="700" fill="#f8fafc">$128,450</text>
+<text x="68" y="152" font-family="Inter, sans-serif" font-size="12" fill="#94a3b8">Revenue overview · last 7 days</text>
+<rect x="68" y="183.28" width="41.142857142857146" height="16.72" rx="5" fill="#d65c5c" opacity="0.7210000000000001"/>
+<rect x="117.14285714285714" y="172.72" width="41.142857142857146" height="27.28" rx="5" fill="#d65c5c" opacity="0.8290000000000001"/>
+<rect x="166.28571428571428" y="179.76" width="41.142857142857146" height="20.240000000000002" rx="5" fill="#d65c5c" opacity="0.7570000000000001"/>
+<rect x="215.42857142857144" y="163.04" width="41.142857142857146" height="36.96" rx="5" fill="#d65c5c" opacity="0.928"/>
+<rect x="264.57142857142856" y="169.2" width="41.142857142857146" height="30.799999999999997" rx="5" fill="#d65c5c" opacity="0.865"/>
+<rect x="313.7142857142857" y="157.76" width="41.142857142857146" height="42.239999999999995" rx="5" fill="#d65c5c" opacity="0.982"/>
+<rect x="362.8571428571429" y="174.48" width="41.142857142857146" height="25.52" rx="5" fill="#d65c5c" opacity="0.811"/>
+<rect x="68" y="216" width="104" height="32" rx="10" fill="#d65c5c" filter="url(#glow)"/>
+<text x="120" y="237" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#ffffff">Primary</text>
+<rect x="184" y="216" width="104" height="32" rx="10" fill="none" stroke="#d65c5c" stroke-width="1"/>
+<text x="236" y="237" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#d65c5c">Outline</text>
+</svg>

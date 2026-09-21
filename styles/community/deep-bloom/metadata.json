@@ -1,0 +1,18 @@
+{
+  "id": "community-deep-bloom",
+  "name": "Deep Bloom",
+  "author": "Chinto-lgtm",
+  "version": "1.0.0",
+  "license": "MIT",
+  "category": "Futuristic",
+  "description": "Dark liquid surfaces with a slow accent gradient, glowing depth and a warm bloom-red accent.",
+  "tags": [
+    "community",
+    "dark",
+    "liquid",
+    "glow",
+    "warm"
+  ],
+  "path": "styles/community/deep-bloom/style.json",
+  "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/deep-bloom"
+}
