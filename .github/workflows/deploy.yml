@@ -17,6 +17,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Set the repository variable PAGES_CUSTOM_DOMAIN (Settings → Secrets and variables →
+    # Actions → Variables) to e.g. uiexplorer.dev once DNS points at GitHub Pages; the
+    # site is then built for "/" and a CNAME file is published. Leave it unset for
+    # https://<owner>.github.io/<repo>/.
+    env:
+      CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,12 +31,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - name: Build for the project-site base path
+      - name: Build the app
         run: npm run build
         env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: ${{ vars.PAGES_CUSTOM_DOMAIN != '' && '/' || format('/{0}/', github.event.repository.name) }}
+      - name: Build the docs site into dist/docs
+        run: npm run docs:build
+        env:
+          DOCS_BASE_PATH: ${{ vars.PAGES_CUSTOM_DOMAIN != '' && '/docs/' || format('/{0}/docs/', github.event.repository.name) }}
       - name: SPA fallback for deep links
         run: cp dist/index.html dist/404.html
+      - name: Custom domain
+        if: env.CUSTOM_DOMAIN != ''
+        run: echo "$CUSTOM_DOMAIN" > dist/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

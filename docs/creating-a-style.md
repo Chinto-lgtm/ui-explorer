@@ -122,7 +122,7 @@ npm test
 ```
 
 Then add the `metadata.json` entry to `styles/community/index.json` and open
-a pull request — see [CONTRIBUTING.md](../CONTRIBUTING.md).
+a pull request — see [Contributing](contributing).
 
 ## Sharing without a pull request
 

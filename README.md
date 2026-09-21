@@ -9,7 +9,7 @@ overlay and icon changes construction. Generate new systems from a seed,
 remix them, mix axes from different styles, tune every token by hand, inspect
 why anything looks the way it does, and export the result.
 
-![Styles gallery](docs/screenshots/styles-gallery.png)
+![Styles gallery](docs/public/screenshots/styles-gallery.png)
 
 ## Features
 
@@ -68,12 +68,12 @@ why anything looks the way it does, and export the result.
 
 | | |
 | --- | --- |
-| ![Welcome](docs/screenshots/welcome.png) | ![Dashboard](docs/screenshots/dashboard.png) |
-| ![Style detail](docs/screenshots/styles-detail.png) | ![Relationship map](docs/screenshots/styles-map.png) |
-| ![Generator](docs/screenshots/generator.png) | ![Components Lab](docs/screenshots/components-lab.png) |
-| ![Customizer](docs/screenshots/customizer.png) | ![Labs](docs/screenshots/labs.png) |
+| ![Welcome](docs/public/screenshots/welcome.png) | ![Dashboard](docs/public/screenshots/dashboard.png) |
+| ![Style detail](docs/public/screenshots/styles-detail.png) | ![Relationship map](docs/public/screenshots/styles-map.png) |
+| ![Generator](docs/public/screenshots/generator.png) | ![Components Lab](docs/public/screenshots/components-lab.png) |
+| ![Customizer](docs/public/screenshots/customizer.png) | ![Labs](docs/public/screenshots/labs.png) |
 
-**Live:** <https://chinto-lgtm.github.io/ui-explorer/> — a static build deployed from `main` by GitHub Actions.
+**Live:** <https://chinto-lgtm.github.io/ui-explorer/> · **Docs:** <https://chinto-lgtm.github.io/ui-explorer/docs/> — both built from `main` by GitHub Actions.
 
 ## Getting started
 
@@ -126,7 +126,9 @@ docs/             guides and screenshots
 - [styles/community/README.md](styles/community/README.md) — the registry
   format.
 
-Developer documentation: [architecture](docs/architecture.md) ·
+The same pages are published as a documentation site (`npm run docs:dev`
+locally; built by VitePress into `dist/docs`). Developer documentation:
+[architecture](docs/architecture.md) ·
 [style engine](docs/style-engine.md) · [style schema](docs/style-schema.md) ·
 [procedural generation](docs/procedural-generation.md) ·
 [community styles](docs/community-styles.md).

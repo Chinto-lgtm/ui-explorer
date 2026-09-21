@@ -1,3 +1,5 @@
+<!-- This page mirrors CONTRIBUTING.md at the repository root. -->
+
 # Contributing to UI Explorer
 
 UI Explorer is an open-source laboratory for interface design systems. The
@@ -42,7 +44,7 @@ Guidelines:
   in the gallery and stored in the package.
 - A package may `extends` a built-in style and only override what differs —
   see `styles/community/retro-cyber/style.json` and
-  [docs/creating-a-style.md](docs/creating-a-style.md).
+  [Creating a style](creating-a-style).
 
 ## Contributing code
 

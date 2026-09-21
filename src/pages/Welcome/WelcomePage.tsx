@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Code2, ArrowRight, X } from 'lucide-react';
+import { Sparkles, Code2, ArrowRight, X, BookOpen } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
-import { ONBOARDING_STORAGE_KEY, GITHUB_REPO_URL } from '../../config/app';
+import { ONBOARDING_STORAGE_KEY, GITHUB_REPO_URL, DOCS_URL } from '../../config/app';
 import './WelcomePage.css';
 
 /** Styles that read as clearly different universes when cycled in the hero. */
@@ -76,6 +76,9 @@ export const WelcomePage: React.FC = () => {
           <span>UI Explorer</span>
         </div>
         <div className="welcome__top-actions">
+          <a className="welcome__link" href={DOCS_URL} target="_blank" rel="noreferrer">
+            <BookOpen size={16} /> Docs
+          </a>
           <a className="welcome__link" href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
             <Code2 size={16} /> GitHub
           </a>

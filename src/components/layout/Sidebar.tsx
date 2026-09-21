@@ -2,9 +2,10 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
-  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette
+  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette, BookOpen
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
+import { DOCS_URL } from '../../config/app';
 import './AppShell.css';
 
 export interface SidebarProps {
@@ -88,6 +89,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExp
             <Keyboard size={18} />
             <span>Keyboard Shortcuts</span>
           </button>
+          <a className="shell-nav__link" href={DOCS_URL} target="_blank" rel="noreferrer">
+            <BookOpen size={18} />
+            <span>Documentation</span>
+          </a>
           <NavLink
             to="/welcome"
             className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}

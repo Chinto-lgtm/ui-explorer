@@ -56,7 +56,7 @@ npm test                  # src/styles/community/registry.test.ts
 
 ## Contribution flow
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) and
+See [Contributing](contributing) and
 [creating-a-style.md](creating-a-style.md). In short: design in the app →
 *Contribute Package* → add the folder → append to `index.json` → validate →
 pull request.

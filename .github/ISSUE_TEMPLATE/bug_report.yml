@@ -1,0 +1,31 @@
+name: Bug report
+description: Something renders or behaves wrong
+labels: [bug]
+body:
+  - type: input
+    id: style
+    attributes:
+      label: Active style
+      description: The style selected in the header (and the seed + mode if it was generated)
+      placeholder: Glassmorphism · or · seed 847291, Coherent
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      placeholder: /components, /generator, /styles?style=…
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you saw. A screenshot helps.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 131 on Windows 11

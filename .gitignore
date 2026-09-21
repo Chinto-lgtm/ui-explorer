@@ -40,3 +40,7 @@ __pycache__/
 # Local planning notes
 .agents/
 phase *.md
+
+# VitePress
+docs/.vitepress/cache/
+docs/.vitepress/dist/

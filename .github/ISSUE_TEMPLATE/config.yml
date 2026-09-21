@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How to create a style
+    url: https://github.com/Chinto-lgtm/ui-explorer/blob/main/docs/creating-a-style.md
+    about: Generate, customise or hand-write a style, then submit it as a package.
+  - name: Live app
+    url: https://chinto-lgtm.github.io/ui-explorer/
+    about: Try UI Explorer in the browser.
