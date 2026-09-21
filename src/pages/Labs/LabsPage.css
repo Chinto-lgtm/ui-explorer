@@ -24,7 +24,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-family-sans);
   border: 1px solid var(--chrome-border);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--chrome-overlay) 40%, transparent);
 }
 
 .labs-slider {

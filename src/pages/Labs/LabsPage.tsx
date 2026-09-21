@@ -76,7 +76,7 @@ export const LabsPage: React.FC = () => {
             <p className="ws-subtitle">Data, motion, material, icons and SVG under the active style.</p>
           </div>
           <div className="ws-settings__scroll">
-            <div className="ws-section" style={{ borderBottom: '1px solid #1e293b' }}>
+            <div className="ws-section" style={{ borderBottom: '1px solid var(--chrome-border)' }}>
               <div className="ws-section__body" style={{ paddingTop: '0.5rem' }}>
                 <div className="ws-category-list" role="group" aria-label="Lab">
                   {LABS.map((l) => (

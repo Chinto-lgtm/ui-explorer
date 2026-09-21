@@ -115,12 +115,12 @@
 }
 
 .kpi-card__change--positive {
-  background-color: rgba(16, 185, 129, 0.15);
+  background-color: color-mix(in srgb, var(--chrome-success) 15%, transparent);
   color: var(--color-success, var(--chrome-success));
 }
 
 .kpi-card__change--negative {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: color-mix(in srgb, var(--chrome-error) 15%, transparent);
   color: var(--color-error, var(--chrome-error));
 }
 

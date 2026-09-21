@@ -10,7 +10,7 @@
   background-image: radial-gradient(var(--chrome-surface-2) 1px, transparent 1px);
   background-size: 22px 22px;
   color: var(--chrome-text);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--chrome-font);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -29,7 +29,7 @@
   gap: 1rem;
   height: 56px;
   padding: 0 clamp(1rem, 4vw, 3rem);
-  background-color: rgba(9, 9, 11, 0.85);
+  background-color: color-mix(in srgb, var(--chrome-bg) 85%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--chrome-border);
 }
@@ -40,7 +40,7 @@
   gap: 0.5rem;
   font-weight: 700;
   font-size: 1.0625rem;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   letter-spacing: -0.01em;
 }
 
@@ -106,7 +106,7 @@
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   max-width: 14ch;
 }
 
@@ -172,7 +172,7 @@
   border-radius: 20px;
   background-color: var(--chrome-surface);
   border: 1px solid var(--chrome-border);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 30px 80px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
 }
 
 .welcome__hero-card {
@@ -234,7 +234,7 @@
   font-size: clamp(1.375rem, 2.4vw, 1.75rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .welcome__section-head p {

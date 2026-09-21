@@ -97,13 +97,14 @@ export const RelationshipMap: React.FC<{
     return set;
   }, [focus, relations]);
 
-  const stroke: Record<RelationKind, string> = { related: '#3a3e44', extends: '#a78bfa', remix: '#22d3ee', duplicate: '#f59e0b' };
+  // Edge colours come from the chrome theme; SVG presentation attributes cannot read var(), so they go through `style`.
+  const stroke: Record<RelationKind, string> = { related: 'var(--chrome-border-strong)', extends: 'var(--chrome-tag-custom)', remix: 'var(--chrome-primary-hover)', duplicate: 'var(--chrome-warning)' };
 
   return (
     <div className="relmap" role="figure" aria-label="Style relationship map">
       <svg viewBox={`0 0 ${W} ${H}`} className="relmap__svg" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <radialGradient id="relmap-glow"><stop offset="0" stopColor="#06b6d4" stopOpacity="0.25" /><stop offset="1" stopColor="#06b6d4" stopOpacity="0" /></radialGradient>
+          <radialGradient id="relmap-glow"><stop offset="0" style={{ stopColor: 'var(--chrome-primary)' }} stopOpacity="0.25" /><stop offset="1" style={{ stopColor: 'var(--chrome-primary)' }} stopOpacity="0" /></radialGradient>
         </defs>
         <circle cx={cx} cy={cy} r={290} fill="url(#relmap-glow)" />
         <g className="relmap__edges">
@@ -117,7 +118,7 @@ export const RelationshipMap: React.FC<{
                 key={`${r.from}-${r.to}-${r.kind}`}
                 d={`M${a.x},${a.y} Q${mx},${my} ${b.x},${b.y}`}
                 fill="none"
-                stroke={stroke[r.kind]}
+                style={{ stroke: stroke[r.kind] }}
                 strokeWidth={active ? (r.kind === 'related' ? 1.5 : 2.2) : 1}
                 strokeDasharray={r.kind === 'extends' ? '6 4' : r.kind === 'remix' ? '2 4' : undefined}
                 opacity={active ? 0.95 : connected ? 0.08 : 0.45}
@@ -151,10 +152,10 @@ export const RelationshipMap: React.FC<{
         </g>
       </svg>
       <div className="relmap__legend" aria-hidden="true">
-        <span><i style={{ background: '#3a3e44' }} /> related</span>
-        <span><i style={{ background: '#a78bfa' }} /> extends</span>
-        <span><i style={{ background: '#22d3ee' }} /> remixed from</span>
-        <span><i style={{ background: '#f59e0b' }} /> duplicated from</span>
+        <span><i style={{ background: stroke.related }} /> related</span>
+        <span><i style={{ background: stroke.extends }} /> extends</span>
+        <span><i style={{ background: stroke.remix }} /> remixed from</span>
+        <span><i style={{ background: stroke.duplicate }} /> duplicated from</span>
       </div>
     </div>
   );

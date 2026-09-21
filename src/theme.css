@@ -1,0 +1,67 @@
+/* ============================================================
+   UI Explorer — application chrome theme (single source of truth)
+
+   Everything that is *the tool* — header, sidebar, workspaces, gallery,
+   modals, panels, the docs site — reads only these tokens. Change a value
+   here and the whole chrome follows; no other file carries a colour.
+
+   The 30 design styles and community packages are NOT themed here: they are
+   data (StyleDefinition JSON / TS) resolved onto the preview canvas by the
+   engine, and every component reads their tokens instead of these.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --chrome-bg: #09090b;
+  --chrome-surface: #111214;
+  --chrome-surface-2: #181a1d;
+  --chrome-surface-3: #1f2226;          /* hover on surface-2 */
+  --chrome-border: #2a2d31;
+  --chrome-border-strong: #3a3e44;      /* hovered / focused borders */
+  --chrome-overlay: #000000;            /* modal backdrops (mixed with alpha) */
+
+  /* Primary */
+  --chrome-primary: #06b6d4;
+  --chrome-primary-hover: #22d3ee;
+  --chrome-primary-soft: #083344;
+  --chrome-on-primary: #09090b;         /* text on the primary colour */
+
+  /* Text */
+  --chrome-text: #f5f5f5;
+  --chrome-text-strong: #ffffff;        /* headings, hovered nav */
+  --chrome-text-secondary: #a1a1aa;
+  --chrome-text-muted: #71717a;
+
+  /* Status */
+  --chrome-success: #22c55e;
+  --chrome-success-text: #86efac;
+  --chrome-warning: #f59e0b;
+  --chrome-warning-text: #fde68a;
+  --chrome-warning-soft: #451a03;
+  --chrome-warning-border: #b45309;
+  --chrome-error: #ef4444;
+  --chrome-error-text: #fecaca;
+  --chrome-error-soft: #450a0a;
+  --chrome-error-border: #7f1d1d;
+  --chrome-error-strong: #b91c1c;       /* destructive button */
+
+  /* Provenance tags (Official uses the primary soft tones) */
+  --chrome-tag-community: #0f766e;
+  --chrome-tag-community-soft: #134e4a;
+  --chrome-tag-community-text: #99f6e4;
+  --chrome-tag-custom: #7c3aed;
+  --chrome-tag-custom-soft: #4c1d95;
+  --chrome-tag-custom-text: #ddd6fe;
+  --chrome-tag-generated: #b45309;
+  --chrome-tag-generated-soft: #78350f;
+  --chrome-tag-generated-text: #fde68a;
+  --chrome-tag-remix: #0e7490;
+  --chrome-tag-remix-text: #67e8f9;
+  --chrome-tag-extends-text: #c4b5fd;
+
+  /* Chrome typography */
+  --chrome-font: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --chrome-font-mono: ui-monospace, SFMono-Regular, Menlo, 'JetBrains Mono', monospace;
+
+  color-scheme: dark;
+}

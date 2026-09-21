@@ -102,6 +102,14 @@ For hosts that serve under a sub-path, set `VITE_BASE_PATH=/sub-path/` at
 build time; `.github/workflows/deploy.yml` does this for GitHub Pages and
 copies `index.html` to `404.html` so deep links resolve.
 
+## Theming the app itself
+
+The tool's own look — header, sidebar, workspaces, modals, the docs site —
+comes from one file: [`src/theme.css`](src/theme.css). Change a value there
+and everything follows; a test (`src/theme.test.ts`) fails if any chrome file
+introduces a literal colour. The 30 design styles are separate data
+(`src/styles/*.ts`, `styles/community/*/style.json`) and are never affected.
+
 ## Project layout
 
 ```text

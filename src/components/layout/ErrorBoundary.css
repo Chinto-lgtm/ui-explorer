@@ -19,7 +19,7 @@
 .app-error__card h1 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .app-error__card p {
@@ -35,7 +35,7 @@
   border-radius: 6px;
   background-color: var(--chrome-bg);
   border: 1px solid var(--chrome-border);
-  color: #fca5a5;
+  color: var(--chrome-error-text);
   font-size: 0.8125rem;
   white-space: pre-wrap;
   word-break: break-word;

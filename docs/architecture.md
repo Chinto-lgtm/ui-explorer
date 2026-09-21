@@ -69,6 +69,20 @@ generation, validation and sharing all run in the browser, and state lives in
 4. Components render with the variables; overlays portal into the nearest
    `[data-style]` so they inherit the same tokens.
 
+## Two theme systems, deliberately separate
+
+| | Source of truth | Consumers | Changed by |
+| --- | --- | --- | --- |
+| **Application chrome** | `src/theme.css` (`--chrome-*` tokens) | header, sidebar, workspaces, gallery, modals, panels, docs site | editing that one file |
+| **Design styles** | each `StyleDefinition` (30 built-ins in `src/styles/*.ts`, packages in `styles/community/`) | the preview canvas and every component inside it, via `resolveStyleToCssVars` | switching / generating / editing a style |
+
+Components in `src/components/ui` read only style tokens (`--color-*`,
+`--radius-*` …) and data attributes; they never reference `--chrome-*`. When
+such a component renders outside a styled container (a modal button), it
+falls back to `:root` defaults in `src/index.css`, which alias the chrome
+tokens. `src/theme.test.ts` fails the build if a chrome file gains a literal
+colour, so the single-file guarantee holds as the code grows.
+
 ## Persistence
 
 `src/engine/storage.ts` owns every `localStorage` key (`STORAGE_KEYS`):

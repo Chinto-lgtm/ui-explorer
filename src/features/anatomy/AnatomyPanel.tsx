@@ -13,7 +13,7 @@ function highlight(selector: string | null) {
   if (!selector) { el?.remove(); return; }
   if (!el) { el = document.createElement('style'); el.id = HIGHLIGHT_STYLE_ID; document.head.appendChild(el); }
   const scoped = selector.split(',').map((s) => `[data-style] ${s.trim()}`).join(', ');
-  el.textContent = `${scoped} { outline: 2px dashed #f59e0b !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.25) !important; transition: none !important; }`;
+  el.textContent = `${scoped} { outline: 2px dashed var(--chrome-warning) !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px color-mix(in srgb, var(--chrome-warning) 25%, transparent) !important; transition: none !important; }`;
 }
 
 export const AnatomyPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {

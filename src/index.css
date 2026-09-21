@@ -2,30 +2,7 @@
    UI Explorer — Design Token Foundation
    ============================================ */
 
-/* Application chrome palette (header, sidebar, workspaces, modals, gallery).
-   The preview canvas and every design style use their own tokens; this only
-   themes the neutral tool around them. */
-:root {
-  --chrome-bg: #09090b;
-  --chrome-surface: #111214;
-  --chrome-surface-2: #181a1d;
-  --chrome-surface-3: #1f2226;          /* hover on surface-2 */
-  --chrome-border: #2a2d31;
-  --chrome-border-strong: #3a3e44;      /* hovered / focused borders */
-
-  --chrome-primary: #06b6d4;
-  --chrome-primary-hover: #22d3ee;
-  --chrome-primary-soft: #083344;
-  --chrome-on-primary: #09090b;         /* text on the cyan primary */
-
-  --chrome-text: #f5f5f5;
-  --chrome-text-secondary: #a1a1aa;
-  --chrome-text-muted: #71717a;
-
-  --chrome-success: #22c55e;
-  --chrome-warning: #f59e0b;
-  --chrome-error: #ef4444;
-}
+@import './theme.css';
 
 :root {
   /* Fallback style tokens for components rendered outside a themed canvas
@@ -64,8 +41,6 @@
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
 
-  /* Color scheme */
-  color-scheme: dark;
 }
 
 @media (prefers-reduced-motion: reduce) {

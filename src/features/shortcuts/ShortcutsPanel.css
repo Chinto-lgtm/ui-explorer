@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: color-mix(in srgb, var(--chrome-overlay) 70%, transparent);
   backdrop-filter: blur(4px);
 }
 
@@ -20,7 +20,7 @@
   border: 1px solid var(--chrome-border);
   color: var(--chrome-text);
   font-family: Inter, system-ui, sans-serif;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--chrome-overlay) 60%, transparent);
 }
 
 .shortcuts-header {
@@ -36,7 +36,7 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .shortcuts-title svg {
@@ -53,7 +53,7 @@
 }
 
 .shortcuts-close:hover {
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   background-color: var(--chrome-surface-2);
 }
 

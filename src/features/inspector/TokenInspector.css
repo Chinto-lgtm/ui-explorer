@@ -14,14 +14,14 @@
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--chrome-overlay) 40%, transparent);
   pointer-events: auto;
 }
 
 .inspector-toolbar kbd {
   padding: 0 0.25rem;
   border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: color-mix(in srgb, var(--chrome-overlay) 15%, transparent);
   font-family: monospace;
 }
 
@@ -30,7 +30,7 @@
   padding: 0.125rem;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.15);
+  background: color-mix(in srgb, var(--chrome-overlay) 15%, transparent);
   color: inherit;
   cursor: pointer;
 }
@@ -39,7 +39,7 @@
   position: fixed;
   z-index: 125;
   border: 2px solid var(--chrome-warning);
-  background-color: rgba(245, 158, 11, 0.12);
+  background-color: color-mix(in srgb, var(--chrome-warning) 12%, transparent);
   border-radius: 4px;
   pointer-events: none;
   transition: all 60ms linear;
@@ -70,7 +70,7 @@
   border: 1px solid var(--chrome-border);
   color: var(--chrome-text);
   font-family: Inter, system-ui, sans-serif;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--chrome-overlay) 60%, transparent);
 }
 
 .inspector-panel__head {
@@ -138,7 +138,7 @@
 }
 
 .inspector-prop__actions button:hover {
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   border-color: var(--chrome-border-strong);
 }
 

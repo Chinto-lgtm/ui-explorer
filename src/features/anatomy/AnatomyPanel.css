@@ -11,7 +11,7 @@
   top: 0;
   z-index: 40;
   overflow-y: auto;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+  box-shadow: -8px 0 24px color-mix(in srgb, var(--chrome-overlay) 40%, transparent);
 }
 
 .anatomy-header {
@@ -33,7 +33,7 @@
 .anatomy-title-row h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .anatomy-close-btn {
@@ -45,7 +45,7 @@
 }
 
 .anatomy-close-btn:hover {
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .anatomy-style-info {
@@ -59,7 +59,7 @@
 .anatomy-style-info h4 {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .anatomy-badge {
@@ -158,7 +158,7 @@
     border-left: none;
     border-top: 1px solid var(--chrome-border);
     border-radius: 16px 16px 0 0;
-    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -12px 32px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
   }
 }
 
@@ -219,13 +219,13 @@
 }
 
 .anatomy-token-row--active {
-  background-color: #3b2f0b;
+  background-color: var(--chrome-warning-soft);
   box-shadow: inset 0 0 0 1px var(--chrome-warning);
 }
 
 .anatomy-token-row--warn .token-note { color: var(--chrome-warning); }
-.anatomy-token-row--fail .token-note { color: #fca5a5; }
-.anatomy-token-row--ok .token-note { color: #86efac; }
+.anatomy-token-row--fail .token-note { color: var(--chrome-error-text); }
+.anatomy-token-row--ok .token-note { color: var(--chrome-success-text); }
 
 .anatomy-token-main {
   flex: 1;
@@ -292,7 +292,7 @@
 }
 
 .token-copy-btn:hover {
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   background-color: var(--chrome-surface-3);
 }
 

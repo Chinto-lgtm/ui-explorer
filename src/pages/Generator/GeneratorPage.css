@@ -97,7 +97,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--chrome-text-strong);
   margin-right: 0.25rem;
 }
 
@@ -136,7 +136,7 @@
 
 .gen-trace__hash:hover {
   border-color: var(--chrome-border-strong);
-  color: #ffffff;
+  color: var(--chrome-text-strong);
 }
 
 .gen-lineage {
@@ -324,7 +324,7 @@
 }
 
 .gen-relation--2 { border-left-color: var(--chrome-success); }
-.gen-relation--1 { border-left-color: #86efac; }
+.gen-relation--1 { border-left-color: var(--chrome-success-text); }
 .gen-relation---1 { border-left-color: var(--chrome-warning); }
 .gen-relation---2 { border-left-color: var(--chrome-error); }
 
@@ -360,7 +360,7 @@
 
 .gen-inspector__chosen td {
   color: var(--chrome-primary-hover);
-  background-color: rgba(6, 182, 212, 0.12);
+  background-color: color-mix(in srgb, var(--chrome-primary) 12%, transparent);
 }
 
 .gen-candidates,
