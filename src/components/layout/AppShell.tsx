@@ -42,15 +42,22 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [diffPair, setDiffPair] = useState<{ a?: string; b?: string }>({});
   const [isInspecting, setIsInspecting] = useState(false);
 
-  // Shared style links: ?style=<id> or ?style=j.<encoded definition>.
+  // Shared style links: ?style=<id> or ?style=j.<encoded definition>. The gallery keeps
+  // the resolved id in the URL so its detail drawer can deep-link; elsewhere the param is consumed.
   useEffect(() => {
     const shared = searchParams.get('style');
     if (!shared) return;
     const decoded = decodeStyleParam(shared);
-    if (decoded.kind === 'id') setStyle(decoded.id);
-    else if (decoded.kind === 'style') addCustomStyle(decoded.style);
+    let resolvedId: string | null = null;
+    if (decoded.kind === 'id') { setStyle(decoded.id); resolvedId = decoded.id; }
+    else if (decoded.kind === 'style') { addCustomStyle(decoded.style); resolvedId = decoded.style.metadata.id; }
     const next = new URLSearchParams(searchParams);
-    next.delete('style');
+    if (location.pathname === '/styles' && resolvedId) {
+      if (shared === resolvedId) return;
+      next.set('style', resolvedId);
+    } else {
+      next.delete('style');
+    }
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);

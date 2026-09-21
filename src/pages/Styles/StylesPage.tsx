@@ -87,6 +87,13 @@ export const StylesPage: React.FC = () => {
   const similar = useMemo(() => (selected ? findSimilarStyles(selected, availableStyles, 5) : []), [selected, availableStyles]);
   const selectedRelations = useMemo(() => relations.filter((r) => r.from === selectedId || r.to === selectedId), [relations, selectedId]);
 
+  // Deep links and share links: the shell resolves ?style= to a registered id; follow it into the drawer.
+  const urlStyle = searchParams.get('style');
+  useEffect(() => {
+    if (urlStyle && urlStyle !== selectedId && availableStyles.some((s) => s.metadata.id === urlStyle)) setSelectedId(urlStyle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlStyle, availableStyles]);
+
   // Keep the drawer deep-linkable: /styles?style=<id>
   useEffect(() => {
     const next = new URLSearchParams(searchParams);

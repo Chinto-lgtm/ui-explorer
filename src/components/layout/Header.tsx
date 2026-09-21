@@ -1,5 +1,6 @@
 import React from 'react';
-import { Columns, Sparkles, Search, Sliders, Menu, X, Star, Crosshair } from 'lucide-react';
+import { Columns, Sparkles, Search, Sliders, Menu, X, Star, Crosshair, AlertTriangle } from 'lucide-react';
+import { contrastRatio } from '../../engine/color';
 import { useStyle } from '../../hooks/useStyle';
 import { APP_VERSION } from '../../config/app';
 import './AppShell.css';
@@ -20,6 +21,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
   const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
   const others = availableStyles.filter((s) => !favoriteIds.includes(s.metadata.id));
   const isFav = favoriteIds.includes(currentStyle.metadata.id);
+  // Experimental styles may fail WCAG on purpose; the problem is surfaced, not corrected.
+  const textContrast = contrastRatio(currentStyle.tokens.colors.textPrimary, currentStyle.tokens.colors.bg);
+  const lowContrast = textContrast !== null && textContrast < 4.5 ? textContrast : null;
 
   return (
     <header className="shell-header">
@@ -94,6 +98,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
           >
             <Star size={16} fill={isFav ? 'currentColor' : 'none'} />
           </button>
+          {lowContrast !== null && (
+            <button
+              type="button"
+              className="shell-contrast-warning"
+              onClick={onToggleAnatomy}
+              title={`Low text contrast: ${lowContrast.toFixed(1)}:1 (WCAG AA needs 4.5:1). Open Style Anatomy for details.`}
+              aria-label={`Accessibility warning: text contrast ${lowContrast.toFixed(1)} to 1. Open Style Anatomy.`}
+            >
+              <AlertTriangle size={14} /> {lowContrast.toFixed(1)}:1
+            </button>
+          )}
         </div>
 
         {/* Compare Toggle */}

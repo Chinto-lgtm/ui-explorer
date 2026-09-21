@@ -5,6 +5,7 @@
  */
 
 import type { StyleDefinition } from './types';
+import { absoluteUrl } from '../config/app';
 import { coerceStyleDefinition } from './validate';
 
 const toBase64Url = (s: string): string =>
@@ -28,8 +29,7 @@ export function encodeStyleParam(style: StyleDefinition, isBuiltIn: boolean): st
 }
 
 export function buildShareUrl(style: StyleDefinition, isBuiltIn: boolean, path = '/'): string {
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  return `${origin}${path}?style=${encodeURIComponent(encodeStyleParam(style, isBuiltIn))}`;
+  return `${absoluteUrl(path)}?style=${encodeURIComponent(encodeStyleParam(style, isBuiltIn))}`;
 }
 
 export type DecodedShare = { kind: 'id'; id: string } | { kind: 'style'; style: StyleDefinition } | { kind: 'invalid'; reason: string };

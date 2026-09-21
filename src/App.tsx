@@ -5,7 +5,7 @@ import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { DashboardPage } from './pages/Dashboard/DashboardPage';
 import { WelcomePage } from './pages/Welcome/WelcomePage';
-import { hasCompletedOnboarding } from './config/app';
+import { hasCompletedOnboarding, BASE_PATH } from './config/app';
 
 // Tool pages are code-split so the first paint only carries the shell, the engine and the dashboard.
 const GeneratorPage = lazy(() => import('./pages/Generator/GeneratorPage').then((m) => ({ default: m.GeneratorPage })));
@@ -39,7 +39,7 @@ const ShellRoutes: React.FC = () => (
 export const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <BrowserRouter basename={BASE_PATH || undefined}>
         <StyleProvider>
           <Routes>
             {/* The welcome view is full-bleed and renders outside the shell. */}

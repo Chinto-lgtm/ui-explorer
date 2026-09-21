@@ -11,6 +11,7 @@ import { RECIPE_AXES } from '../../engine/generator/vocab';
 import type { RecipeAxis } from '../../engine/generator/vocab';
 import { findSimilarStyles, DNA_AXES } from '../../engine/generator/dna';
 import { STORAGE_KEYS, readJson, writeJson } from '../../engine/storage';
+import { absoluteUrl } from '../../config/app';
 import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
 import { WorkspaceSection, WorkspaceSegmented } from '../../components/workspace/Workspace';
 import { Badge } from '../../components/ui/Badge';
@@ -302,7 +303,7 @@ export const GeneratorPage: React.FC = () => {
     if (!result) return;
     const text = kind === 'seed' ? String(result.seedNumber)
       : kind === 'hash' ? result.dnaHash
-      : `${window.location.origin}/generator?${searchParams.toString()}`;
+      : `${absoluteUrl('/generator')}?${searchParams.toString()}`;
     try { await navigator.clipboard.writeText(text); } catch { /* clipboard unavailable */ }
     setCopied(kind);
     setTimeout(() => setCopied(null), 1500);

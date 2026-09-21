@@ -73,6 +73,8 @@ why anything looks the way it does, and export the result.
 | ![Generator](docs/screenshots/generator.png) | ![Components Lab](docs/screenshots/components-lab.png) |
 | ![Customizer](docs/screenshots/customizer.png) | ![Labs](docs/screenshots/labs.png) |
 
+**Live:** <https://chinto-lgtm.github.io/ui-explorer/> — a static build deployed from `main` by GitHub Actions.
+
 ## Getting started
 
 Requires Node.js 20+ (Python 3.10+ for the engine tools).
@@ -91,6 +93,14 @@ npm run build      # tsc + vite
 Keyboard: `Ctrl+K` command palette · `Ctrl+E` customizer · `Ctrl+Shift+A`
 anatomy · `Ctrl+Shift+C` compare · `Ctrl+Shift+D` diff · `Ctrl+Shift+X`
 inspect · `?` all shortcuts.
+
+## Deploying
+
+The app is a static site with no backend. `npm run build` writes `dist/`,
+which any static host serves as-is (Netlify, Vercel, Cloudflare Pages, S3…).
+For hosts that serve under a sub-path, set `VITE_BASE_PATH=/sub-path/` at
+build time; `.github/workflows/deploy.yml` does this for GitHub Pages and
+copies `index.html` to `404.html` so deep links resolve.
 
 ## Project layout
 

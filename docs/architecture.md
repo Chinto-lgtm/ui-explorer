@@ -74,3 +74,19 @@ generation, validation and sharing all run in the browser, and state lives in
 `src/engine/storage.ts` owns every `localStorage` key (`STORAGE_KEYS`):
 current style, custom styles, favorites, recents, settings, generator history,
 recent colours, onboarding flag. Corrupt values fall back to defaults.
+
+## Repository layout
+
+The source is a single Vite app with an `src/engine`, `src/components`,
+`src/features`, `src/pages` split rather than a `packages/*` monorepo: with
+one deployable and no published npm packages, workspaces would add tooling
+without a consumer. The boundaries a monorepo would enforce are kept by
+convention (engine has no React imports; components read only tokens;
+pages compose features) and by the folder names above. Styles live outside
+`src` in `styles/community` so contributors never touch application code.
+
+## Hosting
+
+Static only. `npm run build` → `dist/`, deployed to GitHub Pages by
+`.github/workflows/deploy.yml` (base path `/ui-explorer/`, `404.html` fallback
+for deep links). Any other static host works with `VITE_BASE_PATH=/`.
