@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "id": "community-deep-bloom",
+    "name": "Deep Bloom",
+    "category": "Futuristic",
+    "description": "Dark liquid surfaces with a slow accent gradient, glowing depth and a warm bloom-red accent.",
+    "tags": [
+      "community",
+      "dark",
+      "liquid",
+      "glow",
+      "warm"
+    ],
+    "personality": "Quiet, warm, luminous \u2014 a dark room lit by one colour",
+    "bestUsedFor": [
+      "Music and media players",
+      "Night-mode dashboards",
+      "Portfolio sites"
+    ],
+    "source": "community",
+    "version": "1.0.0",
+    "visualCharacter": "liquid \u00b7 glowing \u00b7 smooth",
+    "author": "Chinto-lgtm",
+    "license": "MIT",
+    "avoidWhen": [
+      "Print-adjacent layouts",
+      "Bright ambient light",
+      "Dense spreadsheets"
+    ]
+  },
+  "tokens": {
+    "colors": {
+      "bg": "#1c1717",
+      "surface": "#2c2626",
+      "surfaceHover": "#3c3434",
+      "surfaceActive": "#3c3434",
+      "textPrimary": "#f8fafc",
+      "textSecondary": "#94a3b8",
+      "textTertiary": "#64748b",
+      "border": "#463e3e",
+      "borderHover": "#d65c5c",
+      "accent": "#d65c5c",
+      "accentHover": "#e08585",
+      "accentText": "#ffffff",
+      "success": "#10b981",
+      "warning": "#f59e0b",
+      "error": "#ef4444",
+      "info": "#3b82f6",
+      "shadowColor": "rgba(0,0,0,0.6)",
+      "glowColor": "#d65c5c"
+    },
+    "typography": {
+      "fontFamilySans": "Inter, sans-serif",
+      "fontFamilyHeading": "Inter, sans-serif",
+      "fontFamilyMono": "JetBrains Mono, monospace",
+      "fontSizeXs": "0.75rem",
+      "fontSizeSm": "0.875rem",
+      "fontSizeBase": "1rem",
+      "fontSizeLg": "1.125rem",
+      "fontSizeXl": "1.25rem",
+      "fontSize2xl": "1.5rem",
+      "fontSize3xl": "2rem",
+      "fontWeightNormal": 400,
+      "fontWeightMedium": 500,
+      "fontWeightBold": 700,
+      "letterSpacing": "0",
+      "lineHeight": "1.5"
+    },
+    "radii": {
+      "sm": "6px",
+      "md": "10px",
+      "lg": "16px",
+      "xl": "22px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 0 8px rgba(214, 92, 92, 0.35)",
+      "md": "0 0 20px rgba(214, 92, 92, 0.45)",
+      "lg": "0 0 40px rgba(214, 92, 92, 0.55)",
+      "glow": "0 0 18px rgba(214, 92, 92, 0.8)"
+    },
+    "borders": {
+      "width": "1px",
+      "style": "solid",
+      "color": "#463e3e",
+      "opacity": 1
+    },
+    "motion": {
+      "durationFast": "160ms",
+      "durationNormal": "260ms",
+      "durationSlow": "420ms",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "hoverScale": 1.02,
+      "activeScale": 0.98
+    },
+    "materials": {
+      "opacity": 0.95,
+      "backdropBlur": "8px",
+      "gradient": "linear-gradient(120deg, rgba(214, 92, 92, 0.18), transparent 50%, rgba(224, 133, 133, 0.14))"
+    },
+    "icons": {
+      "strokeWidth": 2,
+      "filled": false,
+      "styleVariant": "rounded"
+    }
+  },
+  "svgLanguage": {
+    "cornerStyle": "rounded",
+    "decorativeShapes": false,
+    "patternOverlay": "grid",
+    "borderDecoration": false
+  },
+  "behavior": {
+    "buttonHoverAction": "glow",
+    "cardElevationType": "gradient-border",
+    "focusRingStyle": "glow"
+  }
+}
