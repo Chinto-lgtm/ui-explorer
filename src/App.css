@@ -15,7 +15,7 @@
 }
 
 .app-header p {
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-secondary, var(--chrome-text-muted));
   max-width: 40ch;
 }
 
@@ -24,6 +24,6 @@
 }
 
 .app-status {
-  color: var(--color-text-tertiary, #9ca3af);
+  color: var(--color-text-tertiary, var(--chrome-text-secondary));
   font-size: 0.875rem;
 }

@@ -8,6 +8,7 @@ export default defineConfig({
   base: process.env.DOCS_BASE_PATH || '/docs/',
   outDir: '../dist/docs',
   cleanUrls: true,
+  appearance: 'dark',
   lastUpdated: false,
   head: [['link', { rel: 'icon', type: 'image/svg+xml', href: (process.env.DOCS_BASE_PATH || '/docs/') + 'favicon.svg' }]],
   themeConfig: {

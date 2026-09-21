@@ -6,10 +6,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #020617;
-  background-image: radial-gradient(#1e293b 1px, transparent 1px);
+  background-color: var(--chrome-bg);
+  background-image: radial-gradient(var(--chrome-surface-2) 1px, transparent 1px);
   background-size: 22px 22px;
-  color: #e2e8f0;
+  color: var(--chrome-text);
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -29,9 +29,9 @@
   gap: 1rem;
   height: 56px;
   padding: 0 clamp(1rem, 4vw, 3rem);
-  background-color: rgba(2, 6, 23, 0.85);
+  background-color: rgba(9, 9, 11, 0.85);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
 }
 
 .welcome__brand {
@@ -45,7 +45,7 @@
 }
 
 .welcome__brand-icon {
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .welcome__top-actions {
@@ -62,7 +62,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: none;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   font-size: 0.875rem;
   text-decoration: none;
   cursor: pointer;
@@ -70,15 +70,15 @@
 }
 
 .welcome__link:hover {
-  color: #f8fafc;
-  background-color: #1e293b;
+  color: var(--chrome-text);
+  background-color: var(--chrome-surface-2);
 }
 
 .welcome__link:focus-visible,
 .welcome__cta:focus-visible,
 .welcome__feature-btn:focus-visible,
 .welcome__dot:focus-visible {
-  outline: 2px solid #818cf8;
+  outline: 2px solid var(--chrome-primary);
   outline-offset: 2px;
 }
 
@@ -115,7 +115,7 @@
   max-width: 52ch;
   font-size: 1.0625rem;
   line-height: 1.6;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
 }
 
 .welcome__cta-row {
@@ -131,9 +131,9 @@
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   border-radius: 8px;
-  border: 1px solid #334155;
-  background-color: #0f172a;
-  color: #e2e8f0;
+  border: 1px solid var(--chrome-border);
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text);
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
@@ -141,8 +141,8 @@
 }
 
 .welcome__cta:hover {
-  background-color: #1e293b;
-  border-color: #475569;
+  background-color: var(--chrome-surface-2);
+  border-color: var(--chrome-border-strong);
 }
 
 .welcome__cta:active {
@@ -150,28 +150,28 @@
 }
 
 .welcome__cta--primary {
-  background-color: #4f46e5;
-  border-color: #6366f1;
-  color: #ffffff;
+  background-color: var(--chrome-primary);
+  border-color: var(--chrome-primary);
+  color: var(--chrome-on-primary);
 }
 
 .welcome__cta--primary:hover {
-  background-color: #4338ca;
-  border-color: #818cf8;
+  background-color: var(--chrome-primary-hover);
+  border-color: var(--chrome-primary);
 }
 
 .welcome__note {
   margin-top: 1rem;
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .welcome__hero-stage {
   position: relative;
   padding: 1.25rem;
   border-radius: 20px;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
+  background-color: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
 
@@ -190,12 +190,12 @@
 .welcome__hero-name {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #f8fafc;
+  color: var(--chrome-text);
 }
 
 .welcome__hero-personality {
   font-size: 0.8125rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -215,18 +215,18 @@
   padding: 0;
   border: none;
   border-radius: 9999px;
-  background-color: #334155;
+  background-color: var(--chrome-surface-3);
   cursor: pointer;
   transition: background-color 150ms ease, width 200ms ease;
 }
 
 .welcome__dot:hover {
-  background-color: #64748b;
+  background-color: var(--chrome-text-muted);
 }
 
 .welcome__dot--active {
   width: 34px;
-  background-color: #818cf8;
+  background-color: var(--chrome-primary);
 }
 
 /* ---------- Section heads ---------- */
@@ -241,7 +241,7 @@
   margin-top: 0.5rem;
   max-width: 60ch;
   font-size: 0.9375rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
 }
 
 /* ---------- Style wall ---------- */
@@ -272,13 +272,13 @@
 
 .welcome__tile .style-preview--thumb {
   cursor: pointer;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
   transition: transform 200ms ease, border-color 200ms ease;
 }
 
 .welcome__tile .style-preview--thumb:hover {
   transform: translateY(-3px);
-  border-color: #475569;
+  border-color: var(--chrome-border-strong);
 }
 
 .welcome__tile-meta {
@@ -292,7 +292,7 @@
 .welcome__tile-name {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--chrome-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -300,7 +300,7 @@
 
 .welcome__tile-cat {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   flex-shrink: 0;
 }
 
@@ -309,11 +309,11 @@
   margin: 1.25rem 0 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--chrome-border);
 }
 
 .welcome__feature {
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
 }
 
 .welcome__feature-btn {
@@ -333,28 +333,28 @@
 }
 
 .welcome__feature-btn:hover {
-  background-color: #0f172a;
+  background-color: var(--chrome-surface);
 }
 
 .welcome__feature-name {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #f8fafc;
+  color: var(--chrome-text);
 }
 
 .welcome__feature-text {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
 }
 
 .welcome__feature-arrow {
-  color: #475569;
+  color: var(--chrome-text-muted);
   transition: color 150ms ease, transform 150ms ease;
 }
 
 .welcome__feature-btn:hover .welcome__feature-arrow {
-  color: #818cf8;
+  color: var(--chrome-primary);
   transform: translateX(3px);
 }
 
@@ -366,18 +366,18 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1.25rem clamp(1rem, 4vw, 3rem);
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--chrome-border);
   font-size: 0.8125rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .welcome__footer a {
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   text-decoration: none;
 }
 
 .welcome__footer a:hover {
-  color: #f8fafc;
+  color: var(--chrome-text);
   text-decoration: underline;
 }
 

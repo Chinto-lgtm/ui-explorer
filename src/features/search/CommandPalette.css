@@ -11,10 +11,10 @@
 }
 
 .cmd-palette {
-  background-color: #0f172a;
-  color: #f1f5f9;
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text);
   border-radius: 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
   width: 100%;
   max-width: 600px;
   display: flex;
@@ -27,12 +27,12 @@
   display: flex;
   align-items: center;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
   gap: 0.75rem;
 }
 
 .cmd-search-icon {
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .cmd-input {
@@ -47,7 +47,7 @@
 .cmd-close-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   cursor: pointer;
 }
 
@@ -70,7 +70,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   padding: 0.25rem 0.5rem;
 }
 
@@ -85,11 +85,11 @@
 }
 
 .cmd-item:hover {
-  background-color: #1e293b;
+  background-color: var(--chrome-surface-2);
 }
 
 .cmd-item-icon {
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .cmd-item-info {
@@ -106,7 +106,7 @@
 
 .cmd-item-desc {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,8 +115,8 @@
 
 .cmd-item-badge {
   font-size: 0.75rem;
-  background-color: #312e81;
-  color: #818cf8;
+  background-color: var(--chrome-primary-soft);
+  color: var(--chrome-primary);
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
 }
@@ -124,18 +124,18 @@
 .cmd-empty {
   padding: 2rem;
   text-align: center;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   font-size: 0.875rem;
 }
 
 .cmd-item svg {
-  color: #818cf8;
+  color: var(--chrome-primary);
   flex-shrink: 0;
 }
 
 .cmd-item--active {
-  background-color: #1e293b;
-  outline: 1px solid #334155;
+  background-color: var(--chrome-surface-2);
+  outline: 1px solid var(--chrome-border);
 }
 
 .cmd-item-label {
@@ -151,7 +151,7 @@
 
 .cmd-item-hint {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -162,18 +162,18 @@
   display: flex;
   gap: 1rem;
   padding: 0.5rem 1rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--chrome-border);
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .cmd-footer kbd {
   display: inline-block;
   margin-right: 0.25rem;
   padding: 0 0.375rem;
-  border: 1px solid #334155;
+  border: 1px solid var(--chrome-border);
   border-radius: 4px;
-  background-color: #111827;
+  background-color: var(--chrome-surface);
   font-family: monospace;
   font-size: 0.6875rem;
 }

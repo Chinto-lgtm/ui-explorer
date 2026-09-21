@@ -128,7 +128,7 @@
   position: relative;
   height: 150px;
   border-radius: var(--radius-md);
-  background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent);
+  background-image: linear-gradient(to top, var(--chrome-bg), transparent), linear-gradient(to right, #fff, transparent);
   cursor: crosshair;
   touch-action: none;
   outline: none;

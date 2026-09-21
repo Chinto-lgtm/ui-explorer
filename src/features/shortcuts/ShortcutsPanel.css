@@ -16,9 +16,9 @@
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 12px;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  color: #f1f5f9;
+  background-color: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  color: var(--chrome-text);
   font-family: Inter, system-ui, sans-serif;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
@@ -28,7 +28,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
 }
 
 .shortcuts-title {
@@ -40,13 +40,13 @@
 }
 
 .shortcuts-title svg {
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .shortcuts-close {
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 4px;
@@ -54,11 +54,11 @@
 
 .shortcuts-close:hover {
   color: #ffffff;
-  background-color: #1e293b;
+  background-color: var(--chrome-surface-2);
 }
 
 .shortcuts-close:focus-visible {
-  outline: 2px solid #818cf8;
+  outline: 2px solid var(--chrome-primary);
 }
 
 .shortcuts-list {
@@ -72,7 +72,7 @@
   align-items: center;
   gap: 1rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
 }
 
 .shortcuts-row:last-child {
@@ -88,30 +88,30 @@
 .shortcuts-row dd {
   margin: 0;
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: var(--chrome-text);
 }
 
 .shortcuts-row kbd {
   display: inline-block;
   min-width: 1.75rem;
   padding: 0.125rem 0.375rem;
-  border: 1px solid #334155;
+  border: 1px solid var(--chrome-border);
   border-bottom-width: 2px;
   border-radius: 4px;
-  background-color: #111827;
-  color: #e2e8f0;
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text);
   font-family: monospace;
   font-size: 0.75rem;
   text-align: center;
 }
 
 .shortcuts-plus {
-  color: #64748b;
+  color: var(--chrome-text-muted);
   font-size: 0.75rem;
 }
 
 .shortcuts-note {
   padding: 0.75rem 1.25rem 1rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }

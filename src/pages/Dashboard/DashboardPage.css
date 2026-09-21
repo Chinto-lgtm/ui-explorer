@@ -116,12 +116,12 @@
 
 .kpi-card__change--positive {
   background-color: rgba(16, 185, 129, 0.15);
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--chrome-success));
 }
 
 .kpi-card__change--negative {
   background-color: rgba(239, 68, 68, 0.15);
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--chrome-error));
 }
 
 .kpi-card__value {

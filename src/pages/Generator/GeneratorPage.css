@@ -23,10 +23,10 @@
   justify-content: center;
   gap: 0.25rem;
   padding: 0.375rem 0.25rem;
-  border: 1px solid #334155;
+  border: 1px solid var(--chrome-border);
   border-radius: 6px;
-  background-color: #111827;
-  color: #94a3b8;
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text-secondary);
   font: inherit;
   font-size: 0.6875rem;
   font-weight: 500;
@@ -35,18 +35,18 @@
 }
 
 .gen-lock:hover {
-  color: #f8fafc;
-  border-color: #475569;
+  color: var(--chrome-text);
+  border-color: var(--chrome-border-strong);
 }
 
 .gen-lock--locked {
-  background-color: #312e81;
-  border-color: #4338ca;
-  color: #c7d2fe;
+  background-color: var(--chrome-primary-soft);
+  border-color: var(--chrome-primary-hover);
+  color: var(--chrome-primary-hover);
 }
 
 .gen-lock:focus-visible {
-  outline: 2px solid #818cf8;
+  outline: 2px solid var(--chrome-primary);
   outline-offset: 2px;
 }
 
@@ -105,7 +105,7 @@
   margin-top: 0.75rem;
   font-size: 0.9375rem;
   line-height: 1.55;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   max-width: 62ch;
 }
 
@@ -123,9 +123,9 @@
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  color: #cbd5e1;
+  background-color: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
+  color: var(--chrome-text);
   font-size: 0.75rem;
 }
 
@@ -135,7 +135,7 @@
 }
 
 .gen-trace__hash:hover {
-  border-color: #475569;
+  border-color: var(--chrome-border-strong);
   color: #ffffff;
 }
 
@@ -145,16 +145,16 @@
   align-items: center;
   gap: 0.375rem;
   margin-top: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   font-size: 0.75rem;
 }
 
 .gen-lineage__node {
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
-  border: 1px solid #334155;
+  border: 1px solid var(--chrome-border);
   background: none;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   font: inherit;
   font-size: 0.75rem;
   cursor: pointer;
@@ -163,12 +163,12 @@
 .gen-lineage__node::after {
   content: '\2192';
   margin-left: 0.5rem;
-  color: #475569;
+  color: var(--chrome-text-muted);
 }
 
 .gen-lineage__node--current {
-  color: #c7d2fe;
-  border-color: #4338ca;
+  color: var(--chrome-primary-hover);
+  border-color: var(--chrome-primary-hover);
   cursor: default;
 }
 
@@ -181,7 +181,7 @@
   width: 12px;
   height: 12px;
   border-radius: 3px;
-  border: 1px solid #334155;
+  border: 1px solid var(--chrome-border);
   vertical-align: middle;
 }
 
@@ -193,7 +193,7 @@
   gap: 0.5rem;
   font-size: 0.875rem;
   line-height: 1.55;
-  color: #cbd5e1;
+  color: var(--chrome-text);
 }
 
 .gen-constraints {
@@ -208,10 +208,10 @@
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  background-color: #111827;
-  border: 1px solid #1e293b;
+  background-color: var(--chrome-surface);
+  border: 1px solid var(--chrome-border);
   font-size: 0.8125rem;
-  color: #e2e8f0;
+  color: var(--chrome-text);
 }
 
 .gen-constraint__state {
@@ -219,11 +219,11 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .gen-constraint__state--locked {
-  color: #c7d2fe;
+  color: var(--chrome-primary-hover);
 }
 
 .gen-constraints .ws-hint {
@@ -240,27 +240,27 @@
 }
 
 .gen-dna__label {
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   text-transform: capitalize;
 }
 
 .gen-dna__track {
   height: 8px;
   border-radius: 9999px;
-  background-color: #1e293b;
+  background-color: var(--chrome-surface-2);
   overflow: hidden;
 }
 
 .gen-dna__fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #6366f1, #a5b4fc);
+  background: linear-gradient(90deg, var(--chrome-primary), var(--chrome-primary));
   transition: width 300ms ease;
 }
 
 .gen-dna__value {
   text-align: right;
-  color: #cbd5e1;
+  color: var(--chrome-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -284,11 +284,11 @@
 }
 
 .gen-similar__item .style-preview--thumb {
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
 }
 
 .gen-similar__item:focus-visible {
-  outline: 2px solid #818cf8;
+  outline: 2px solid var(--chrome-primary);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -296,12 +296,12 @@
 .gen-similar__name {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--chrome-text);
 }
 
 .gen-similar__shared {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
   line-height: 1.4;
 }
 
@@ -317,16 +317,16 @@
   justify-content: space-between;
   padding: 0.375rem 0.625rem;
   border-radius: 6px;
-  background-color: #111827;
-  border-left: 3px solid #334155;
+  background-color: var(--chrome-surface);
+  border-left: 3px solid var(--chrome-border);
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: var(--chrome-text);
 }
 
-.gen-relation--2 { border-left-color: #22c55e; }
+.gen-relation--2 { border-left-color: var(--chrome-success); }
 .gen-relation--1 { border-left-color: #86efac; }
-.gen-relation---1 { border-left-color: #f59e0b; }
-.gen-relation---2 { border-left-color: #ef4444; }
+.gen-relation---1 { border-left-color: var(--chrome-warning); }
+.gen-relation---2 { border-left-color: var(--chrome-error); }
 
 .gen-inspector {
   display: flex;
@@ -347,20 +347,20 @@
 .gen-inspector__table th,
 .gen-inspector__table td {
   padding: 0.375rem 0.5rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--chrome-border);
   text-align: left;
   vertical-align: top;
-  color: #cbd5e1;
+  color: var(--chrome-text);
 }
 
 .gen-inspector__table th {
-  color: #64748b;
+  color: var(--chrome-text-muted);
   font-weight: 600;
 }
 
 .gen-inspector__chosen td {
-  color: #c7d2fe;
-  background-color: rgba(79, 70, 229, 0.12);
+  color: var(--chrome-primary-hover);
+  background-color: rgba(6, 182, 212, 0.12);
 }
 
 .gen-candidates,
@@ -377,12 +377,12 @@
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 10px;
-  border: 1px solid #1e293b;
-  background-color: #0b0f19;
+  border: 1px solid var(--chrome-border);
+  background-color: var(--chrome-bg);
 }
 
 .gen-history__item--current {
-  border-color: #4338ca;
+  border-color: var(--chrome-primary-hover);
 }
 
 .gen-candidate__meta,
@@ -397,7 +397,7 @@
 .gen-history__name {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--chrome-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -406,7 +406,7 @@
 .gen-candidate__seed,
 .gen-history__sub {
   font-size: 0.6875rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .gen-candidate__actions {
@@ -434,7 +434,7 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--chrome-text-muted);
 }
 
 .gen-history__limit .ws-select {

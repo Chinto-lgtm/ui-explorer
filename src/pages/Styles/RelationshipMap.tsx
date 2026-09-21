@@ -97,13 +97,13 @@ export const RelationshipMap: React.FC<{
     return set;
   }, [focus, relations]);
 
-  const stroke: Record<RelationKind, string> = { related: '#475569', extends: '#a78bfa', remix: '#22d3ee', duplicate: '#f59e0b' };
+  const stroke: Record<RelationKind, string> = { related: '#3a3e44', extends: '#a78bfa', remix: '#22d3ee', duplicate: '#f59e0b' };
 
   return (
     <div className="relmap" role="figure" aria-label="Style relationship map">
       <svg viewBox={`0 0 ${W} ${H}`} className="relmap__svg" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <radialGradient id="relmap-glow"><stop offset="0" stopColor="#6366f1" stopOpacity="0.25" /><stop offset="1" stopColor="#6366f1" stopOpacity="0" /></radialGradient>
+          <radialGradient id="relmap-glow"><stop offset="0" stopColor="#06b6d4" stopOpacity="0.25" /><stop offset="1" stopColor="#06b6d4" stopOpacity="0" /></radialGradient>
         </defs>
         <circle cx={cx} cy={cy} r={290} fill="url(#relmap-glow)" />
         <g className="relmap__edges">
@@ -151,7 +151,7 @@ export const RelationshipMap: React.FC<{
         </g>
       </svg>
       <div className="relmap__legend" aria-hidden="true">
-        <span><i style={{ background: '#475569' }} /> related</span>
+        <span><i style={{ background: '#3a3e44' }} /> related</span>
         <span><i style={{ background: '#a78bfa' }} /> extends</span>
         <span><i style={{ background: '#22d3ee' }} /> remixed from</span>
         <span><i style={{ background: '#f59e0b' }} /> duplicated from</span>

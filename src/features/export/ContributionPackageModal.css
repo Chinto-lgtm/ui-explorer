@@ -11,10 +11,10 @@
 }
 
 .contrib-modal {
-  background-color: #0f172a;
-  color: #f1f5f9;
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text);
   border-radius: 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
   width: 100%;
   max-width: 900px;
   display: flex;
@@ -25,8 +25,8 @@
 
 .contrib-modal-header {
   padding: 1rem 1.5rem;
-  background-color: #111827;
-  border-bottom: 1px solid #1f2937;
+  background-color: var(--chrome-surface);
+  border-bottom: 1px solid var(--chrome-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .contrib-title h2 {
@@ -48,7 +48,7 @@
 .contrib-close-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   cursor: pointer;
 }
 
@@ -69,8 +69,8 @@
 }
 
 .contrib-steps {
-  background-color: #0b0f19;
-  border: 1px solid #1e293b;
+  background-color: var(--chrome-bg);
+  border: 1px solid var(--chrome-border);
   border-radius: 8px;
   padding: 1rem;
   display: flex;
@@ -80,13 +80,13 @@
 
 .contrib-steps h4 {
   font-size: 0.875rem;
-  color: #818cf8;
+  color: var(--chrome-primary);
 }
 
 .steps-list {
   padding-left: 1.25rem;
   font-size: 0.8125rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
@@ -101,7 +101,7 @@
 .file-name {
   font-size: 0.75rem;
   font-family: monospace;
-  color: #818cf8;
+  color: var(--chrome-primary);
   display: flex;
   align-items: center;
   gap: 0.375rem;
@@ -110,7 +110,7 @@
 .contrib-hint {
   margin: -0.25rem 0 0.75rem;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--chrome-text-secondary);
 }
 
 .contrib-next {
@@ -119,19 +119,19 @@
   gap: 0.25rem;
   margin-top: 0.75rem;
   padding: 0.75rem 0.875rem;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
   border-radius: 8px;
-  background: #0f172a;
+  background: var(--chrome-surface);
   font-size: 0.8125rem;
-  color: #cbd5e1;
+  color: var(--chrome-text);
 }
 
-.contrib-next strong { color: #f8fafc; }
-.contrib-next a { display: inline-flex; align-items: center; gap: 0.375rem; color: #a5b4fc; }
+.contrib-next strong { color: var(--chrome-text); }
+.contrib-next a { display: inline-flex; align-items: center; gap: 0.375rem; color: var(--chrome-primary); }
 
 .contrib-preview-img {
   display: block;
   width: 100%;
   border-radius: 8px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--chrome-border);
 }
