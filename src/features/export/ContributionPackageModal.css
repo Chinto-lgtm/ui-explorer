@@ -106,3 +106,32 @@
   align-items: center;
   gap: 0.375rem;
 }
+
+.contrib-hint {
+  margin: -0.25rem 0 0.75rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.contrib-next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  background: #0f172a;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+}
+
+.contrib-next strong { color: #f8fafc; }
+.contrib-next a { display: inline-flex; align-items: center; gap: 0.375rem; color: #a5b4fc; }
+
+.contrib-preview-img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+}

@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "engine:data": "vite-node scripts/export-engine-data.ts",
     "engine:test": "python -m unittest discover -s tools/style-engine/tests -t tools/style-engine",
-    "registry:check": "cd tools/style-engine && python -m style_engine registry ../../styles/community/index.json"
+    "registry:check": "cd tools/style-engine && python -m style_engine registry ../../styles/community/index.json",
+    "registry:previews": "vite-node scripts/build-community-previews.ts"
   },
   "dependencies": {
     "lucide-react": "^1.47.0",

@@ -54,3 +54,23 @@ class DeterminismTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RangeAndSafetyTest(unittest.TestCase):
+    def test_generated_styles_are_in_range(self):
+        from style_engine.validator import check_ranges_and_safety
+        for seed in range(1, 30):
+            self.assertEqual(check_ranges_and_safety(generate_style(seed)["style"]), [], seed)
+
+    def test_out_of_range_and_unsafe_values_are_rejected(self):
+        from style_engine.validator import check_ranges_and_safety
+        style = generate_style(5)["style"]
+        style["tokens"]["radii"]["md"] = "900px"
+        style["tokens"]["motion"]["durationNormal"] = "9s"
+        style["tokens"]["colors"]["accent"] = "url(https://evil.example/x.png)"
+        style["metadata"]["description"] = "<script>alert(1)</script>"
+        problems = check_ranges_and_safety(style)
+        self.assertTrue(any("tokens.radii.md out of range" in p for p in problems))
+        self.assertTrue(any("tokens.motion.durationNormal out of range" in p for p in problems))
+        self.assertIn("tokens.colors.accent contains unsafe content", problems)
+        self.assertIn("metadata.description contains unsafe content", problems)

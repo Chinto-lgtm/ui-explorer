@@ -116,6 +116,11 @@ docs/             guides and screenshots
 - [styles/community/README.md](styles/community/README.md) — the registry
   format.
 
+Developer documentation: [architecture](docs/architecture.md) ·
+[style engine](docs/style-engine.md) · [style schema](docs/style-schema.md) ·
+[procedural generation](docs/procedural-generation.md) ·
+[community styles](docs/community-styles.md).
+
 ## Python engine
 
 ```sh

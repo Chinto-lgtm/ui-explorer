@@ -31,6 +31,80 @@ COLOR_PATTERN = re.compile(
     r"^(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\(.*\)|hsla?\(.*\)|transparent|[a-z]+)$"
 )
 
+# Safe numeric ranges (mirrors PROPERTY_RANGES in src/engine/validate.ts).
+PROPERTY_RANGES = [
+    (re.compile(r"^tokens\.radii\.(sm|md|lg|xl)$"), 0, 64, "px"),
+    (re.compile(r"^tokens\.borders\.width$"), 0, 12, "px"),
+    (re.compile(r"^tokens\.materials\.backdropBlur$"), 0, 60, "px"),
+    (re.compile(r"^tokens\.materials\.opacity$"), 0, 1, ""),
+    (re.compile(r"^tokens\.motion\.duration(Fast|Normal|Slow)$"), 0, 1000, "ms"),
+    (re.compile(r"^tokens\.motion\.(hoverScale|activeScale)$"), 0.5, 1.5, ""),
+    (re.compile(r"^tokens\.typography\.fontWeight(Normal|Medium|Bold)$"), 100, 900, ""),
+    (re.compile(r"^tokens\.icons\.strokeWidth$"), 0.5, 4, ""),
+]
+
+# CSS that could execute, load remote content or break out of a value. Packages are data, never code.
+UNSAFE_VALUE = re.compile(
+    r"(<\s*/?\s*(script|iframe|object|embed|svg|img|style)\b|javascript:|expression\s*\(|url\s*\(|@import|behavior\s*:|-moz-binding|on[a-z]+\s*=|[;{}])",
+    re.I,
+)
+UNSAFE_TEXT = re.compile(r"<\s*/?\s*script|javascript:", re.I)
+NUMERIC = re.compile(r"^\s*(-?[\d.]+)\s*([a-z%]*)\s*$", re.I)
+
+
+def _numeric(value, unit):
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    if not isinstance(value, str):
+        return None
+    m = NUMERIC.match(value)
+    if not m:
+        return None
+    n = float(m.group(1))
+    if unit == "ms" and m.group(2) == "s":
+        return n * 1000
+    if unit and m.group(2) and m.group(2) != unit:
+        return None
+    return n
+
+
+def _walk(obj, prefix, out):
+    if not isinstance(obj, dict):
+        return
+    for key, value in obj.items():
+        path = f"{prefix}.{key}"
+        if isinstance(value, dict):
+            _walk(value, path, out)
+        else:
+            out.append((path, value))
+
+
+def check_ranges_and_safety(style):
+    """Range and safety problems as dot paths (mirrors checkRangesAndSafety in validate.ts)."""
+    problems = []
+    entries = []
+    _walk(style.get("tokens"), "tokens", entries)
+    _walk(style.get("customCssVars"), "customCssVars", entries)
+    _walk(style.get("metadata"), "metadata", entries)
+    for path, value in entries:
+        if isinstance(value, str):
+            unsafe = UNSAFE_TEXT.search(value) if path.startswith("metadata.") else UNSAFE_VALUE.search(value)
+            if unsafe:
+                problems.append(f"{path} contains unsafe content")
+        for pattern, lo, hi, unit in PROPERTY_RANGES:
+            if not pattern.match(path):
+                continue
+            n = _numeric(value, unit)
+            if n is None:
+                if value is not None:
+                    problems.append(f"{path} is not a {unit or 'number'} value")
+            elif n < lo or n > hi:
+                problems.append(f"{path} out of range ({lo}–{hi}{unit})")
+            break
+    return problems
+
 
 def _get(root, path):
     for key in path.split("."):
@@ -87,6 +161,7 @@ def validate_style_json(style):
             if isinstance(value, str) and not COLOR_PATTERN.match(value.strip()):
                 errors.append(f"tokens.colors.{key} is not a CSS colour: {value}")
 
+    errors.extend(check_ranges_and_safety(style))
     return errors
 
 

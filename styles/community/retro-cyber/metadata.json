@@ -1,0 +1,18 @@
+{
+  "id": "community-retro-cyber",
+  "name": "Neon Arcade",
+  "author": "hacker_dev",
+  "version": "1.0.0",
+  "license": "MIT",
+  "category": "Expressive",
+  "description": "High-octane neon cabinet aesthetic: magenta and cyan phosphor on near-black, chunky borders and a CRT scanline sheen.",
+  "tags": [
+    "community",
+    "cyberpunk",
+    "neon",
+    "arcade",
+    "crt"
+  ],
+  "path": "styles/community/retro-cyber/style.json",
+  "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/retro-cyber"
+}

@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useStyle } from '../../hooks/useStyle';
 import { Button } from '../../components/ui/Button';
 import { Input, Textarea } from '../../components/ui/Input';
-import { Download, GitPullRequest, X, FileCode } from 'lucide-react';
+import { Download, GitPullRequest, X, FileCode, ExternalLink } from 'lucide-react';
+import { renderStylePreviewSvg } from '../../engine/preview';
+import { GITHUB_REPO_URL } from '../../config/app';
 import './ContributionPackageModal.css';
 
 export const ContributionPackageModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { currentStyle } = useStyle();
   const [authorName, setAuthorName] = useState('github_username');
   const [license, setLicense] = useState('MIT');
-  const [repoUrl, setRepoUrl] = useState('https://github.com/username/ui-explorer');
+  const [repoUrl, setRepoUrl] = useState(`${GITHUB_REPO_URL}/tree/main/styles/community`);
 
   // Registry slug and id: community packages are conventionally prefixed.
   const slug = currentStyle.metadata.id.replace(/^community-/, '');
@@ -61,8 +63,11 @@ contents of \`metadata.json\` to \`styles/community/index.json\`, run
 \`npm run registry:check\` and open a pull request.
 `;
 
-  const handleDownloadFile = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  // preview.svg is rendered from the tokens themselves, so it always represents the style faithfully.
+  const previewSvg = renderStylePreviewSvg({ ...definition, metadata: { ...metadata, id: packageId } });
+
+  const handleDownloadFile = (content: string, filename: string, type = 'text/plain;charset=utf-8') => {
+    const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -75,6 +80,7 @@ contents of \`metadata.json\` to \`styles/community/index.json\`, run
     handleDownloadFile(styleJson, `${currentStyle.metadata.id}-style.json`);
     handleDownloadFile(metadataJson, `${currentStyle.metadata.id}-metadata.json`);
     handleDownloadFile(readmeContent, `${currentStyle.metadata.id}-README.md`);
+    handleDownloadFile(previewSvg, `${currentStyle.metadata.id}-preview.svg`, 'image/svg+xml;charset=utf-8');
   };
 
   return (
@@ -91,6 +97,7 @@ contents of \`metadata.json\` to \`styles/community/index.json\`, run
         <div className="contrib-modal-body">
           <div className="contrib-form-col">
             <h3>Contributor Identity & Metadata</h3>
+            <p className="contrib-hint">Use your own name or GitHub handle — packages are published under the author you enter here.</p>
             <Input label="GitHub Username / Author" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
             <Input label="License" value={license} onChange={(e) => setLicense(e.target.value)} />
             <Input label="Repository Link" value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} />
@@ -100,14 +107,19 @@ contents of \`metadata.json\` to \`styles/community/index.json\`, run
               <ol className="steps-list">
                 <li>Download your Contribution Package below.</li>
                 <li>Fork the <code>ui-explorer</code> repository on GitHub.</li>
-                <li>Add your files under <code>{`styles/community/${currentStyle.metadata.id}/`}</code>.</li>
-                <li>Submit a Pull Request for validation.</li>
+                <li>Add the four files under <code>{`styles/community/${slug}/`}</code> and append <code>metadata.json</code> to <code>index.json</code>.</li>
+                <li>Run <code>npm run registry:check</code>, then open a pull request.</li>
               </ol>
             </div>
 
             <Button variant="primary" icon={<Download size={16} />} onClick={handleDownloadAll} fullWidth>
-              Download Contribution Package (.JSON & .MD)
+              Download Contribution Package (4 files)
             </Button>
+            <div className="contrib-next">
+              <strong>Next step</strong>
+              <span>Submit this style through GitHub.</span>
+              <a href={`${GITHUB_REPO_URL}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer"><ExternalLink size={13} /> Contribution guide</a>
+            </div>
           </div>
 
           <div className="contrib-preview-col">
@@ -120,6 +132,11 @@ contents of \`metadata.json\` to \`styles/community/index.json\`, run
             <div className="preview-file">
               <span className="file-name"><FileCode size={14} /> README.md</span>
               <Textarea value={readmeContent} readOnly rows={4} className="code-textarea" />
+            </div>
+
+            <div className="preview-file">
+              <span className="file-name"><FileCode size={14} /> preview.svg</span>
+              <img className="contrib-preview-img" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(previewSvg)}`} alt={`${currentStyle.metadata.name} preview`} />
             </div>
           </div>
         </div>

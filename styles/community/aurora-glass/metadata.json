@@ -1,0 +1,17 @@
+{
+  "id": "community-aurora-glass",
+  "name": "Aurora Glass",
+  "author": "alex_designer",
+  "version": "1.0.0",
+  "license": "MIT",
+  "category": "Morphism",
+  "description": "Vibrant translucent glass with holographic aurora gradients drifting behind every surface.",
+  "tags": [
+    "community",
+    "aurora",
+    "glass",
+    "holographic"
+  ],
+  "path": "styles/community/aurora-glass/style.json",
+  "repository": "https://github.com/Chinto-lgtm/ui-explorer/tree/main/styles/community/aurora-glass"
+}

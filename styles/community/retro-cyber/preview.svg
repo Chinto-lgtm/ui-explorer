@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Neon Arcade preview">
+<title>Neon Arcade</title>
+<defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="20" dy="0" stdDeviation="0" flood-color="rgba(255, 43, 214, 0.6)"/></filter><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="rgba(34, 211, 238, 0.9)"/></filter><linearGradient id="surface-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2bd6" stop-opacity="0.18"/><stop offset="1" stop-color="#ff2bd6" stop-opacity="0"/></linearGradient></defs>
+<rect width="480" height="320" fill="#050010"/>
+<g filter="url(#shadow)">
+<rect x="40" y="48" width="400" height="224" rx="4" fill="#0f0520" fill-opacity="1" stroke="#ff2bd6" stroke-width="3" />
+<rect x="40" y="48" width="400" height="224" rx="4" fill="url(#surface-gradient)"/>
+</g>
+<text x="68" y="92" font-family="Space Grotesk, Orbitron, sans-serif" font-size="18" font-weight="900" fill="#f8f0ff">Neon Arcade</text>
+<rect x="332" y="74" width="80" height="24" rx="2" fill="#ff2bd6"/>
+<text x="372" y="90" font-family="Space Grotesk, Orbitron, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#ffffff">Expressive</text>
+<text x="68" y="132" font-family="Space Grotesk, Orbitron, sans-serif" font-size="30" font-weight="900" fill="#f8f0ff">$128,450</text>
+<text x="68" y="152" font-family="Space Grotesk, Orbitron, sans-serif" font-size="12" fill="#c084fc">Revenue overview · last 7 days</text>
+<rect x="68" y="183.28" width="41.142857142857146" height="16.72" rx="1" fill="#ff2bd6" opacity="0.7210000000000001"/>
+<rect x="117.14285714285714" y="172.72" width="41.142857142857146" height="27.28" rx="1" fill="#ff2bd6" opacity="0.8290000000000001"/>
+<rect x="166.28571428571428" y="179.76" width="41.142857142857146" height="20.240000000000002" rx="1" fill="#ff2bd6" opacity="0.7570000000000001"/>
+<rect x="215.42857142857144" y="163.04" width="41.142857142857146" height="36.96" rx="1" fill="#ff2bd6" opacity="0.928"/>
+<rect x="264.57142857142856" y="169.2" width="41.142857142857146" height="30.799999999999997" rx="1" fill="#ff2bd6" opacity="0.865"/>
+<rect x="313.7142857142857" y="157.76" width="41.142857142857146" height="42.239999999999995" rx="1" fill="#ff2bd6" opacity="0.982"/>
+<rect x="362.8571428571429" y="174.48" width="41.142857142857146" height="25.52" rx="1" fill="#ff2bd6" opacity="0.811"/>
+<rect x="68" y="216" width="104" height="32" rx="2" fill="#ff2bd6" filter="url(#glow)"/>
+<text x="120" y="237" font-family="Space Grotesk, Orbitron, sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#ffffff">Primary</text>
+<rect x="184" y="216" width="104" height="32" rx="2" fill="none" stroke="#ff2bd6" stroke-width="3"/>
+<text x="236" y="237" font-family="Space Grotesk, Orbitron, sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#ff2bd6">Outline</text>
+</svg>

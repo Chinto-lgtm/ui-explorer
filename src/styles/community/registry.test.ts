@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { deepMerge, resolveInheritance } from '../../engine/inherit';
 import { checkStyleCompleteness } from '../../engine/validator';
+import { validateStyleDefinition } from '../../engine/validate';
 import { communityPackages, communityStyles, officialStyles, allStyles } from '../index';
 import { communityProblems } from './loader';
 import { cyberpunk } from '../expressive';
@@ -60,5 +61,38 @@ describe('completeness check', () => {
     expect(report.checks.length).toBe(11);
     expect(report.checks.filter((c) => !c.ok)).toEqual([]);
     expect(report.componentDepth).toBeGreaterThan(30);
+  });
+});
+
+describe('range and safety validation', () => {
+  const base = () => JSON.parse(JSON.stringify(cyberpunk));
+
+  it('accepts every built-in and community style', () => {
+    for (const s of allStyles) expect(validateStyleDefinition(s).missing, s.metadata.id).toEqual([]);
+  });
+
+  it('rejects values outside the safe ranges', () => {
+    const s = base();
+    s.tokens.radii.md = '900px';
+    s.tokens.motion.durationNormal = '9s';
+    s.tokens.materials = { backdropBlur: '500px', opacity: 4 };
+    const result = validateStyleDefinition(s);
+    expect(result.missing).toEqual(expect.arrayContaining([
+      expect.stringContaining('tokens.radii.md out of range'),
+      expect.stringContaining('tokens.motion.durationNormal out of range'),
+      expect.stringContaining('tokens.materials.backdropBlur out of range'),
+      expect.stringContaining('tokens.materials.opacity out of range')
+    ]));
+  });
+
+  it('rejects CSS that could execute or load remote content', () => {
+    for (const bad of ['url(https://evil.example/x.png)', 'expression(alert(1))', 'red; } body { display: none', '<script>alert(1)</script>', 'javascript:alert(1)']) {
+      const s = base();
+      s.tokens.colors.accent = bad;
+      expect(validateStyleDefinition(s).missing.some((m) => m.includes('unsafe')), bad).toBe(true);
+    }
+    const s = base();
+    s.metadata.description = 'Nice <script>alert(1)</script>';
+    expect(validateStyleDefinition(s).missing).toContain('metadata.description contains unsafe content');
   });
 });
