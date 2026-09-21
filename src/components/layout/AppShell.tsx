@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { AnatomyPanel } from '../../features/anatomy/AnatomyPanel';
@@ -10,9 +10,12 @@ import { ContributionPackageModal } from '../../features/export/ContributionPack
 import { CommandPalette } from '../../features/search/CommandPalette';
 import { ShortcutsPanel } from '../../features/shortcuts/ShortcutsPanel';
 import { CompareView } from '../../features/compare/CompareView';
+import { StyleDiffModal } from '../../features/diff/StyleDiffModal';
+import { TokenInspector } from '../../features/inspector/TokenInspector';
 import { useStyle } from '../../hooks/useStyle';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { getStyleDataAttributes } from '../../engine/styleAttributes';
+import { decodeStyleParam } from '../../engine/share';
 import './AppShell.css';
 
 export interface AppShellProps {
@@ -23,9 +26,10 @@ export interface AppShellProps {
 export const SAVE_EVENT = 'ui-explorer:save';
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
-  const { resolvedCssVars, renderedStyle, isCompareActive, setIsCompareActive, settings } = useStyle();
+  const { resolvedCssVars, renderedStyle, isCompareActive, setIsCompareActive, settings, setStyle, addCustomStyle } = useStyle();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isAnatomyOpen, setIsAnatomyOpen] = useState(false);
   const [isMixerOpen, setIsMixerOpen] = useState(false);
@@ -34,6 +38,21 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isDiffOpen, setIsDiffOpen] = useState(false);
+  const [isInspecting, setIsInspecting] = useState(false);
+
+  // Shared style links: ?style=<id> or ?style=j.<encoded definition>.
+  useEffect(() => {
+    const shared = searchParams.get('style');
+    if (!shared) return;
+    const decoded = decodeStyleParam(shared);
+    if (decoded.kind === 'id') setStyle(decoded.id);
+    else if (decoded.kind === 'style') addCustomStyle(decoded.style);
+    const next = new URLSearchParams(searchParams);
+    next.delete('style');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => { setIsSidebarOpen(false); }, [location.pathname]);
@@ -46,6 +65,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   useKeyboardShortcut({ key: 'a', ctrlKey: true, shiftKey: true }, () => setIsAnatomyOpen((v) => !v));
   useKeyboardShortcut({ key: 'e', ctrlKey: true, shiftKey: true }, () => setIsExportOpen(true));
   useKeyboardShortcut({ key: 's', ctrlKey: true }, () => window.dispatchEvent(new CustomEvent(SAVE_EVENT)));
+  useKeyboardShortcut({ key: 'x', ctrlKey: true, shiftKey: true }, () => setIsInspecting((v) => !v));
+  useKeyboardShortcut({ key: 'd', ctrlKey: true, shiftKey: true }, () => setIsDiffOpen(true));
 
   // "?" opens the shortcut reference unless the user is typing in a field.
   useEffect(() => {
@@ -65,6 +86,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       if (isCmdPaletteOpen) setIsCmdPaletteOpen(false);
+      else if (isDiffOpen) setIsDiffOpen(false);
       else if (isShortcutsOpen) setIsShortcutsOpen(false);
       else if (isExportOpen) setIsExportOpen(false);
       else if (isMixerOpen) setIsMixerOpen(false);
@@ -74,7 +96,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isCmdPaletteOpen, isShortcutsOpen, isExportOpen, isMixerOpen, isContribOpen, isSidebarOpen, isAnatomyOpen]);
+  }, [isCmdPaletteOpen, isShortcutsOpen, isExportOpen, isMixerOpen, isContribOpen, isSidebarOpen, isAnatomyOpen, isDiffOpen]);
 
   return (
     <div className="shell-root">
@@ -82,8 +104,10 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         onOpenCommandPalette={() => setIsCmdPaletteOpen(true)}
         onToggleAnatomy={() => setIsAnatomyOpen(!isAnatomyOpen)}
         onToggleSidebar={() => setIsSidebarOpen((v) => !v)}
+        onToggleInspect={() => setIsInspecting((v) => !v)}
         isSidebarOpen={isSidebarOpen}
         isAnatomyOpen={isAnatomyOpen}
+        isInspecting={isInspecting}
       />
 
       <div className="shell-body">
@@ -94,12 +118,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           onOpenExport={() => setIsExportOpen(true)}
           onOpenContribution={() => setIsContribOpen(true)}
           onOpenShortcuts={() => setIsShortcutsOpen(true)}
+          onOpenDiff={() => setIsDiffOpen(true)}
         />
 
         <main className="shell-content" id="main-content">
           {/* Main preview area applies current style resolved CSS variables */}
           {isCompareActive ? (
-            <CompareView />
+            <CompareView onOpenDiff={() => setIsDiffOpen(true)} />
           ) : (
             <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...getStyleDataAttributes(renderedStyle)} data-experimental={settings.experimental ? '1' : undefined}>
               {children}
@@ -114,6 +139,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       {isExportOpen && <ExportModal onClose={() => setIsExportOpen(false)} />}
       {isContribOpen && <ContributionPackageModal onClose={() => setIsContribOpen(false)} />}
       {isShortcutsOpen && <ShortcutsPanel onClose={() => setIsShortcutsOpen(false)} />}
+      {isDiffOpen && <StyleDiffModal onClose={() => setIsDiffOpen(false)} />}
+      <TokenInspector active={isInspecting} onClose={() => setIsInspecting(false)} onOpenAnatomy={() => setIsAnatomyOpen(true)} />
       {isCmdPaletteOpen && (
         <CommandPalette
           onClose={() => setIsCmdPaletteOpen(false)}
@@ -122,6 +149,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             openExport: () => setIsExportOpen(true),
             openMixer: () => setIsMixerOpen(true),
             openShortcuts: () => setIsShortcutsOpen(true),
+            openDiff: () => setIsDiffOpen(true),
+            toggleInspect: () => setIsInspecting((v) => !v),
             toggleCompare
           }}
         />

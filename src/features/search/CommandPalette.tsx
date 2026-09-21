@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
 import {
   Search, Sparkles, LayoutDashboard, Component, Database, Sliders, Wand2, X,
-  Columns, Download, Shuffle, Star, Keyboard, Eye, Braces, Zap, Info
+  Columns, Download, Shuffle, Star, Keyboard, Eye, Braces, Zap, Info, GitCompareArrows, Crosshair
 } from 'lucide-react';
 import './CommandPalette.css';
 
@@ -13,6 +13,8 @@ export interface PaletteActions {
   openExport: () => void;
   openMixer: () => void;
   openShortcuts: () => void;
+  openDiff: () => void;
+  toggleInspect: () => void;
   toggleCompare: () => void;
 }
 
@@ -59,6 +61,8 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
       { id: 'cmd-motion', group: 'Commands', label: settings.reduceMotion ? 'Turn motion back on' : 'Reduce motion', icon: <Zap size={16} />, keywords: 'motion animation reduce accessibility', run: () => { updateSettings({ reduceMotion: !settings.reduceMotion }); close(); } },
       { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } },
       { id: 'cmd-viewport', group: 'Commands', label: 'Toggle viewport', hint: 'Components Lab', icon: <Component size={16} />, keywords: 'viewport mobile tablet desktop responsive', run: () => go('/components') },
+      { id: 'cmd-diff', group: 'Commands', label: 'Style diff', hint: 'Ctrl+Shift+D', icon: <GitCompareArrows size={16} />, keywords: 'diff compare tokens differences', run: () => { actions.openDiff(); close(); } },
+      { id: 'cmd-inspect', group: 'Commands', label: 'Inspect tokens', hint: 'Ctrl+Shift+X', icon: <Crosshair size={16} />, keywords: 'inspect token inspector click element', run: () => { actions.toggleInspect(); close(); } },
       { id: 'cmd-shortcuts', group: 'Commands', label: 'Keyboard shortcuts', hint: '?', icon: <Keyboard size={16} />, keywords: 'keyboard shortcuts help keys', run: () => { actions.openShortcuts(); close(); } }
     ];
 

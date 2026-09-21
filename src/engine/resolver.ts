@@ -82,6 +82,8 @@ export function resolveStyleToCssVars(style: StyleDefinition): Record<string, st
     '--backdrop-blur': materials?.backdropBlur || '0px',
     '--material-opacity': String(materials?.opacity ?? 1),
     '--material-gradient': materials?.gradient || 'none',
+    '--background-image': materials?.backgroundImage || 'none',
+    '--density-scale': String(materials?.density ?? 1),
 
     // Icons
     '--icon-stroke-width': String(icons?.strokeWidth ?? 2),

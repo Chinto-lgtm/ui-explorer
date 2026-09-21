@@ -86,6 +86,10 @@ export interface MaterialTokens {
   reflection?: boolean;
   texture?: 'none' | 'noise' | 'grid' | 'scanline' | 'dot-pattern' | 'grain';
   gradient?: string;
+  /** Page background treatment layered over colors.bg (gradient, mesh, …). */
+  backgroundImage?: string;
+  /** Spacing multiplier: 0.85 compact, 1 comfortable, 1.2 spacious. */
+  density?: number;
 }
 
 export interface IconTokens {

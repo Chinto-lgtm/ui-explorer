@@ -1,5 +1,5 @@
 import React from 'react';
-import { Columns, Sparkles, Search, Sliders, Menu, X, Star } from 'lucide-react';
+import { Columns, Sparkles, Search, Sliders, Menu, X, Star, Crosshair } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { APP_VERSION } from '../../config/app';
 import './AppShell.css';
@@ -8,11 +8,13 @@ export interface HeaderProps {
   onOpenCommandPalette: () => void;
   onToggleAnatomy: () => void;
   onToggleSidebar: () => void;
+  onToggleInspect: () => void;
   isSidebarOpen: boolean;
   isAnatomyOpen: boolean;
+  isInspecting: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAnatomy, onToggleSidebar, isSidebarOpen, isAnatomyOpen }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAnatomy, onToggleSidebar, onToggleInspect, isSidebarOpen, isAnatomyOpen, isInspecting }) => {
   const { currentStyle, setStyle, availableStyles, isCompareActive, setIsCompareActive, favoriteIds, toggleFavorite } = useStyle();
 
   const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
@@ -103,6 +105,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
         >
           <Columns size={18} />
           <span>Compare</span>
+        </button>
+
+        {/* Inspect mode */}
+        <button
+          className={`shell-btn ${isInspecting ? 'shell-btn--active' : ''}`}
+          onClick={onToggleInspect}
+          title="Token Inspector (Ctrl+Shift+X)"
+          aria-pressed={isInspecting}
+        >
+          <Crosshair size={18} />
+          <span>Inspect</span>
         </button>
 
         {/* Anatomy Toggle */}

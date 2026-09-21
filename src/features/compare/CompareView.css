@@ -67,3 +67,119 @@
     overflow: visible;
   }
 }
+
+/* ---------- Modes, sync, sample content ---------- */
+.compare-modes {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 0.75rem;
+  padding: 2px;
+  border-radius: 8px;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.compare-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3125rem 0.625rem;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #9ca3af;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.compare-mode:hover { color: #ffffff; }
+
+.compare-mode--active {
+  background-color: #4f46e5;
+  color: #ffffff;
+}
+
+.compare-title-row > .compare-mode {
+  margin-left: 0.5rem;
+  border: 1px solid #374151;
+}
+
+.compare-mode:focus-visible {
+  outline: 2px solid #818cf8;
+}
+
+.compare-split--1 .compare-panel { max-width: 960px; margin: 0 auto; }
+
+.compare-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.compare-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.compare-panel-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background-color: #312e81;
+  color: #c7d2fe;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.compare-panel-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background-image: var(--background-image, none);
+}
+
+.compare-sample {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: var(--font-family-sans);
+}
+
+.compare-sample__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.compare-sample__title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing);
+  color: var(--color-text-primary);
+}
+
+.compare-sample__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height);
+}
+
+.compare-sample__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.compare-sample__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}

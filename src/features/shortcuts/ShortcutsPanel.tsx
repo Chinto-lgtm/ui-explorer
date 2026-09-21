@@ -9,6 +9,8 @@ export const SHORTCUTS: { keys: string[]; action: string }[] = [
   { keys: ['Ctrl', 'Shift', 'A'], action: 'Toggle Style Anatomy' },
   { keys: ['Ctrl', 'S'], action: 'Save the current custom style' },
   { keys: ['Ctrl', 'Shift', 'E'], action: 'Open Export & Import' },
+  { keys: ['Ctrl', 'Shift', 'X'], action: 'Toggle the Token Inspector' },
+  { keys: ['Ctrl', 'Shift', 'D'], action: 'Open Style Diff' },
   { keys: ['Ctrl', 'Z'], action: 'Undo (Customizer)' },
   { keys: ['Ctrl', 'Shift', 'Z'], action: 'Redo (Customizer)' },
   { keys: ['?'], action: 'Show this panel' },

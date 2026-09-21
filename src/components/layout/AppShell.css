@@ -228,6 +228,8 @@
   min-height: 100%;
   padding: 1.5rem;
   background-color: var(--color-bg);
+  background-image: var(--background-image, none);
+  background-attachment: fixed;
   color: var(--color-text-primary);
   transition: background-color var(--duration-normal) var(--motion-easing), color var(--duration-normal) var(--motion-easing);
 }

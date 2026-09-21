@@ -82,3 +82,73 @@
   border-radius: 8px;
   border: 1px solid var(--color-border);
 }
+
+/* ---------- Nine sources, formula, preview ---------- */
+.mixer-modal {
+  max-height: 92vh;
+}
+
+.mixer-modal-body {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.mixer-controls-col {
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+
+.mixer-hint {
+  font-weight: 400;
+  color: #64748b;
+}
+
+.mixer-name {
+  width: 100%;
+}
+
+.mixer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.mixer-preview-col {
+  overflow-y: auto;
+  background-image: var(--background-image, none);
+}
+
+.mixer-formula {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-family-sans);
+}
+
+.mixer-formula__label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.mixer-formula__value {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.mixer-sample {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.mixer-sample p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}

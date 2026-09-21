@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
-  GitPullRequest, Info, Keyboard, Star
+  GitPullRequest, Info, Keyboard, Star, GitCompareArrows
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import './AppShell.css';
@@ -13,6 +13,7 @@ export interface SidebarProps {
   onOpenExport: () => void;
   onOpenContribution?: () => void;
   onOpenShortcuts: () => void;
+  onOpenDiff: () => void;
 }
 
 const PAGES = [
@@ -23,7 +24,7 @@ const PAGES = [
   { to: '/customizer', label: 'Style Customizer', icon: <Sliders size={18} /> }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExport, onOpenContribution, onOpenShortcuts }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExport, onOpenContribution, onOpenShortcuts, onOpenDiff }) => {
   const { availableStyles, favoriteIds, setStyle, currentStyle } = useStyle();
   const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
 
@@ -67,6 +68,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExp
           <button className="shell-nav__action" onClick={onOpenMixer}>
             <Shuffle size={18} />
             <span>Style Mixer</span>
+          </button>
+          <button className="shell-nav__action" onClick={onOpenDiff}>
+            <GitCompareArrows size={18} />
+            <span>Style Diff</span>
           </button>
           <button className="shell-nav__action" onClick={onOpenExport}>
             <Download size={18} />
