@@ -1,0 +1,44 @@
+/* Maps VitePress theme variables onto the application chrome tokens (src/theme.css).
+   Do not put colour values here — change src/theme.css. */
+:root {
+  --vp-c-brand-1: var(--chrome-primary);
+  --vp-c-brand-2: var(--chrome-primary-hover);
+  --vp-c-brand-3: var(--chrome-primary);
+  --vp-c-brand-soft: color-mix(in srgb, var(--chrome-primary) 14%, transparent);
+  --vp-button-brand-bg: var(--chrome-primary);
+  --vp-button-brand-hover-bg: var(--chrome-primary-hover);
+  --vp-button-brand-active-bg: var(--chrome-primary);
+  --vp-button-brand-text: var(--chrome-on-primary);
+  --vp-button-brand-hover-text: var(--chrome-on-primary);
+  --vp-button-brand-active-text: var(--chrome-on-primary);
+  --vp-home-hero-name-color: var(--chrome-primary);
+  --vp-font-family-base: var(--chrome-font);
+  --vp-font-family-mono: var(--chrome-font-mono);
+}
+
+.dark {
+  --vp-c-bg: var(--chrome-bg);
+  --vp-c-bg-alt: var(--chrome-surface);
+  --vp-c-bg-elv: var(--chrome-surface);
+  --vp-c-bg-soft: var(--chrome-surface-2);
+  --vp-c-divider: var(--chrome-border);
+  --vp-c-border: var(--chrome-border);
+  --vp-c-gutter: var(--chrome-border);
+  --vp-c-text-1: var(--chrome-text);
+  --vp-c-text-2: var(--chrome-text-secondary);
+  --vp-c-text-3: var(--chrome-text-muted);
+  --vp-c-default-soft: var(--chrome-surface-2);
+  --vp-code-block-bg: var(--chrome-surface);
+  --vp-c-brand-soft: var(--chrome-primary-soft);
+  --vp-c-tip-1: var(--chrome-primary-hover);
+  --vp-c-tip-soft: var(--chrome-primary-soft);
+  --vp-c-success-1: var(--chrome-success);
+  --vp-c-warning-1: var(--chrome-warning);
+  --vp-c-danger-1: var(--chrome-error);
+  --vp-custom-block-info-bg: var(--chrome-surface-2);
+  --vp-sidebar-bg-color: var(--chrome-surface);
+  --vp-nav-bg-color: color-mix(in srgb, var(--chrome-bg) 85%, transparent);
+  --vp-local-search-bg: var(--chrome-surface);
+  --vp-local-search-result-bg: var(--chrome-surface-2);
+  --vp-local-search-result-selected-bg: var(--chrome-primary-soft);
+}

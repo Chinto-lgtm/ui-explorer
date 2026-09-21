@@ -44,4 +44,4 @@ phase *.md
 # VitePress
 docs/.vitepress/cache/
 docs/.vitepress/dist/
-.vitepress/
+/.vitepress/
