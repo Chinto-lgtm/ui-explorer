@@ -27,7 +27,7 @@ export const AboutPage: React.FC = () => {
   return (
     <>
       <section className="ls-about-hero">
-        <Backdrop preset="blob" seed={12} intensity={0.6} className="ls-about-hero__art" />
+        <Backdrop fit="cover" preset="blob" seed={12} intensity={0.6} className="ls-about-hero__art" />
         <div className="ls-container ls-about-hero__inner">
           <span className="ls-eyebrow">About Orbit</span>
           <h1 className="ls-h1 ls-h1--page">We build calm software for the most stressful thing people manage.</h1>

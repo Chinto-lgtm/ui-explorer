@@ -30,7 +30,7 @@ export const Media: React.FC<MediaProps> = ({ seed, label, icon, ratio, preset, 
         <img className="tpl-media__img" src={image.url} alt="" />
       ) : (
         <>
-          <Backdrop preset={preset ?? PRESETS[seed % PRESETS.length]} seed={seed * 37 + 11} intensity={0.55} density={0.5} className="tpl-media__art" />
+          <Backdrop fit="cover" preset={preset ?? PRESETS[seed % PRESETS.length]} seed={seed * 37 + 11} intensity={0.55} density={0.5} className="tpl-media__art" />
           {icon && <span className="tpl-media__icon" aria-hidden="true">{icon}</span>}
         </>
       )}

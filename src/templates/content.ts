@@ -224,6 +224,13 @@ export const BUDGETS = [
   { label: 'Fun', spent: 120, limit: 100 }
 ];
 
+/** Card designs the visitor can recolour; the colours are user data, not style tokens. */
+export const CARDS = [
+  { id: 'main', name: 'Everyday', last4: '4821', color: '#6d5efc' },
+  { id: 'travel', name: 'Travel', last4: '0937', color: '#0f9b8e' },
+  { id: 'virtual', name: 'Online only', last4: '5512', color: '#e2557a' }
+];
+
 export const OFFERS = [
   { id: 'o1', title: 'High-yield vault', text: '4.6% AER on easy-access savings', tag: 'Savings', badge: 'New' },
   { id: 'o2', title: 'Round-up boost', text: 'Multiply round-ups ×3 for a month', tag: 'Automation', badge: 'Popular' },

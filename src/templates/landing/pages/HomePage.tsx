@@ -40,7 +40,7 @@ export const HomePage: React.FC = () => {
     <>
       {/* Hero */}
       <section className="ls-hero">
-        <Backdrop preset="mesh" seed={3} intensity={0.45} className="ls-hero__art" />
+        <Backdrop fit="cover" preset="mesh" seed={3} intensity={0.45} className="ls-hero__art" />
         <div className="ls-container ls-hero__grid">
           <div className="ls-hero__copy">
             <Badge variant="outline"><span className="tpl-accent">●</span> Shared wallets are here</Badge>

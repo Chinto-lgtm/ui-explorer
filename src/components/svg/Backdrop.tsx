@@ -17,6 +17,8 @@ export interface BackdropProps {
   className?: string;
   /** Visual height of the decoration. */
   height?: number;
+  /** stretch (default) fills any box by distorting the art; cover keeps its proportions and crops. */
+  fit?: 'stretch' | 'cover';
 }
 
 /** Map a generated SVG language to the most representative preset. */
@@ -39,14 +41,14 @@ const H = 240;
  * Procedural decorative SVG. The generator (or a style) chooses a preset and
  * parameters; this component turns them into geometry. No raw markup is stored.
  */
-export const Backdrop: React.FC<BackdropProps> = ({ preset, seed = 1, intensity = 0.6, density = 0.5, curve = 0.6, animate = true, className = '', height = H }) => {
+export const Backdrop: React.FC<BackdropProps> = ({ preset, seed = 1, intensity = 0.6, density = 0.5, curve = 0.6, animate = true, className = '', height = H, fit = 'stretch' }) => {
   const id = useId();
   const rnd = useMemo(() => mulberry(seed + preset.length * 7919), [seed, preset]);
   const shapes = useMemo(() => buildShapes(preset, rnd, intensity, density, curve), [preset, rnd, intensity, density, curve]);
 
   return (
     <div className={`ui-backdrop ui-backdrop--${preset} ${animate ? 'ui-backdrop--animate' : ''} ${className}`} style={{ height }} aria-hidden="true">
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="ui-backdrop__svg">
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={fit === 'cover' ? 'xMidYMid slice' : 'none'} className="ui-backdrop__svg">
         <defs>
           <linearGradient id={`${id}-a`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="var(--color-accent)" stopOpacity={0.9} />

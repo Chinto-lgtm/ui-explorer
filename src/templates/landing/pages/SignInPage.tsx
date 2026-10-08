@@ -101,7 +101,7 @@ export const SignInPage: React.FC = () => {
         </Card>
 
         <div className="ls-auth__aside">
-          <Backdrop preset="aurora" seed={21} intensity={0.75} className="ls-auth__art" />
+          <Backdrop fit="cover" preset="aurora" seed={21} intensity={0.75} className="ls-auth__art" />
           <div className="ls-auth__quote">
             <Testimonial variant="card" {...TESTIMONIALS[1]} />
           </div>
