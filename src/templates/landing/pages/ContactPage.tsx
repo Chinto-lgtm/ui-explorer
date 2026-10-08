@@ -105,7 +105,7 @@ export const ContactPage: React.FC = () => {
               <div><strong>hello@orbit.money</strong><p className="tpl-muted">For anything that is not urgent.</p></div>
             </Card>
             <Card className="ls-contact ls-contact--map">
-              <Backdrop preset="grid" seed={5} intensity={0.5} density={0.7} className="ls-map" />
+              <Backdrop fit="cover" preset="grid" seed={5} intensity={0.5} density={0.7} className="ls-map" />
               <span className="ls-map__pin"><MapPin size={20} /></span>
               <div className="ls-map__label"><strong>Lisbon HQ</strong><span className="tpl-faint">Rua do Ouro 120, 1100-062</span></div>
             </Card>

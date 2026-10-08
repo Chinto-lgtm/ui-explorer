@@ -22,6 +22,8 @@ features:
     details: Switching a style changes radius, depth, borders, motion, icons, SVG language and component behaviour — not just colours. Every one of the 30 built-ins is documented.
   - title: A real component library
     details: Buttons, inputs, selection, navigation, feedback, overlays, tables, notifications and SVG charts all read the active style, with desktop, tablet and mobile framing.
+  - title: Real product templates
+    details: A landing site for desktop and mobile and a 17-screen mobile app, built only from the library and fully clickable, so you can judge a style on a real product.
   - title: A procedural engine you can read
     details: Seed → personality → recipe → compatibility → repair → tokens. Every decision is recorded and explained; the same seed reproduces the same style in the browser and in Python.
   - title: Tools for understanding
@@ -38,6 +40,7 @@ features:
 | --- | --- |
 | Browse and compare the styles | [Styles](/guide/styles) |
 | See how components change per style | [Components](/guide/components) |
+| See a style on a whole product (site and app) | [Templates](/guide/templates) |
 | Understand *why* a style looks the way it does | [Style Anatomy](/guide/style-anatomy) |
 | Make my own style | [Creating a style](/creating-a-style) |
 | Submit a style to the registry | [Community styles](/community-styles) · [Contributing](/contributing) |

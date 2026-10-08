@@ -19,8 +19,12 @@ focus behaviour.
 | Feedback | Alerts, toasts, progress bars and rings, skeletons, spinners, empty states |
 | Overlays | Modal, drawer, tooltip, popover, dropdown menu, context menu |
 | Data | Avatars, lists, timeline, activity feed, stats, tables, charts |
+| Content & marketing | Accordion, chips and chip groups, carousel, rating, pricing card, testimonial |
+| Mobile patterns | Status bar, app bar, bottom tab bar, chat bubble, code input, bottom sheet |
 
-Use the search box in the left panel to jump to a component.
+Use the search box in the left panel to jump to a component. To see the
+components working together in real product screens, open
+[Templates](/guide/templates).
 
 ## Interaction states
 

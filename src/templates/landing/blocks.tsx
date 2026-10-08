@@ -93,7 +93,7 @@ export const CtaBand: React.FC<{ title?: string; text?: string }> = ({ title = '
     <section className="ls-section">
       <div className="ls-container">
         <div className="ls-cta">
-          <Backdrop preset="aurora" seed={7} intensity={0.7} className="ls-cta__art" />
+          <Backdrop fit="cover" preset="aurora" seed={7} intensity={0.7} className="ls-cta__art" />
           <div className="ls-cta__body">
             <h2 className="ls-h2">{title}</h2>
             <p className="ls-lead">{text}</p>

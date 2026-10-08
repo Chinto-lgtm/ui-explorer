@@ -69,6 +69,10 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     return () => window.removeEventListener('ui-explorer:open-diff', onOpenDiff);
   }, []);
 
+  // Templates theme each frame themselves (three styles at once in A/B/C). The canvas must not carry
+  // the current style's treatment attributes there, or its descendant rules would leak into every frame.
+  const themedCanvas = !location.pathname.startsWith('/templates');
+
   // Close the mobile drawer whenever the route changes.
   useEffect(() => { setIsSidebarOpen(false); }, [location.pathname]);
 
@@ -142,7 +146,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           {isCompareActive ? (
             <CompareView onOpenDiff={() => setIsDiffOpen(true)} />
           ) : (
-            <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...getStyleDataAttributes(renderedStyle)} data-experimental={settings.experimental ? '1' : undefined}>
+            <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...(themedCanvas ? getStyleDataAttributes(renderedStyle) : {})} data-experimental={settings.experimental ? '1' : undefined}>
               {children}
             </div>
           )}

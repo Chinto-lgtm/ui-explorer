@@ -1,0 +1,575 @@
+/* ============================================================
+   Orbit mobile app. Style tokens only; the device frame is drawn by
+   the Templates page, the status bar and tab bar are library components.
+   ============================================================ */
+
+.oa {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.oa-screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.oa-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 1rem 1.5rem;
+}
+
+.oa-scroll > * {
+  flex-shrink: 0;
+}
+
+.oa-footer {
+  flex-shrink: 0;
+  padding: 0.75rem 1rem calc(0.75rem + 18px);
+  border-top: max(1px, var(--border-width)) var(--border-style) var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.oa-footer-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ---------- Typography and small helpers ---------- */
+.oa-h1 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.oa-p {
+  margin: 0;
+}
+
+.oa-small {
+  font-size: var(--font-size-xs);
+}
+
+.oa-center {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.oa-full {
+  width: 100%;
+}
+
+.oa-full.ui-segmented {
+  display: flex;
+}
+
+.oa-full .ui-segmented__btn,
+.oa-full .ui-tab {
+  flex: 1;
+  justify-content: center;
+}
+
+.oa-full.ui-tabs--pills {
+  width: 100%;
+}
+
+.oa-ellipsis {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oa-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.oa-icon-btn,
+.oa-avatar-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.oa-icon-btn:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.oa-icon-btn:focus-visible,
+.oa-avatar-btn:focus-visible,
+.oa-link:focus-visible,
+.oa-actions button:focus-visible,
+.oa-voice__btn:focus-visible,
+.oa-send:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.oa-bell__dot {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--color-bg);
+  border-radius: var(--radius-full);
+  background-color: var(--color-error);
+}
+
+.oa-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.oa-section-title h2 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.oa-grid-2,
+.oa-grid-3 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.oa-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.oa-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.oa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.oa-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.oa-fieldset legend {
+  margin-bottom: 0.5rem;
+}
+
+.oa-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.oa-divider::before,
+.oa-divider::after {
+  content: '';
+  flex: 1;
+  height: max(1px, var(--border-width));
+  background-color: var(--color-border);
+}
+
+/* ---------- Splash and welcome ---------- */
+.oa-splash {
+  position: relative;
+  justify-content: space-between;
+  padding-top: 0;
+  overflow: hidden;
+}
+
+.oa-splash__art {
+  position: absolute !important;
+  inset: 0;
+  height: 100% !important;
+  border-radius: 0 !important;
+  opacity: 0.6;
+}
+
+.oa-splash__brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 30%;
+  text-align: center;
+}
+
+.oa-splash__name {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+.oa-splash__foot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--font-size-sm);
+}
+
+.oa-welcome .ui-carousel {
+  flex: 1;
+}
+
+.oa-slide {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 0.125rem;
+}
+
+.oa-slide p {
+  margin: 0;
+}
+
+/* ---------- Home ---------- */
+.oa-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.oa-balance__amount {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+.oa-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.oa-actions button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.oa-actions button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) var(--motion-easing);
+}
+
+.oa-actions button:hover span {
+  transform: scale(var(--hover-scale));
+}
+
+.oa-goal-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  cursor: pointer;
+}
+
+.oa-discover {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.oa-notes {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* ---------- Goal ---------- */
+.oa-goal-hero {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.oa-goal-hero__ring {
+  position: absolute;
+  right: 1rem;
+  bottom: -1.75rem;
+  padding: 0.375rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.oa-amount {
+  font-family: var(--font-family-heading);
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.oa-stepper .ui-stepper__desc {
+  display: none;
+}
+
+.oa-review {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.oa-review__name {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+}
+
+.oa-success {
+  position: relative;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.oa-success__art {
+  position: absolute !important;
+  inset: 0;
+  height: 100% !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  opacity: 0.7;
+}
+
+.oa-success .ui-empty,
+.oa-success__stats {
+  position: relative;
+}
+
+.oa-success .ui-empty__icon {
+  color: var(--color-success);
+}
+
+/* ---------- Wallet cards ---------- */
+.oa-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  aspect-ratio: 1.586;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--card-color), color-mix(in srgb, var(--card-color) 50%, var(--color-text-primary)));
+  color: var(--color-accent-text);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: filter var(--duration-normal) var(--motion-easing);
+}
+
+.oa-card[data-frozen] {
+  filter: grayscale(0.85) brightness(0.9);
+}
+
+.oa-card__name {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+.oa-card__number {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-lg);
+  letter-spacing: 0.06em;
+}
+
+.oa-card__holder {
+  font-size: var(--font-size-xs);
+  opacity: 0.85;
+}
+
+.oa-card__frozen {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.oa-card--preview {
+  max-width: 280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.oa-table .ui-table-toolbar {
+  flex-wrap: wrap;
+}
+
+/* ---------- Chats ---------- */
+.oa-chat {
+  gap: 0.5rem;
+}
+
+.oa-chat__row {
+  display: block;
+}
+
+.oa-day {
+  align-self: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.oa-hint {
+  background: none;
+}
+
+.oa-voice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 180px;
+}
+
+.oa-voice__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+  cursor: pointer;
+}
+
+.oa-quick {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.oa-composer {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.oa-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.oa-send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Profile and settings ---------- */
+.oa-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  text-align: center;
+}
+
+.oa-profile .ui-avatar--lg {
+  width: 72px;
+  height: 72px;
+  font-size: 1.5rem;
+}
+
+.oa-profile__name {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+}
+
+.oa-rate {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.oa-preview-text {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.oa .ui-appbar__subtitle .ui-breadcrumbs__list {
+  font-size: var(--font-size-xs);
+}
+
+/* Drawers and sheets inside the phone respect the home indicator. */
+.tpl-screen--phone .ui-drawer--bottom .ui-drawer__body {
+  padding-bottom: 2rem;
+}

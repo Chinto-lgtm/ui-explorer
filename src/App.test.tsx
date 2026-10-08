@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 import { registry } from './engine/registry';
@@ -52,6 +52,52 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     const vars = resolveStyleToCssVars(style);
     expect(vars['--color-bg']).toBe('#e0e5ec');
     expect(vars['--radius-md']).toBe('16px');
+  });
+
+  describe('Templates', () => {
+    beforeEach(() => { localStorage.setItem('ui_explorer_onboarded', '1'); });
+
+    it('opens the first landing page and lists the screens and components', async () => {
+      window.history.replaceState({}, '', '/templates');
+      render(<App />);
+      expect(await screen.findByRole('heading', { name: 'Templates' }, { timeout: 5000 })).toBeInTheDocument();
+      expect(window.location.pathname).toBe('/templates/landing-desktop/home');
+      expect(screen.getByRole('button', { name: /desktop landing/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(await screen.findByRole('heading', { name: /money that moves with you/i })).toBeInTheDocument();
+      expect(screen.getByRole('complementary', { name: 'Components used' })).toBeInTheDocument();
+      // Frames carry their own treatment attributes; the shell canvas must not, or its rules would leak into them.
+      expect(document.querySelector('.style-preview-canvas')).not.toHaveAttribute('data-family');
+      expect(document.querySelector('.tpl-screen')).toHaveAttribute('data-family', 'neumorphic');
+    });
+
+    it('switches template and follows links inside a screen', async () => {
+      window.history.replaceState({}, '', '/templates/landing-desktop/home');
+      render(<App />);
+      fireEvent.click(await screen.findByRole('button', { name: /mobile app/i }));
+      expect(window.location.pathname).toBe('/templates/app/home');
+      const tabs = await screen.findByRole('navigation', { name: 'Tabs' });
+      fireEvent.click(within(tabs).getByText('Wallet').closest('button')!);
+      expect(window.location.pathname).toBe('/templates/app/wallet');
+    });
+
+    it('shows every screen on the flow board', async () => {
+      window.history.replaceState({}, '', '/templates/app/home?view=flow');
+      render(<App />);
+      // Seventeen full screens make a large DOM, so query it directly rather than by role.
+      await waitFor(() => expect(document.querySelectorAll('.tp-thumb__open')).toHaveLength(17), { timeout: 8000 });
+      fireEvent.click(document.querySelector('.tp-thumb__open[aria-label="Open Wallet"]')!);
+      expect(window.location.pathname).toBe('/templates/app/wallet');
+      expect(window.location.search).toBe('');
+    }, 20000);
+
+    it('renders a full-screen preview outside the shell', async () => {
+      window.history.replaceState({}, '', '/preview/landing-desktop/pricing?style=cyberpunk');
+      render(<App />);
+      expect(await screen.findByRole('heading', { name: /simple, fair pricing/i })).toBeInTheDocument();
+      expect(screen.queryByText('UI Explorer')).toBeNull();
+      expect(document.querySelector('.tpl-screen')).toHaveAttribute('data-style', 'cyberpunk');
+      expect(screen.getByRole('link', { name: /templates/i })).toHaveAttribute('href', '/templates/landing-desktop/pricing');
+    });
   });
 
   describe('Procedural Engine & PRNG Determinism', () => {

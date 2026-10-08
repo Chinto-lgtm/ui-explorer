@@ -22,7 +22,7 @@ generation, validation and sharing all run in the browser, and state lives in
                     ▼
      component library + treatments.css (bespoke construction per family)
                     │
-   pages: Dashboard · Styles · Generator · Components Lab · Labs · Customizer
+   pages: Dashboard · Styles · Generator · Components Lab · Templates · Labs · Customizer
 ```
 
 ## Layers
@@ -38,6 +38,7 @@ generation, validation and sharing all run in the browser, and state lives in
 | Generator | `src/engine/generator/` | Seeded procedural engine (see [procedural-generation.md](procedural-generation.md)) |
 | Sharing | `src/engine/share.ts` | `?style=<id>` / `?style=j.<payload>` links; generated styles carry seed + lineage |
 | Components | `src/components/ui`, `charts`, `svg`, `preview` | Everything reads tokens; nothing hard-codes a style |
+| Templates | `src/templates/`, `src/pages/Templates/` | Product screens (landing site, mobile app) built from the components; see [Templates](guide/templates.md) |
 | Features | `src/features/*` | Anatomy, compare, diff, inspector, mixer, export, search, shortcuts |
 | Pages | `src/pages/*` | Routed views; tool pages are code-split |
 | Python engine | `tools/style-engine/` | Same algorithm for batch generation, CI validation and determinism tests |
