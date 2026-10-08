@@ -23,6 +23,7 @@ export default defineConfig({
         items: [
           { text: 'Styles', link: '/guide/styles' },
           { text: 'Components', link: '/guide/components' },
+          { text: 'Templates', link: '/guide/templates' },
           { text: 'Style Anatomy', link: '/guide/style-anatomy' },
           { text: 'Customizer', link: '/guide/customizer' },
           { text: 'Style Mixer', link: '/guide/style-mixer' },

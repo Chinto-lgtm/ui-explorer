@@ -28,13 +28,27 @@ why anything looks the way it does, and export the result.
 ### Components & labs
 
 - A full component library (buttons, inputs, selection, navigation, feedback,
-  overlays, data display, tables, notifications) and SVG charts (line, area,
+  overlays, data display, tables, notifications, content and marketing blocks,
+  mobile patterns) and SVG charts (line, area,
   bar, donut, radial, sparkline, scatter, waveform) that all read the active
   style.
 - Components Lab with desktop / tablet / mobile / custom viewports, rulers,
   a responsive inspector and three-way style comparison.
 - Labs for SVG backdrops, data visualisation, tables, notifications, motion,
   materials and icons.
+
+### Templates
+
+- One fictional product, Orbit, in three templates built only from the
+  component library: a desktop landing site (7 pages), the same site on a
+  phone, and a mobile app (17 screens across onboarding, home, goals, wallet,
+  chat and account). Every style restyles all of them.
+- Fully clickable with no backend: links, forms, dialogs, sheets, menus,
+  toasts, loading and empty states.
+- Screen, Flow (every screen on one board) and A / B / C views, a live list of
+  the components on screen that outlines them in the frame, share links, a
+  full-screen preview, and an optional image of your own that stays in the
+  tab's memory.
 
 ### Generation
 
@@ -72,6 +86,7 @@ why anything looks the way it does, and export the result.
 | ![Style detail](docs/public/screenshots/styles-detail.png) | ![Relationship map](docs/public/screenshots/styles-map.png) |
 | ![Generator](docs/public/screenshots/generator.png) | ![Components Lab](docs/public/screenshots/components-lab.png) |
 | ![Customizer](docs/public/screenshots/customizer.png) | ![Labs](docs/public/screenshots/labs.png) |
+| ![Templates](docs/public/screenshots/templates.png) | ![Templates compared in three styles](docs/public/screenshots/templates-compare.png) |
 
 **Live:** <https://chinto-lgtm.github.io/ui-explorer/> · **Docs:** <https://chinto-lgtm.github.io/ui-explorer/docs/> — both built from `main` by GitHub Actions.
 
@@ -119,7 +134,8 @@ src/
   styles/         30 built-in style definitions, treatments, docs, community loader
   components/     ui primitives, charts, svg, layout, preview
   features/       anatomy, compare, diff, inspector, mixer, export, search, shortcuts
-  pages/          Welcome, Dashboard, Styles, Generator, Components Lab, Labs, Customizer
+  pages/          Welcome, Dashboard, Styles, Generator, Components Lab, Templates, Labs, Customizer
+  templates/      the Orbit landing site and mobile app, their content and the component catalogue
 styles/community/ community style packages + index.json
 schemas/          JSON schema for a style definition
 tools/style-engine/  Python engine + validator (see its README)
