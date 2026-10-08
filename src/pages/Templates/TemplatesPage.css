@@ -383,6 +383,12 @@
   align-items: safe center;
 }
 
+/* Fitted frames always fit, so the canvas never shows scrollbars: appearing
+   scrollbars would shrink the canvas and make the frames refit in a loop. */
+.tp-canvas--fit {
+  overflow: hidden;
+}
+
 .tp-canvas--zoomed {
   justify-content: flex-start;
 }

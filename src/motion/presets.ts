@@ -18,9 +18,14 @@ export const SPRING_SNAPPY: Transition = { type: 'spring', stiffness: 560, dampi
 
 export const DURATION = { fast: 0.16, base: 0.28, slow: 0.6 } as const;
 
-/** A page or stage arriving. */
+/**
+ * A page or stage arriving. It settles down from just above: a box shifted
+ * *down* would briefly stick out of the bottom of its scrolling container,
+ * flash a scrollbar and shift the layout sideways while it animates. Overflow
+ * above the top never creates a scrollbar.
+ */
 export const pageIn: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: -8 },
   show: { opacity: 1, y: 0, transition: { duration: DURATION.base, ease: EASE_OUT } }
 };
 
@@ -57,7 +62,7 @@ export const stagger = (step = 0.06, delay = 0): Variants => ({
   show: { transition: { staggerChildren: step, delayChildren: delay } }
 });
 
-/** Child of `stagger`: rises and fades in. */
+/** Child of `stagger`: rises and fades in. Use inside containers that clip or already scroll (see `pageIn`). */
 export const rise: Variants = {
   hidden: { opacity: 0, y: 18 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } }

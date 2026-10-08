@@ -678,10 +678,12 @@
   max-width: none;
 }
 
-/* Fixed-size frames sit centred; when zoomed past the stage they scroll from the start. */
+/* Fixed-size frames are zoomed to fit (see fitScale), so they never need
+   scrollbars; scrollbars would shrink the stage and make the frames refit in a loop. */
 .ws-stage__canvas--fixed {
   align-items: flex-start;
   justify-content: safe center;
+  overflow: hidden;
 }
 
 .ws-stage__hint {

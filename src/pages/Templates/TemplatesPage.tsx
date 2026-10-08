@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -16,7 +16,8 @@ import type { FamilyDef, FamilyId } from '../../templates/nav';
 import { TemplateScreen } from '../../templates/TemplateScreen';
 import { userImageStore, useUserImage } from '../../templates/userImage';
 import { TemplateFrame } from './TemplateFrame';
-import { DEVICE_CHROME } from '../../components/workspace/device';
+import { DEVICE_CHROME, MIN_FRAME_SCALE, fitArea, fitScale } from '../../components/workspace/device';
+import { useElementSize } from '../../hooks/useElementSize';
 import { Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { ComponentsPanel } from './ComponentsPanel';
 import { EditPanel } from './EditPanel';
@@ -48,24 +49,32 @@ const ScreenSwap: React.FC<{ id: string; children: ReactNode }> = ({ id, childre
   </motion.div>
 );
 
-const STAGE_GAP = 24;
-const LABEL_HEIGHT = 34;
+/** A browser frame stretches to the stage height, but never below this many CSS px of page. */
+const MIN_BROWSER_SCREEN = 480;
 
-/** Fit a device into the stage. Browser frames fill the height; phones keep their size. */
+/**
+ * Size a device for the stage. "Fit" uses the shared fitting rules (with
+ * slack, so the stage never overflows); fixed zooms render at that zoom and
+ * let the stage scroll. Browser frames fill the stage height; phones keep
+ * their size.
+ */
 function fitDevice(family: FamilyDef, stage: { width: number; height: number }, count: number, zoom: Zoom, labelled: boolean) {
   const isPhone = family.device === 'phone';
   const { phoneBezel, browserBar } = DEVICE_CHROME;
-  const outerW = family.width + (isPhone ? phoneBezel * 2 : 0) + 2;
-  const availH = Math.max(200, stage.height - (labelled ? LABEL_HEIGHT : 0));
-  let scale: number;
-  if (zoom !== 'fit') scale = Number(zoom);
-  else if (stage.width === 0) scale = isPhone ? 0.8 : 0.6;
-  else {
-    const byWidth = (stage.width - STAGE_GAP * (count - 1)) / (outerW * count);
-    scale = isPhone ? Math.min(1, byWidth, availH / (family.height + phoneBezel * 2 + 2)) : Math.min(1, byWidth);
+  const options = { count, labelled };
+  if (zoom !== 'fit') return { scale: Number(zoom), screenHeight: family.height };
+  if (stage.width === 0) return { scale: isPhone ? 0.8 : 0.6, screenHeight: family.height };
+  if (isPhone) {
+    return { scale: fitScale(stage, { width: family.width + phoneBezel * 2 + 2, height: family.height + phoneBezel * 2 + 2 }, options), screenHeight: family.height };
   }
-  scale = Math.max(0.08, scale);
-  const screenHeight = isPhone ? family.height : (zoom === 'fit' ? Math.max(480, availH / scale - browserBar - 2) : family.height);
+  // Browser: fit the width, but never so large that the minimum page height would not fit.
+  const area = fitArea(stage, options);
+  const scale = Math.min(
+    fitScale(stage, { width: family.width + 2, height: 1 }, { ...options, fitHeight: false }),
+    Math.max(MIN_FRAME_SCALE, Math.floor((area.height / (MIN_BROWSER_SCREEN + browserBar + 2)) * 1000) / 1000)
+  );
+  // Whole pixels, rounded down, so the zoomed frame ends inside the stage.
+  const screenHeight = Math.max(MIN_BROWSER_SCREEN, Math.floor(area.height / scale) - browserBar - 2);
   return { scale, screenHeight };
 }
 
@@ -127,22 +136,7 @@ export const TemplatesPage: React.FC = () => {
 
   // Measure the stage so frames can be zoomed to fit.
   const [stageEl, setStageEl] = useState<HTMLDivElement | null>(null);
-  const [stage, setStage] = useState({ width: 0, height: 0 });
-  useLayoutEffect(() => {
-    const el = stageEl;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const measure = () => {
-      const cs = getComputedStyle(el);
-      setStage({
-        width: el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
-        height: el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
-      });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [stageEl]);
+  const stage = useElementSize(stageEl);
 
   // The element the components panel scans: the screen, slot A, or the whole flow board.
   const [scanTarget, setScanTarget] = useState<HTMLDivElement | null>(null);
@@ -373,7 +367,7 @@ export const TemplatesPage: React.FC = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          <div ref={setStageEl} className={`tp-canvas tp-canvas--${view} tp-canvas--${family.device} ${zoom !== 'fit' ? 'tp-canvas--zoomed' : ''}`}>
+          <div ref={setStageEl} className={`tp-canvas tp-canvas--${view} tp-canvas--${family.device} ${zoom !== 'fit' ? 'tp-canvas--zoomed' : view !== 'flow' ? 'tp-canvas--fit' : ''}`}>
             {view === 'screen' && renderSingle()}
             {view === 'compare' && renderCompare()}
             {view === 'flow' && renderFlow()}

@@ -10,7 +10,8 @@ import { LAB_SECTIONS, SECTION_GROUPS, DEFAULT_SECTION, sectionById } from './se
 import { LabStateProvider, LabFrame } from './labState';
 import { Workspace, WorkspacePanel, WorkspaceStage, WorkspaceSection, WorkspaceSearch, WorkspaceSwitch, WorkspaceSegmented } from '../../components/workspace/Workspace';
 import { DeviceFrame } from '../../components/workspace/DeviceFrame';
-import { deviceOuterSize } from '../../components/workspace/device';
+import { deviceOuterSize, fitScale } from '../../components/workspace/device';
+import { useElementSize } from '../../hooks/useElementSize';
 import type { DeviceKind } from '../../components/workspace/device';
 import { LayoutPanelTop, SlidersHorizontal, Monitor, Tablet, Smartphone, Columns3, ToggleLeft, Ruler } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -66,23 +67,7 @@ export const ComponentsLabPage: React.FC = () => {
 
   // Measure the stage so fixed-size device frames can be zoomed to fit (single or three-up).
   const [canvasEl, setCanvasEl] = useState<HTMLDivElement | null>(null);
-  const [stageSize, setStageSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
-
-  useLayoutEffect(() => {
-    const el = canvasEl;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const measure = () => {
-      const cs = getComputedStyle(el);
-      setStageSize({
-        width: el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
-        height: el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
-      });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [canvasEl]);
+  const stageSize = useElementSize(canvasEl);
 
   // Responsive inspector: measure the live preview so the readout reflects the real layout.
   useLayoutEffect(() => {
@@ -105,16 +90,9 @@ export const ComponentsLabPage: React.FC = () => {
     : viewport === 'custom' ? { kind: 'browser' as DeviceKind, width: customWidth, height: CUSTOM_HEIGHT }
     : FRAMES[viewport];
 
-  const frameScale = (() => {
-    if (!frame || stageSize.width === 0) return 1;
-    const outer = deviceOuterSize(frame.kind, frame);
-    const count = isCompareEnabled ? 3 : 1;
-    const gap = 24;
-    const labelHeight = isCompareEnabled ? 34 : 0;
-    const byWidth = (stageSize.width - gap * (count - 1)) / (outer.width * count);
-    const byHeight = (stageSize.height - labelHeight) / outer.height;
-    return Math.max(0.08, Math.min(1, byWidth, byHeight));
-  })();
+  const frameScale = !frame || stageSize.width === 0
+    ? 1
+    : fitScale(stageSize, deviceOuterSize(frame.kind, frame), { count: isCompareEnabled ? 3 : 1, labelled: isCompareEnabled });
 
   const activeViewportMeta = VIEWPORTS.find((v) => v.id === viewport) ?? VIEWPORTS[0];
   const breakpoint = inspector ? BREAKPOINTS.find((b) => inspector.width <= b.max) ?? BREAKPOINTS[BREAKPOINTS.length - 1] : null;
