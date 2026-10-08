@@ -6,6 +6,7 @@
  */
 
 import { useSyncExternalStore } from 'react';
+import { STORAGE_KEYS } from '../../engine/storage';
 
 export interface SectionEdits {
   /** Section indices (original order) in the order they should appear. */
@@ -27,7 +28,7 @@ export interface EditsDoc {
   screens: Record<string, ScreenEdits>;
 }
 
-export const EDITS_STORAGE_KEY = 'ui_explorer_template_edits';
+export const EDITS_STORAGE_KEY = STORAGE_KEYS.templateEdits;
 
 const empty = (): EditsDoc => ({ app: 'ui-explorer', kind: 'template-edits', version: 1, screens: {} });
 

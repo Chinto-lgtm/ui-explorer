@@ -93,8 +93,9 @@ export const WorkspaceStage: React.FC<{
     <section className={`ws-stage ${className}`} aria-label={label}>
       <header className="ws-stage__bar">
         {(!panelOpen || narrow) && (
-          <button type="button" className="ws-icon-btn ws-stage__panel-btn" onClick={() => setPanelOpen(!panelOpen)} aria-expanded={panelOpen} aria-controls={panelId} aria-label="Show panel" title="Show panel">
+          <button type="button" className={`ws-icon-btn ws-stage__panel-btn ${narrow ? 'ws-stage__panel-btn--labelled' : ''}`} onClick={() => setPanelOpen(!panelOpen)} aria-expanded={panelOpen} aria-controls={panelId} aria-label="Show panel" title="Show panel">
             <PanelLeftOpen size={16} />
+            {narrow && <span aria-hidden="true">Controls</span>}
           </button>
         )}
         {start ?? (status !== undefined && (

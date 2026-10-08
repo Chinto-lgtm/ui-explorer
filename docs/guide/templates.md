@@ -60,9 +60,36 @@ The toolbar above the frame switches between three views:
 - **Flow:** every screen of the template on one board, grouped by flow.
   Click a thumbnail to open it.
 - **A / B / C:** the same screen in three styles side by side. Pick each style
-  above its frame. Links you follow apply to all three frames.
+  above its frame. Links you follow apply to all three frames. The header's
+  **Compare** button opens this view too.
 
 ![Comparing three styles](/screenshots/templates-compare.png)
+
+## Edit a template
+
+Press **Edit** above the frame (or turn on **Edit text on the page** in the
+left panel) and the screen becomes a page you can rewrite:
+
+- **Text:** click any headline, button label or paragraph and type. Press
+  <kbd>Enter</kbd> to keep it or <kbd>Esc</kbd> to undo. While editing, links
+  and buttons wait, so a click never leaves the page.
+- **Sections (landing pages):** the panel lists the page's sections. Drag them
+  into a new order, or use the arrows, and hide any with the eye.
+
+![Editing a template](/screenshots/templates-edit.png)
+
+Edits are saved in this browser and show everywhere the screen appears: in
+compare, on the flow board and in full screen. The desktop and phone landing
+templates are one website, so they share their edits. Edited screens carry a
+dot in the screen list.
+
+- **Reset page** removes this screen's edits; the link below it removes all of
+  them.
+- **Export** downloads your edits as `orbit-template-edits.json`; **Import**
+  loads such a file, for example on another computer.
+
+Editing works on one screen at a time, in the Screen view. The address
+remembers it (`?edit`), so a link can open a template ready to edit.
 
 ## Components on this screen
 
@@ -111,6 +138,7 @@ it stays in this browser tab's memory and is gone when you reload or press
 | Landing site | `src/templates/landing/` with `landing.css` (container queries) |
 | Mobile app | `src/templates/app/` with `app.css` |
 | Themed screen container | `src/templates/TemplateScreen.tsx` |
+| Visitor edits (store, overlay, editing) | `src/templates/edit/` |
 | Component catalogue for the panel and tests | `src/templates/catalog.ts` |
 | Viewer, frames, flow board, panel, full screen | `src/pages/Templates/` |
 
@@ -118,6 +146,11 @@ Template code reads only style tokens (`var(--color-*)`, `var(--radius-*)`
 and so on), never literal colours. A test enforces this the same way the app
 chrome is guarded. Overlays portal into the screen container, so modals and
 sheets stay inside the device frame and carry that frame's style.
+
+Visitor edits never touch the template code. They are laid over the rendered
+screen: only the values of text nodes change, and sections are hidden and
+reordered with CSS, so React keeps working and dynamic text (prices, counters)
+still updates.
 
 To add a screen, write a component that uses the library components and add
 it to a template's screen list in `registry.ts`. Links inside a template call

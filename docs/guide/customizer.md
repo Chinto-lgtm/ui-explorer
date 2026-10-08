@@ -1,7 +1,10 @@
 # Customizer
 
-`Ctrl+E`, or **Style Customizer** in the sidebar. Every token of the current
-style has a control; the whole app previews your draft live.
+`Ctrl+E`, or **Customizer** in the rail. Every token of the current style has
+a control; the whole app previews your draft live. Each group of controls has
+its own address (`/customizer/typography`), so you can link to the part you
+are working on. For quick, broad changes (rounder, flatter, denser) try
+[Tweaks](/guide/tweaks) first.
 
 ![Customizer](/screenshots/customizer.png)
 

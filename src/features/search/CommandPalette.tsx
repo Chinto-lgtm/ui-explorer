@@ -4,7 +4,7 @@ import { dialog, fade } from '../../motion/presets';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
-import { Search, Sparkles, X, Columns, Star, Zap, Braces, Home, Monitor, Smartphone, AppWindow } from 'lucide-react';
+import { Search, Sparkles, X, Columns, Star, Zap, Braces, Home, Monitor, Smartphone, AppWindow, PencilLine, Save, RotateCcw } from 'lucide-react';
 import { PAGES, TOOLS } from '../../config/routes';
 import { useTools } from '../../components/layout/tools';
 import { LAB_SECTIONS } from '../../pages/ComponentsLab/sections';
@@ -28,7 +28,7 @@ const TEMPLATE_LINKS = [
 ];
 
 export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { availableStyles, currentStyle, setStyle, resolvedCssVars, toggleFavorite, isFavorite, settings, updateSettings } = useStyle();
+  const { availableStyles, currentStyle, setStyle, resolvedCssVars, toggleFavorite, isFavorite, settings, updateSettings, isTweaked, resetTweaks, saveTweaksAsStyle } = useStyle();
   const { openTool, toggleCompare } = useTools();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -44,7 +44,12 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
       { id: 'cmd-random', group: 'Commands', label: 'Randomize style', hint: 'Surprise me', icon: <Sparkles size={16} />, keywords: 'random surprise shuffle generate', run: () => go(`/generator?seed=${Math.floor(Math.random() * 900000) + 100000}&surprise=1`) },
       { id: 'cmd-favorite', group: 'Commands', label: isFavorite(currentStyle.metadata.id) ? `Remove ${currentStyle.metadata.name} from favorites` : `Favorite ${currentStyle.metadata.name}`, icon: <Star size={16} />, keywords: 'favorite star bookmark', run: () => { toggleFavorite(currentStyle.metadata.id); close(); } },
       { id: 'cmd-motion', group: 'Commands', label: settings.reduceMotion ? 'Turn motion back on' : 'Reduce motion', icon: <Zap size={16} />, keywords: 'motion animation reduce accessibility', run: () => { updateSettings({ reduceMotion: !settings.reduceMotion }); close(); } },
-      { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } }
+      { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } },
+      { id: 'cmd-edit-template', group: 'Commands', label: 'Edit a template', hint: 'Rewrite text, reorder sections', icon: <PencilLine size={16} />, keywords: 'edit template text copy sections reorder hide landing page', run: () => go('/templates/landing-desktop/home?edit') },
+      ...(isTweaked ? [
+        { id: 'cmd-tweaks-save', group: 'Commands' as const, label: 'Save tweaks as a new style', icon: <Save size={16} />, keywords: 'tweaks save bake custom style', run: () => { saveTweaksAsStyle(); close(); } },
+        { id: 'cmd-tweaks-reset', group: 'Commands' as const, label: 'Reset tweaks', icon: <RotateCcw size={16} />, keywords: 'tweaks reset clear radius spacing accent', run: () => { resetTweaks(); close(); } }
+      ] : [])
     ];
 
     const pages: PaletteItem[] = [
@@ -86,7 +91,7 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
 
     return [...pages, ...tools, ...commands, ...styles, ...tokens];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableStyles, currentStyle, resolvedCssVars, settings, isFavorite]);
+  }, [availableStyles, currentStyle, resolvedCssVars, settings, isFavorite, isTweaked]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

@@ -31,6 +31,7 @@ import type { GeometryType, DepthType, BorderType, SurfaceType, MotionType, Icon
 import type { StyleDefinition, ComponentBehavior } from '../../engine/types';
 import { makeSeries } from '../../components/charts/chartUtils';
 import { STORAGE_KEYS, removeKey } from '../../engine/storage';
+import { absoluteUrl } from '../../config/app';
 import './CustomizerPage.css';
 import '../../components/preview/showcase.css';
 
@@ -168,7 +169,9 @@ export const CustomizerPage: React.FC = () => {
     removeKey(STORAGE_KEYS.recentStyles);
     removeKey(STORAGE_KEYS.generatorHistory);
     removeKey(STORAGE_KEYS.styleId);
-    window.location.href = '/';
+    removeKey(STORAGE_KEYS.tweaks);
+    removeKey(STORAGE_KEYS.templateEdits);
+    window.location.href = absoluteUrl('/styles');
   };
 
   const applyBackground = (mode: BackgroundMode, custom = customBg) => {
@@ -410,7 +413,7 @@ export const CustomizerPage: React.FC = () => {
       <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)} role="alertdialog" size="sm" title="Delete this style?" description={`${draft.metadata.name} will be removed from your library. Exports you downloaded are not affected.`}
         footer={<><Button variant="ghost" onClick={() => setDeleteOpen(false)}>Keep it</Button><Button variant="destructive" onClick={() => { deleteCustomStyle(draft.metadata.id); setDeleteOpen(false); setStyle('neumorphism'); navigate('/customizer'); }}>Delete</Button></>} />
 
-      <Modal open={resetAllOpen} onClose={() => setResetAllOpen(false)} role="alertdialog" size="sm" title="Reset everything?" description="Removes all custom styles, favorites, history and settings from this browser. Built-in styles are untouched."
+      <Modal open={resetAllOpen} onClose={() => setResetAllOpen(false)} role="alertdialog" size="sm" title="Reset everything?" description="Removes all custom styles, favorites, history, tweaks, template edits and settings from this browser. Built-in styles are untouched."
         footer={<><Button variant="ghost" onClick={() => setResetAllOpen(false)}>Cancel</Button><Button variant="destructive" onClick={resetEverything}>Reset everything</Button></>} />
     </Workspace>
   );

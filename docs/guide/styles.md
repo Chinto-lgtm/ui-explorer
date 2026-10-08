@@ -1,6 +1,7 @@
 # Styles
 
-Open **Styles** in the sidebar (or `Ctrl+K` → "Browse all styles").
+Open **Styles** in the rail, or search for it with `Ctrl+K`. The gallery is
+where the app starts.
 
 ![Styles gallery](/screenshots/styles-gallery.png)
 
@@ -41,7 +42,10 @@ Actions: **Use**, **Remix** (opens the Generator with this style as the base),
 **Duplicate**, **Diff** (against the current style), **Share** (copies a link
 that opens this drawer), **Favorite**.
 
-The drawer is deep-linkable: `/styles?style=<id>`.
+Every drawer and tab has its own address: `/styles/<id>` opens the docs and
+`/styles/<id>/<tab>` opens a tab (`validator`, `similar`, `relations`,
+`source`). Filters live in the address too, for example
+`/styles?category=Retro&facets=mood:Dark`.
 
 ## The relationship map
 

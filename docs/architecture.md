@@ -14,15 +14,16 @@ generation, validation and sharing all run in the browser, and state lives in
    customizer ──►   │
                     ▼
             StyleProvider (context)
-      current · preview override · favorites · recents · settings
+      current · preview override · tweaks · favorites · recents · settings
                     │
-        resolveStyleToCssVars ──► CSS custom properties on the canvas
+        applyTweaks ──► resolveStyleToCssVars ──► CSS custom properties on the canvas
         getStyleDataAttributes ──► data-style / family / texture / hover …
                     │
                     ▼
      component library + treatments.css (bespoke construction per family)
                     │
-   pages: Dashboard · Styles · Generator · Components Lab · Templates · Labs · Customizer
+   app shell (header · rail · Workspace layout · tools) from src/config/routes.ts
+   pages: Styles · Templates · Components · Generator · Customizer   (landing page at /)
 ```
 
 ## Layers
@@ -33,14 +34,19 @@ generation, validation and sharing all run in the browser, and state lives in
 | Registry | `src/engine/registry.ts`, `src/styles/index.ts` | Registers built-ins (with treatment defaults and docs) and community packages |
 | Resolver | `src/engine/resolver.ts` | Tokens → CSS custom properties |
 | Treatments | `src/engine/styleAttributes.ts`, `src/styles/treatments.css` | Tokens → data attributes → per-family construction rules |
-| Context | `src/engine/context.tsx` | Current style, app-wide preview override, custom styles, favorites, settings |
+| Context | `src/engine/context.tsx` | Current style, app-wide preview override, tweaks, custom styles, favorites, settings; `renderStyle()` paints any style (a compare frame) exactly like the canvas |
+| Tweaks | `src/engine/tweaks.ts` | Global dials (radius, borders, shadows, density, type, accent) layered over any style; see [Tweaks](guide/tweaks.md) |
 | Validation | `src/engine/validate.ts`, `validator.ts`, `inherit.ts` | Required fields, ranges, CSS safety, completeness, `extends` |
 | Generator | `src/engine/generator/` | Seeded procedural engine (see [procedural-generation.md](procedural-generation.md)) |
 | Sharing | `src/engine/share.ts` | `?style=<id>` / `?style=j.<payload>` links; generated styles carry seed + lineage |
 | Components | `src/components/ui`, `charts`, `svg`, `preview` | Everything reads tokens; nothing hard-codes a style |
-| Templates | `src/templates/`, `src/pages/Templates/` | Product screens (landing site, mobile app) built from the components; see [Templates](guide/templates.md) |
-| Features | `src/features/*` | Anatomy, compare, diff, inspector, mixer, export, search, shortcuts |
-| Pages | `src/pages/*` | Routed views; tool pages are code-split |
+| Templates | `src/templates/`, `src/pages/Templates/` | Product screens (landing site, mobile app) built from the components, plus visitor edits (`src/templates/edit/`); see [Templates](guide/templates.md) |
+| Routes & tools | `src/config/routes.ts` | The single list of pages and tools: router, rail, search, landing page and 404 page all read it; compare and tool URL conventions |
+| Layout | `src/components/layout`, `src/components/workspace` | App shell, style picker, the shared `Workspace` (panel + stage) and `DeviceFrame` every page uses |
+| URL state | `src/hooks/useUrlState.ts`, `src/hooks/useCompare.ts` | Page state in the address (`?device=`, `?compare=`, `?tool=`, `?edit`) so everything can be linked |
+| Motion | `src/motion/` | One set of motion presets and the policy (reduce motion) for every animation of the tool |
+| Features | `src/features/*` | Tweaks, anatomy, diff, inspector, mixer, export, search, shortcuts |
+| Pages | `src/pages/*` | Routed views; every page is code-split except the landing page |
 | Python engine | `tools/style-engine/` | Same algorithm for batch generation, CI validation and determinism tests |
 
 ## Principles
@@ -59,9 +65,10 @@ generation, validation and sharing all run in the browser, and state lives in
 
 ## Data flow for a page render
 
-1. `StyleProvider` picks `renderedStyle` (a preview override if the Generator,
-   Customizer or Mixer is previewing; otherwise the current style).
-2. `resolveStyleToCssVars(renderedStyle)` produces `--color-*`, `--radius-*`,
+1. `StyleProvider` picks the base style (a preview override if the Generator,
+   Customizer or Mixer is previewing; otherwise the current style) and lays the
+   tweaks over it: that is `renderedStyle`.
+2. `resolveStyleToCssVars(renderedStyle)`, adjusted for the motion settings, produces `--color-*`, `--radius-*`,
    `--shadow-*`, `--duration-*`, `--font-*`, `--density-scale` … applied to
    `.style-preview-canvas`.
 3. `getStyleDataAttributes(renderedStyle)` sets `data-style`, `data-family`,

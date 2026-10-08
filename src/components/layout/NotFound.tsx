@@ -9,6 +9,7 @@ import './NotFound.css';
 export const NotFound: React.FC = () => {
   const { pathname } = useLocation();
   return (
+    <div className="not-found-page">
     <div className="not-found">
       <BrandMark size={56} />
       <h1 className="not-found__title">Nothing lives at <code>{pathname}</code></h1>
@@ -25,6 +26,7 @@ export const NotFound: React.FC = () => {
         ))}
       </ul>
       <Link to="/" className="not-found__home">Back to the landing page</Link>
+    </div>
     </div>
   );
 };

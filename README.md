@@ -27,17 +27,16 @@ why anything looks the way it does, and export the result.
 - A detail drawer per style: docs, a completeness validator, similar styles by
   DNA, relations, and the package source with a link to the file on GitHub.
 
-### Components & labs
+### Components
 
 - A full component library (buttons, inputs, selection, navigation, feedback,
   overlays, data display, tables, notifications, content and marketing blocks,
-  mobile patterns) and SVG charts (line, area,
-  bar, donut, radial, sparkline, scatter, waveform) that all read the active
-  style.
-- Components Lab with desktop / tablet / mobile / custom viewports, rulers,
-  a responsive inspector and three-way style comparison.
-- Labs for SVG backdrops, data visualisation, tables, notifications, motion,
-  materials and icons.
+  mobile patterns) and SVG charts (line, area, bar, donut, radial, sparkline,
+  scatter, waveform) that all read the active style.
+- One Components page with three sets of sections: Foundations (tokens,
+  motion, materials, icons, SVG art), Components and Data (charts, table,
+  notifications). Desktop, tablet, mobile and custom viewports, rulers, a
+  responsive inspector and A / B / C comparison.
 
 ### Templates
 
@@ -51,6 +50,8 @@ why anything looks the way it does, and export the result.
   the components on screen that outlines them in the frame, share links, a
   full-screen preview, and an optional image of your own that stays in the
   tab's memory.
+- **Editable in place:** rewrite any text right in the frame, hide and reorder
+  landing sections, keep the edits in your browser and export them as JSON.
 
 ### Generation
 
@@ -63,13 +64,25 @@ why anything looks the way it does, and export the result.
 
 ### Tools
 
+- **Tweaks** on every page: sliders for corner radius, border width, shadow
+  depth, spacing, type size, accent colour and motion speed, live in the
+  preview and every compare frame, saved as a new style in one click.
 - Style Customizer with a real colour picker and contrast readout, presets
   for every system, undo/redo, section resets and app-wide live preview.
 - Style Anatomy, token inspector (click any element to see its tokens),
-  style diff, side-by-side and triple compare with synced scrolling, and the
-  Style Mixer for cross-style hybrids.
+  style diff, A / B / C compare and the Style Mixer for cross-style hybrids.
 - Export as JSON tokens, CSS variables or a contribution package; import
   styles with validation; command palette (Ctrl+K) and keyboard shortcuts.
+
+### The app
+
+- One layout everywhere: a collapsible navigation rail, a searchable style
+  picker, a left panel that hides or becomes a drawer on phones, and a
+  preview stage.
+- Real addresses: every page, section, filter, device, comparison and open
+  tool lives in the URL, so anything you see can be linked and Back works.
+- Motion throughout (Framer Motion): page entrances, gliding indicators,
+  panels and an animated landing page, all respecting reduced motion.
 
 ### Community
 
@@ -84,11 +97,12 @@ why anything looks the way it does, and export the result.
 
 | | |
 | --- | --- |
-| ![Welcome](docs/public/screenshots/welcome.png) | ![Dashboard](docs/public/screenshots/dashboard.png) |
+| ![Landing page](docs/public/screenshots/landing.png) | ![Tweaks](docs/public/screenshots/tweaks.png) |
 | ![Style detail](docs/public/screenshots/styles-detail.png) | ![Relationship map](docs/public/screenshots/styles-map.png) |
-| ![Generator](docs/public/screenshots/generator.png) | ![Components Lab](docs/public/screenshots/components-lab.png) |
-| ![Customizer](docs/public/screenshots/customizer.png) | ![Labs](docs/public/screenshots/labs.png) |
-| ![Templates](docs/public/screenshots/templates.png) | ![Templates compared in three styles](docs/public/screenshots/templates-compare.png) |
+| ![Components](docs/public/screenshots/components.png) | ![Charts compared in three styles](docs/public/screenshots/components-compare.png) |
+| ![Templates](docs/public/screenshots/templates.png) | ![Editing a template](docs/public/screenshots/templates-edit.png) |
+| ![Templates compared in three styles](docs/public/screenshots/templates-compare.png) | ![The flow board](docs/public/screenshots/templates-flow.png) |
+| ![Generator](docs/public/screenshots/generator.png) | ![Customizer](docs/public/screenshots/customizer.png) |
 
 **Live:** <https://chinto-lgtm.github.io/ui-explorer/> · **Docs:** <https://chinto-lgtm.github.io/ui-explorer/docs/> — both built from `main` by GitHub Actions.
 
@@ -107,9 +121,9 @@ npm run lint       # oxlint
 npm run build      # tsc + vite
 ```
 
-Keyboard: `Ctrl+K` command palette · `Ctrl+E` customizer · `Ctrl+Shift+A`
-anatomy · `Ctrl+Shift+C` compare · `Ctrl+Shift+D` diff · `Ctrl+Shift+X`
-inspect · `?` all shortcuts.
+Keyboard: `Ctrl+K` search · `Ctrl+.` tweaks · `Ctrl+E` customizer ·
+`Ctrl+Shift+A` anatomy · `Ctrl+Shift+C` compare · `Ctrl+Shift+D` diff ·
+`Ctrl+Shift+X` inspect · `?` all shortcuts.
 
 ## Deploying
 
@@ -131,13 +145,16 @@ introduces a literal colour. The 30 design styles are separate data
 
 ```text
 src/
-  engine/         types, resolver, registry, context, validation, inheritance, share links
+  config/         routes.ts: the one list of pages and tools (router, rail, search, landing)
+  engine/         types, resolver, registry, context, tweaks, validation, inheritance, share links
   engine/generator/  procedural engine: vocab, personalities, compatibility, colour, DNA
   styles/         30 built-in style definitions, treatments, docs, community loader
-  components/     ui primitives, charts, svg, layout, preview
-  features/       anatomy, compare, diff, inspector, mixer, export, search, shortcuts
-  pages/          Welcome, Dashboard, Styles, Generator, Components Lab, Templates, Labs, Customizer
-  templates/      the Orbit landing site and mobile app, their content and the component catalogue
+  components/     ui primitives, charts, svg, preview, layout (shell), workspace (panel, stage, device frame)
+  features/       tweaks, anatomy, diff, inspector, mixer, export, search, shortcuts
+  hooks/          URL state, compare, keyboard shortcuts
+  motion/         motion presets and the reduced-motion policy
+  pages/          Landing, Styles, Templates, Components, Generator, Customizer
+  templates/      the Orbit landing site and mobile app, their content, catalogue and visitor edits
 styles/community/ community style packages + index.json
 schemas/          JSON schema for a style definition
 tools/style-engine/  Python engine + validator (see its README)

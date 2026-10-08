@@ -22,12 +22,12 @@ features:
     details: Switching a style changes radius, depth, borders, motion, icons, SVG language and component behaviour — not just colours. Every one of the 30 built-ins is documented.
   - title: A real component library
     details: Buttons, inputs, selection, navigation, feedback, overlays, tables, notifications and SVG charts all read the active style, with desktop, tablet and mobile framing.
-  - title: Real product templates
-    details: A landing site for desktop and mobile and a 17-screen mobile app, built only from the library and fully clickable, so you can judge a style on a real product.
+  - title: Real product templates you can edit
+    details: A landing site for desktop and mobile and a 17-screen mobile app, built only from the library and fully clickable. Rewrite any text, hide and reorder sections, and export your edits.
   - title: A procedural engine you can read
     details: Seed → personality → recipe → compatibility → repair → tokens. Every decision is recorded and explained; the same seed reproduces the same style in the browser and in Python.
-  - title: Tools for understanding
-    details: Style Anatomy, a click-to-inspect token inspector, diffs, side-by-side and three-way compare, and a mixer for cross-style hybrids.
+  - title: Tools on every page
+    details: Tweaks (live sliders for radius, borders, depth, spacing, type, accent and speed), Style Anatomy, a click-to-inspect token inspector, diffs, A / B / C compare and a mixer for cross-style hybrids.
   - title: Yours to change and export
     details: A full customizer with a real colour picker, undo and resets; export as design tokens, CSS variables, theme CSS, SVG or a style package.
   - title: Community by pull request
@@ -38,10 +38,12 @@ features:
 
 | I want to… | Read |
 | --- | --- |
+| Find my way around the app | [Getting around](/guide/getting-around) |
 | Browse and compare the styles | [Styles](/guide/styles) |
 | See how components change per style | [Components](/guide/components) |
 | See a style on a whole product (site and app) | [Templates](/guide/templates) |
 | Understand *why* a style looks the way it does | [Style Anatomy](/guide/style-anatomy) |
+| Adjust a style with a few sliders | [Tweaks](/guide/tweaks) |
 | Make my own style | [Creating a style](/creating-a-style) |
 | Submit a style to the registry | [Community styles](/community-styles) · [Contributing](/contributing) |
 | Read the generator algorithm | [Procedural generation](/procedural-generation) |

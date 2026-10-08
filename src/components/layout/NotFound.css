@@ -1,3 +1,8 @@
+.not-found-page {
+  min-height: calc(100dvh - var(--shell-header-h, 56px));
+  background-color: var(--chrome-bg);
+}
+
 .not-found {
   display: flex;
   flex-direction: column;

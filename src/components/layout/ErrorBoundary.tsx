@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import { STORAGE_KEYS, removeKey } from '../../engine/storage';
+import { absoluteUrl } from '../../config/app';
 import './ErrorBoundary.css';
 
 interface Props {
@@ -34,7 +35,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
     removeKey(STORAGE_KEYS.customStyles);
     removeKey(STORAGE_KEYS.styleId);
     removeKey(STORAGE_KEYS.compare);
-    window.location.href = '/';
+    removeKey(STORAGE_KEYS.tweaks);
+    window.location.href = absoluteUrl('/');
   };
 
   render() {

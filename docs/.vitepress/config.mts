@@ -22,13 +22,14 @@ export default defineConfig({
       {
         text: 'Using UI Explorer',
         items: [
+          { text: 'Getting around', link: '/guide/getting-around' },
           { text: 'Styles', link: '/guide/styles' },
           { text: 'Components', link: '/guide/components' },
           { text: 'Templates', link: '/guide/templates' },
           { text: 'Style Anatomy', link: '/guide/style-anatomy' },
+          { text: 'Tweaks', link: '/guide/tweaks' },
           { text: 'Customizer', link: '/guide/customizer' },
           { text: 'Style Mixer', link: '/guide/style-mixer' },
-          { text: 'SVG Lab', link: '/guide/svg-lab' },
           { text: 'Design Tokens', link: '/guide/design-tokens' }
         ]
       },
