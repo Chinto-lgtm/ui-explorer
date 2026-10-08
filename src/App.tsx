@@ -13,6 +13,8 @@ const ComponentsLabPage = lazy(() => import('./pages/ComponentsLab/ComponentsLab
 const LabsPage = lazy(() => import('./pages/Labs/LabsPage').then((m) => ({ default: m.LabsPage })));
 const CustomizerPage = lazy(() => import('./pages/Customizer/CustomizerPage').then((m) => ({ default: m.CustomizerPage })));
 const StylesPage = lazy(() => import('./pages/Styles/StylesPage').then((m) => ({ default: m.StylesPage })));
+const TemplatesPage = lazy(() => import('./pages/Templates/TemplatesPage').then((m) => ({ default: m.TemplatesPage })));
+const TemplatePreviewPage = lazy(() => import('./pages/Templates/TemplatePreviewPage').then((m) => ({ default: m.TemplatePreviewPage })));
 
 const PageFallback: React.FC = () => (
   <div className="page-loading" role="status" aria-live="polite">Loading…</div>
@@ -27,6 +29,7 @@ const ShellRoutes: React.FC = () => (
       <Route path="/styles" element={<StylesPage />} />
       <Route path="/generator" element={<GeneratorPage />} />
       <Route path="/components" element={<ComponentsLabPage />} />
+      <Route path="/templates/:family?/:screen?" element={<TemplatesPage />} />
       <Route path="/data" element={<LabsPage />} />
       <Route path="/labs" element={<LabsPage />} />
       <Route path="/customizer" element={<CustomizerPage />} />
@@ -44,6 +47,8 @@ export const App: React.FC = () => {
           <Routes>
             {/* The welcome view is full-bleed and renders outside the shell. */}
             <Route path="/welcome" element={<WelcomePage />} />
+            {/* Full-screen template preview: just the template, no tool around it. */}
+            <Route path="/preview/:family/:screen" element={<Suspense fallback={<PageFallback />}><TemplatePreviewPage /></Suspense>} />
             <Route path="/*" element={<ShellRoutes />} />
           </Routes>
         </StyleProvider>

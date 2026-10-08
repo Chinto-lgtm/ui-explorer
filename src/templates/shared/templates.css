@@ -1,0 +1,222 @@
+/* ============================================================
+   Templates — shared rules for every template screen.
+   Templates are style-driven: they read only the active style's
+   tokens (var(--color-*), var(--radius-*), …), never literal colours.
+   ============================================================ */
+
+.tpl-screen {
+  container: tpl / inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  transition: background-color var(--duration-normal) var(--motion-easing), color var(--duration-normal) var(--motion-easing);
+}
+
+.tpl-screen *,
+.tpl-screen *::before,
+.tpl-screen *::after {
+  box-sizing: border-box;
+}
+
+/* Thumbnails in the flow board are pictures, not controls. */
+.tpl-screen--static {
+  pointer-events: none;
+  user-select: none;
+}
+
+.tpl-screen--static * {
+  animation-play-state: paused !important;
+}
+
+/* Toasts belong to the device, not the browser window. */
+.tpl-screen .ui-toaster {
+  position: absolute;
+  max-width: calc(100% - 2rem);
+}
+
+.tpl-screen--phone .ui-toaster--bottom-center {
+  bottom: 6.25rem;
+}
+
+/* The scrolling body of a template; the screen itself never scrolls so overlays cover the visible area. */
+.tpl-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* ---------- Media slot ---------- */
+.tpl-media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-hover);
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 22%, var(--color-surface)), var(--color-surface-hover) 70%);
+  isolation: isolate;
+}
+
+.tpl-media .tpl-media__art {
+  background-color: transparent;
+}
+
+.tpl-media--fill {
+  height: 100%;
+}
+
+.tpl-media .tpl-media__art {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+  border-radius: inherit;
+}
+
+.tpl-media__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tpl-media__icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- Brand ---------- */
+.tpl-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.tpl-mark {
+  flex-shrink: 0;
+}
+
+/* ---------- Small shared helpers ---------- */
+.tpl-muted {
+  color: var(--color-text-secondary);
+}
+
+.tpl-faint {
+  color: var(--color-text-tertiary);
+}
+
+.tpl-accent {
+  color: var(--color-accent);
+}
+
+.tpl-positive {
+  color: var(--color-success);
+}
+
+.tpl-negative {
+  color: var(--color-error);
+}
+
+.tpl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.tpl-row--wrap {
+  flex-wrap: wrap;
+}
+
+.tpl-row--between {
+  justify-content: space-between;
+}
+
+.tpl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.tpl-stack--tight {
+  gap: 0.5rem;
+}
+
+.tpl-stack > .ui-badge {
+  align-self: flex-start;
+}
+
+.tpl-grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.tpl-icon-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background-color: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+  color: var(--color-accent);
+}
+
+.tpl-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.tpl-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* A product phone drawn inside a page (landing hero). */
+.tpl-phone-mock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 610px;
+  overflow: hidden;
+  border: 8px solid var(--color-text-primary);
+  border-radius: 44px;
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-lg);
+}

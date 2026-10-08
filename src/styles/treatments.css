@@ -99,7 +99,7 @@
 /* Corner language                                                    */
 /* ---------------------------------------------------------------- */
 
-[data-corner='bevel'] :is(.ui-card, .ui-button, .ui-badge) {
+[data-corner='bevel'] :is(.ui-card, .ui-button, .ui-badge, .ui-chip) {
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   border-radius: 0;
 }
@@ -108,11 +108,11 @@
   clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
 }
 
-[data-corner='bevel'] .ui-badge {
+[data-corner='bevel'] :is(.ui-badge, .ui-chip) {
   clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
 }
 
-[data-corner='brutalist'] :is(.ui-card, .ui-button, .ui-input, .ui-badge) {
+[data-corner='brutalist'] :is(.ui-card, .ui-button, .ui-input, .ui-badge, .ui-chip, .ui-pin__box) {
   border-radius: 0;
 }
 
@@ -177,13 +177,14 @@
 }
 
 [data-family='neumorphic'] .ui-input,
-[data-family='neumorphic'] .ui-textarea {
+[data-family='neumorphic'] .ui-textarea,
+[data-family='neumorphic'] .ui-pin__box {
   border: none;
   background-color: var(--color-bg);
   box-shadow: inset 3px 3px 6px var(--color-shadow), inset -3px -3px 6px var(--color-highlight);
 }
 
-[data-family='neumorphic'] .ui-badge {
+[data-family='neumorphic'] :is(.ui-badge, .ui-chip) {
   box-shadow: 2px 2px 4px var(--color-shadow), -2px -2px 4px var(--color-highlight);
 }
 
@@ -229,7 +230,8 @@
 
 /* Aero: glossy top-half highlight on every control */
 [data-family='aero'] .ui-button,
-[data-family='aero'] .ui-badge {
+[data-family='aero'] .ui-badge,
+[data-family='aero'] .ui-chip {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 50%, transparent 51%);
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -254,12 +256,13 @@
 }
 
 [data-family='clay'] .ui-input,
-[data-family='clay'] .ui-textarea {
+[data-family='clay'] .ui-textarea,
+[data-family='clay'] .ui-pin__box {
   border: none;
   box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.08), inset -4px -4px 10px rgba(255, 255, 255, 0.7);
 }
 
-[data-family='clay'] .ui-badge {
+[data-family='clay'] :is(.ui-badge, .ui-chip) {
   box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.12), inset 2px 2px 4px rgba(255, 255, 255, 0.6);
 }
 
@@ -404,7 +407,7 @@
   box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-[data-family='chrome'] .ui-badge {
+[data-family='chrome'] :is(.ui-badge, .ui-chip) {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 55%);
 }
 
@@ -423,7 +426,7 @@
 /* Pixel: stepped edges, no anti-aliased curves, no easing            */
 /* ---------------------------------------------------------------- */
 
-[data-family='pixel'] :is(.ui-card, .ui-button, .ui-input, .ui-textarea, .ui-badge) {
+[data-family='pixel'] :is(.ui-card, .ui-button, .ui-input, .ui-textarea, .ui-badge, .ui-chip, .ui-pin__box) {
   border-radius: 0;
   transition-timing-function: steps(2, end);
   image-rendering: pixelated;

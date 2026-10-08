@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
 import {
   Search, Sparkles, LayoutDashboard, Component, Database, Sliders, Wand2, X,
-  Columns, Download, Shuffle, Star, Keyboard, Eye, Braces, Zap, Info, GitCompareArrows, Crosshair
+  Columns, Download, Shuffle, Star, Keyboard, Eye, Braces, Zap, Info, GitCompareArrows, Crosshair, LayoutTemplate, Smartphone, Monitor
 } from 'lucide-react';
 import './CommandPalette.css';
 
@@ -28,11 +28,15 @@ interface PaletteItem {
   run: () => void;
 }
 
-const PAGES = [
+const PAGES: { name: string; path: string; icon: ReactNode; keywords?: string }[] = [
   { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={16} /> },
   { name: 'Styles', path: '/styles', icon: <LayoutDashboard size={16} /> },
   { name: 'Style Generator', path: '/generator', icon: <Wand2 size={16} /> },
   { name: 'Components Lab', path: '/components', icon: <Component size={16} /> },
+  { name: 'Templates', path: '/templates', icon: <LayoutTemplate size={16} />, keywords: 'landing website app screens orbit' },
+  { name: 'Templates: Desktop landing', path: '/templates/landing-desktop/home', icon: <Monitor size={16} />, keywords: 'website marketing site pages' },
+  { name: 'Templates: Mobile landing', path: '/templates/landing-mobile/home', icon: <Smartphone size={16} />, keywords: 'responsive website phone' },
+  { name: 'Templates: Mobile app', path: '/templates/app/home', icon: <Smartphone size={16} />, keywords: 'app screens ios android onboarding' },
   { name: 'Labs', path: '/data', icon: <Database size={16} /> },
   { name: 'Style Customizer', path: '/customizer', icon: <Sliders size={16} /> },
   { name: 'About UI Explorer', path: '/welcome', icon: <Info size={16} /> }
@@ -83,7 +87,7 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
       group: 'Pages',
       label: p.name,
       icon: p.icon,
-      keywords: 'page navigate open',
+      keywords: `page navigate open ${p.keywords ?? ''}`,
       run: () => go(p.path)
     }));
 

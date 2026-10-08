@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
-  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette, BookOpen
+  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette, BookOpen, LayoutTemplate
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { DOCS_URL } from '../../config/app';
@@ -22,6 +22,7 @@ const PAGES = [
   { to: '/styles', label: 'Styles', icon: <Palette size={18} /> },
   { to: '/generator', label: 'Style Generator', icon: <Wand2 size={18} /> },
   { to: '/components', label: 'Components Lab', icon: <Component size={18} /> },
+  { to: '/templates', label: 'Templates', icon: <LayoutTemplate size={18} /> },
   { to: '/data', label: 'Labs', icon: <Database size={18} /> },
   { to: '/customizer', label: 'Style Customizer', icon: <Sliders size={18} /> }
 ];

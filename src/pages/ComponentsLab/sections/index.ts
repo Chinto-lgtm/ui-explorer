@@ -8,6 +8,8 @@ import { NavigationSection } from './NavigationSection';
 import { FeedbackSection } from './FeedbackSection';
 import { OverlaysSection } from './OverlaysSection';
 import { CardsSection, BadgesSection, ListsSection, ChartsSection } from './DataSection';
+import { ContentSection } from './ContentSection';
+import { MobileSection } from './MobileSection';
 
 export interface LabSection {
   id: string;
@@ -28,5 +30,7 @@ export const LAB_SECTIONS: LabSection[] = [
   { id: 'cards', label: 'Cards', keywords: ['card', 'container', 'stat', 'elevated', 'outlined', 'flat'], Component: CardsSection },
   { id: 'badges', label: 'Badges & avatars', keywords: ['badge', 'status', 'tag', 'avatar', 'avatar group'], Component: BadgesSection },
   { id: 'lists', label: 'Lists & timeline', keywords: ['list', 'timeline', 'activity feed'], Component: ListsSection },
-  { id: 'charts', label: 'Charts', keywords: ['line chart', 'bar chart', 'data visualization', 'svg'], Component: ChartsSection }
+  { id: 'charts', label: 'Charts', keywords: ['line chart', 'bar chart', 'data visualization', 'svg'], Component: ChartsSection },
+  { id: 'content', label: 'Content & marketing', keywords: ['accordion', 'faq', 'chip', 'filter chip', 'tag', 'carousel', 'slider', 'rating', 'stars', 'pricing card', 'testimonial', 'quote'], Component: ContentSection },
+  { id: 'mobile', label: 'Mobile patterns', keywords: ['status bar', 'app bar', 'top bar', 'tab bar', 'bottom navigation', 'chat', 'message bubble', 'pin', 'otp', 'verification code', 'bottom sheet'], Component: MobileSection }
 ];
