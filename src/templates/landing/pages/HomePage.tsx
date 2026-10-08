@@ -96,7 +96,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Stats */}
-      <section className="ls-section ls-section--tint">
+      <section className="ls-section ls-section--tint" aria-label="Orbit in numbers">
         <div className="ls-container ls-grid ls-grid--4">
           {STATS.map((s) => <Card key={s.label} variant="flat" className="ls-stat"><Stat label={s.label} value={s.value} delta={s.delta} /></Card>)}
         </div>

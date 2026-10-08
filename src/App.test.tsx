@@ -6,6 +6,7 @@ import { resolveStyleToCssVars } from './engine/resolver';
 import { allStyles } from './styles';
 import { createSeededRandom } from './engine/random/prng';
 import { generateProceduralStyle } from './engine/generator/generator';
+import { editStore } from './templates/edit/editStore';
 
 describe('UI Explorer — Integration & Engine Tests', () => {
   beforeEach(() => {
@@ -143,6 +144,38 @@ describe('UI Explorer — Integration & Engine Tests', () => {
       fireEvent.click(await screen.findByRole('button', { name: 'Show panel' }, { timeout: 5000 }));
       expect(screen.getByRole('complementary', { name: 'Style filters' })).toBeInTheDocument();
     });
+
+    it('templates can be edited in place and the edits persist across devices', async () => {
+      editStore.resetAll();
+      window.history.replaceState({}, '', '/templates/landing-desktop/home?edit');
+      const { unmount } = render(<App />);
+      const h1 = await waitFor(() => {
+        const el = document.querySelector<HTMLElement>('.tpl-screen h1');
+        expect(el).toHaveAttribute('data-tpl-editable');
+        return el!;
+      }, { timeout: 8000 });
+      fireEvent.focusIn(h1);
+      // What typing does: the browser rewrites the element's text nodes.
+      h1.childNodes.forEach((n, i) => { n.nodeValue = i === 0 ? 'Money, finally calm' : ''; });
+      fireEvent.focusOut(h1);
+      expect(JSON.parse(localStorage.getItem('ui_explorer_template_edits')!).screens['landing/home'].text).toEqual({ 'Money that moves with you.#0': 'Money, finally calm' });
+      expect(screen.getByText(/1 text rewritten/i)).toBeInTheDocument();
+
+      // Links wait while editing.
+      fireEvent.click(within(document.querySelector('.tpl-screen')!).getAllByRole('button', { name: /see how it works/i })[0]);
+      expect(window.location.pathname).toBe('/templates/landing-desktop/home');
+
+      fireEvent.click(screen.getAllByRole('button', { name: 'Done' })[0]);
+      await waitFor(() => expect(new URLSearchParams(window.location.search).has('edit')).toBe(false));
+      unmount();
+
+      window.history.replaceState({}, '', '/templates/landing-mobile/home');
+      render(<App />);
+      await waitFor(() => expect(document.querySelector('.tpl-screen h1')).toHaveTextContent('Money, finally calm'), { timeout: 8000 });
+      expect(document.querySelector('.tpl-screen h1')).not.toHaveAttribute('data-tpl-editable');
+      fireEvent.click(screen.getByRole('button', { name: /reset page/i }));
+      await waitFor(() => expect(document.querySelector('.tpl-screen h1')).toHaveTextContent('Money that moves with you.'));
+    }, 20000);
 
     it('the style picker filters and applies a style from the keyboard', async () => {
       window.history.replaceState({}, '', '/styles');

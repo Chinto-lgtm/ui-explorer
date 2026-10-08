@@ -220,3 +220,36 @@
   background-color: var(--color-bg);
   box-shadow: var(--shadow-lg);
 }
+
+/* ---------- Visitor edits (see src/templates/edit) ---------- */
+/* Reordered landing sections use flex order; hidden ones are taken out of the page. */
+.ls-main[data-tpl-ordered] {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-tpl-hidden] {
+  display: none !important;
+}
+
+/* Edit mode: every rewritable text shows where it is on hover and while being edited. */
+.tpl-screen[data-tpl-editing] [data-tpl-editable] {
+  cursor: text;
+  border-radius: 3px;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+
+.tpl-screen[data-tpl-editing] [data-tpl-editable]:hover {
+  outline-color: color-mix(in srgb, var(--color-accent) 75%, transparent);
+}
+
+.tpl-screen[data-tpl-editing] [data-tpl-editable]:focus {
+  outline: 2px solid var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.tpl-screen[data-tpl-editing] :is(a, button, [role='button'], label, summary) {
+  cursor: default;
+}

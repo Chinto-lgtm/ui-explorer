@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Monitor, Smartphone, AppWindow, LayoutTemplate, Columns3, Workflow, ListChecks, Link2, Check, Maximize2,
-  ChevronLeft, ChevronRight, ImagePlus, Trash2, ZoomIn
+  ChevronLeft, ChevronRight, ImagePlus, Trash2, ZoomIn, PencilLine
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EASE_OUT } from '../../motion/presets';
@@ -19,6 +19,11 @@ import { TemplateFrame } from './TemplateFrame';
 import { DEVICE_CHROME } from '../../components/workspace/device';
 import { Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { ComponentsPanel } from './ComponentsPanel';
+import { EditPanel } from './EditPanel';
+import { useSearchFlag } from '../../hooks/useUrlState';
+import { WorkspaceSection } from '../../components/workspace/Workspace';
+import { screenKey, useEdits } from '../../templates/edit/editStore';
+import { AnimatePresence } from 'motion/react';
 import './TemplatesPage.css';
 
 type ViewMode = 'screen' | 'flow' | 'compare';
@@ -75,6 +80,10 @@ export const TemplatesPage: React.FC = () => {
   const screen = family.screens.find((s) => s.id === params.screen) ?? family.screens[0];
   const compare = useCompare();
   const view: ViewMode = compare.on ? 'compare' : searchParams.get('view') === 'flow' ? 'flow' : 'screen';
+  // Editing is one screen at a time; ?edit in the address turns it on.
+  const [editFlag, setEditing] = useSearchFlag('edit');
+  const editing = editFlag && view === 'screen';
+  const edits = useEdits();
   const zoom = (['fit', '0.5', '0.75', '1'].includes(searchParams.get('zoom') ?? '') ? searchParams.get('zoom') : 'fit') as Zoom;
   const [panelOpen, setPanelOpen] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -102,6 +111,7 @@ export const TemplatesPage: React.FC = () => {
       const p = new URLSearchParams(prev);
       p.delete('view');
       p.delete('compare');
+      if (next !== 'screen') p.delete('edit');
       if (next === 'flow') p.set('view', 'flow');
       if (next === 'compare') p.set('compare', compareIds.join(','));
       return p;
@@ -174,7 +184,7 @@ export const TemplatesPage: React.FC = () => {
     return (
       <TemplateFrame family={family} screenId={screen.id} scale={scale} screenHeight={screenHeight}>
         <ScreenSwap id={screen.id}>
-          <TemplateScreen family={family} screenId={screen.id} style={renderedStyle} vars={resolvedCssVars} go={goScreen} screenRef={setScanTarget} />
+          <TemplateScreen family={family} screenId={screen.id} style={renderedStyle} vars={resolvedCssVars} go={goScreen} screenRef={setScanTarget} editing={editing} />
         </ScreenSwap>
       </TemplateFrame>
     );
@@ -265,6 +275,10 @@ export const TemplatesPage: React.FC = () => {
             ))}
           </div>
 
+          <WorkspaceSection title="Edit" icon={<PencilLine size={14} />}>
+            <EditPanel family={family} screen={screen} root={view === 'screen' ? scanTarget : null} editing={editing} setEditing={setEditing} canEdit={view === 'screen'} />
+          </WorkspaceSection>
+
           <nav className="tp-screens" aria-label={`${family.name} screens`}>
             {groupScreens(family).map(({ group, screens }) => (
               <div key={group} className="tp-screens__group">
@@ -279,6 +293,7 @@ export const TemplatesPage: React.FC = () => {
                     title={s.description}
                   >
                     {s.name}
+                    {edits.screens[screenKey(family.id, s.id)] && <span className="tp-screen-link__dot" title="Edited" aria-label="(edited)" />}
                   </button>
                 ))}
               </div>
@@ -338,6 +353,9 @@ export const TemplatesPage: React.FC = () => {
                 </select>
               </label>
             )}
+            <button type="button" className={`tp-btn ${editing ? 'tp-btn--active' : ''}`} aria-pressed={editing} disabled={view !== 'screen'} onClick={() => setEditing(!editing)} title={view === 'screen' ? 'Rewrite text and rearrange sections' : 'Switch to the Screen view to edit'}>
+              <PencilLine size={14} /><span>{editing ? 'Done' : 'Edit'}</span>
+            </button>
             <button type="button" className={`tp-btn ${panelOpen ? 'tp-btn--active' : ''}`} aria-pressed={panelOpen} onClick={() => setPanelOpen((v) => !v)}><ListChecks size={14} /><span>Components</span></button>
             <button type="button" className="tp-btn" onClick={copyLink}>{copied ? <Check size={14} /> : <Link2 size={14} />}<span>{copied ? 'Copied' : 'Copy link'}</span></button>
             <Link className="tp-btn tp-btn--primary" to={`/preview/${family.id}/${screen.id}`}><Maximize2 size={14} /><span>Full screen</span></Link>
@@ -346,6 +364,15 @@ export const TemplatesPage: React.FC = () => {
       >
 
         <div className="tp-stage__body">
+          <AnimatePresence>
+            {editing && (
+              <motion.div key="edit-banner" className="tp-edit-banner" role="status" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} transition={{ duration: 0.22, ease: EASE_OUT }}>
+                <PencilLine size={14} aria-hidden="true" />
+                <span><strong>Editing {screen.name}.</strong> Click any text to rewrite it · Enter saves · Esc undoes</span>
+                <button type="button" className="tp-btn tp-btn--primary" onClick={() => setEditing(false)}>Done</button>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div ref={setStageEl} className={`tp-canvas tp-canvas--${view} tp-canvas--${family.device} ${zoom !== 'fit' ? 'tp-canvas--zoomed' : ''}`}>
             {view === 'screen' && renderSingle()}
             {view === 'compare' && renderCompare()}
