@@ -14,8 +14,10 @@
   overflow: hidden;
 }
 
+/* A hidden panel is display: none, so it leaves the grid entirely: the stage
+   takes the first column and an optional side drawer the second. */
 .ws-workspace--panel-hidden:not(.ws-workspace--narrow) {
-  grid-template-columns: 0 minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 /* ---------- Left panel (chrome, not themed) ---------- */
