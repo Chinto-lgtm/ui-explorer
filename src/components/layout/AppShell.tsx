@@ -11,6 +11,7 @@ import { CommandPalette } from '../../features/search/CommandPalette';
 import { ShortcutsPanel } from '../../features/shortcuts/ShortcutsPanel';
 import { StyleDiffModal } from '../../features/diff/StyleDiffModal';
 import { TokenInspector } from '../../features/inspector/TokenInspector';
+import { TweaksPanel } from '../../features/tweaks/TweaksPanel';
 import { useStyle } from '../../hooks/useStyle';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { getStyleDataAttributes } from '../../engine/styleAttributes';
@@ -27,6 +28,9 @@ export interface AppShellProps {
 /** Fired by the Ctrl+S shortcut; pages that can save (Customizer) listen for it. */
 export const SAVE_EVENT = 'ui-explorer:save';
 
+const RAIL_KEY = 'ui_explorer_rail_collapsed';
+const readRail = () => { try { return localStorage.getItem(RAIL_KEY) === '1'; } catch { return false; } };
+
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const { resolvedCssVars, renderedStyle, settings, setStyle, addCustomStyle } = useStyle();
   const navigate = useNavigate();
@@ -36,6 +40,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isInspecting, setIsInspecting] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(readRail);
+  const toggleRail = () => setRailCollapsed((v) => {
+    try { localStorage.setItem(RAIL_KEY, v ? '0' : '1'); } catch { /* storage unavailable */ }
+    return !v;
+  });
 
   // The open tool lives in the URL (?tool=mixer), so tools can be linked to and Back closes them.
   const toolParam = searchParams.get('tool');
@@ -136,7 +145,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   return (
     <ToolsContext.Provider value={tools}>
-      <div className="shell-root">
+      <div className={`shell-root ${railCollapsed ? 'shell-root--rail' : ''}`}>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <Header
           onToggleSidebar={() => setIsSidebarOpen((v) => !v)}
@@ -145,7 +154,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
         <div className="shell-body">
           {isSidebarOpen && <div className="shell-sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} aria-hidden="true" />}
-          <Sidebar isOpen={isSidebarOpen} />
+          <Sidebar isOpen={isSidebarOpen} collapsed={railCollapsed} onToggleCollapsed={toggleRail} />
 
           <main className="shell-content" id="main-content" tabIndex={-1}>
             <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...(themedCanvas ? getStyleDataAttributes(renderedStyle) : {})} data-experimental={settings.experimental ? '1' : undefined}>
@@ -154,6 +163,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </main>
 
           {activeTool === 'anatomy' && <AnatomyPanel onClose={closeTool} />}
+          {activeTool === 'tweaks' && <TweaksPanel onClose={closeTool} />}
         </div>
 
         {activeTool === 'mixer' && <StyleMixerModal onClose={closeTool} />}

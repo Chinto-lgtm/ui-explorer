@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Columns, Search, Sliders, Menu, X, Star, Crosshair, AlertTriangle } from 'lucide-react';
+import { Link, matchPath, useLocation } from 'react-router-dom';
+import { Columns3, Search, Menu, X, Crosshair, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { BrandLockup } from './BrandMark';
+import { StylePicker } from './StylePicker';
 import { contrastRatio } from '../../engine/color';
 import { useStyle } from '../../hooks/useStyle';
-import { APP_VERSION } from '../../config/app';
-import { COMPARE_PARAM } from '../../config/routes';
+import { COMPARE_PARAM, PAGES, supportsCompare } from '../../config/routes';
 import { useTools } from './tools';
 import './AppShell.css';
 
@@ -15,18 +15,13 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }) => {
-  const { currentStyle, setStyle, availableStyles, favoriteIds, toggleFavorite } = useStyle();
+  const { currentStyle, isTweaked } = useStyle();
   const { activeTool, openTool, toggleTool, isInspecting, toggleCompare } = useTools();
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
+  const page = PAGES.find((p) => matchPath({ path: p.path, end: false }, pathname));
   const isCompareActive = new URLSearchParams(search).has(COMPARE_PARAM);
-  const isAnatomyOpen = activeTool === 'anatomy';
-  const onOpenCommandPalette = () => openTool('search');
-  const onToggleAnatomy = () => toggleTool('anatomy');
-  const onToggleInspect = () => openTool('inspect');
+  const isTweaksOpen = activeTool === 'tweaks';
 
-  const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
-  const others = availableStyles.filter((s) => !favoriteIds.includes(s.metadata.id));
-  const isFav = favoriteIds.includes(currentStyle.metadata.id);
   // Experimental styles may fail WCAG on purpose; the problem is surfaced, not corrected.
   const textContrast = contrastRatio(currentStyle.tokens.colors.textPrimary, currentStyle.tokens.colors.bg);
   const lowContrast = textContrast !== null && textContrast < 4.5 ? textContrast : null;
@@ -47,106 +42,76 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }
         <Link to="/" className="shell-header__logo" aria-label="UI Explorer home">
           <BrandLockup size={28} className="shell-header__lockup" />
         </Link>
-        <span className="shell-header__badge">v{APP_VERSION}</span>
+        {page && (
+          <span className="shell-crumb">
+            <span className="shell-crumb__sep" aria-hidden="true">/</span>
+            <page.icon size={15} aria-hidden="true" />
+            <span className="shell-crumb__label">{page.label}</span>
+          </span>
+        )}
       </div>
 
       <div className="shell-header__center">
-        <button className="shell-search-btn" onClick={onOpenCommandPalette} aria-label="Search styles, components and commands">
+        <button className="shell-search-btn" onClick={() => openTool('search')} aria-label="Search styles, components and commands">
           <Search size={16} />
-          <span className="shell-search-btn__text">Search styles, components...</span>
-          <kbd>Ctrl+K</kbd>
+          <span className="shell-search-btn__text">Search styles, pages, tools…</span>
+          <kbd>Ctrl K</kbd>
         </button>
       </div>
 
       <div className="shell-header__actions">
-        <button
-          type="button"
-          className="shell-icon-btn shell-icon-btn--mobile-only"
-          onClick={onOpenCommandPalette}
-          aria-label="Search"
-        >
+        <button type="button" className="shell-icon-btn shell-icon-btn--mobile-only" onClick={() => openTool('search')} aria-label="Search">
           <Search size={18} />
         </button>
 
-        {/* Style Selector */}
-        <div className="shell-style-selector">
-          <label htmlFor="style-select" className="shell-style-label">Style:</label>
-          <select
-            id="style-select"
-            value={currentStyle.metadata.id}
-            onChange={(e) => setStyle(e.target.value)}
-            className="shell-select"
-            aria-label="Active style"
-          >
-            {favorites.length > 0 && (
-              <optgroup label="Favorites">
-                {favorites.map((s) => (
-                  <option key={s.metadata.id} value={s.metadata.id}>
-                    {s.metadata.name} ({s.metadata.category})
-                  </option>
-                ))}
-              </optgroup>
-            )}
-            {others.map((s) => (
-              <option key={s.metadata.id} value={s.metadata.id}>
-                {s.metadata.name} ({s.metadata.category})
-              </option>
-            ))}
-          </select>
+        <StylePicker />
+
+        {lowContrast !== null && (
           <button
             type="button"
-            className={`shell-icon-btn ${isFav ? 'shell-icon-btn--active' : ''}`}
-            onClick={() => toggleFavorite(currentStyle.metadata.id)}
-            aria-pressed={isFav}
-            aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-            title={isFav ? 'Remove from favorites' : 'Add to favorites'}
+            className="shell-contrast-warning"
+            onClick={() => toggleTool('anatomy')}
+            title={`Low text contrast: ${lowContrast.toFixed(1)}:1 (WCAG AA needs 4.5:1). Open Style Anatomy for details.`}
+            aria-label={`Accessibility warning: text contrast ${lowContrast.toFixed(1)} to 1. Open Style Anatomy.`}
           >
-            <Star size={16} fill={isFav ? 'currentColor' : 'none'} />
+            <AlertTriangle size={14} /> <span>{lowContrast.toFixed(1)}:1</span>
           </button>
-          {lowContrast !== null && (
-            <button
-              type="button"
-              className="shell-contrast-warning"
-              onClick={onToggleAnatomy}
-              title={`Low text contrast: ${lowContrast.toFixed(1)}:1 (WCAG AA needs 4.5:1). Open Style Anatomy for details.`}
-              aria-label={`Accessibility warning: text contrast ${lowContrast.toFixed(1)} to 1. Open Style Anatomy.`}
-            >
-              <AlertTriangle size={14} /> {lowContrast.toFixed(1)}:1
-            </button>
-          )}
-        </div>
+        )}
 
-        {/* Compare Toggle */}
+        <span className="shell-header__divider" aria-hidden="true" />
+
         <button
+          type="button"
+          className={`shell-btn ${isTweaksOpen ? 'shell-btn--active' : ''}`}
+          onClick={() => toggleTool('tweaks')}
+          title="Tweaks: radius, spacing, shadows, accent and motion (Ctrl+.)"
+          aria-pressed={isTweaksOpen}
+        >
+          <SlidersHorizontal size={17} />
+          <span>Tweaks</span>
+          {isTweaked && <span className="shell-btn__dot" aria-label="(tweaked)" />}
+        </button>
+
+        <button
+          type="button"
           className={`shell-btn ${isCompareActive ? 'shell-btn--active' : ''}`}
           onClick={toggleCompare}
-          title="Compare Mode (Ctrl+Shift+C)"
+          title={supportsCompare(pathname) ? 'Compare three styles side by side (Ctrl+Shift+C)' : 'Open a template in compare (Ctrl+Shift+C)'}
           aria-pressed={isCompareActive}
         >
-          <Columns size={18} />
+          <Columns3 size={17} />
           <span>Compare</span>
         </button>
 
-        {/* Inspect mode */}
         <button
+          type="button"
           className={`shell-btn ${isInspecting ? 'shell-btn--active' : ''}`}
-          onClick={onToggleInspect}
-          title="Token Inspector (Ctrl+Shift+X)"
+          onClick={() => openTool('inspect')}
+          title="Token Inspector: hover anything to see its tokens (Ctrl+Shift+X)"
           aria-pressed={isInspecting}
         >
-          <Crosshair size={18} />
+          <Crosshair size={17} />
           <span>Inspect</span>
-        </button>
-
-        {/* Anatomy Toggle */}
-        <button
-          className={`shell-btn ${isAnatomyOpen ? 'shell-btn--active' : ''}`}
-          onClick={onToggleAnatomy}
-          title="Style Anatomy Inspector (Ctrl+Shift+A)"
-          aria-pressed={isAnatomyOpen}
-        >
-          <Sliders size={18} />
-          <span>Anatomy</span>
         </button>
       </div>
     </header>

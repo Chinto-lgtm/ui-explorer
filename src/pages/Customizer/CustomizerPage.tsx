@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { useStyleEditor, getPath } from './useStyleEditor';
-import { WorkspaceSection, WorkspaceSegmented } from '../../components/workspace/Workspace';
+import { WorkspaceSection, WorkspaceSegmented, Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { SectionRouteContext } from '../../components/workspace/sectionRoute';
 import { ColorPicker } from '../../components/ui/ColorPicker';
 import { Slider } from '../../components/ui/Selection';
@@ -193,20 +193,32 @@ export const CustomizerPage: React.FC = () => {
   );
 
   return (
-    <div className="ws-workspace cz-workspace">
-      <aside className="ws-settings" aria-label="Style customizer controls">
-        <div className="ws-settings__header cz-header">
-          <div>
-            <h1 className="ws-title">Style Customizer</h1>
-            <p className="ws-subtitle">{draft.metadata.name}{dirty ? ' · unsaved changes' : ''}</p>
+    <Workspace className="cz-workspace">
+      <WorkspacePanel
+        title="Style Customizer"
+        subtitle={`${draft.metadata.name}${dirty ? ' · unsaved changes' : ''}`}
+        label="Style customizer controls"
+        headerActions={(
+          <>
+            <button type="button" className="ws-icon-btn" onClick={undo} disabled={!canUndo} aria-label="Undo" title="Undo (Ctrl+Z)"><Undo2 size={15} /></button>
+            <button type="button" className="ws-icon-btn" onClick={redo} disabled={!canRedo} aria-label="Redo" title="Redo (Ctrl+Shift+Z)"><Redo2 size={15} /></button>
+          </>
+        )}
+        footer={(
+          <div className="cz-actions">
+            <button type="button" className="ws-btn ws-btn--primary cz-actions__btn" onClick={openSave}>{savedFlash ? <Check size={14} /> : <Save size={14} />} {savedFlash ? 'Saved' : isCustom ? 'Save changes' : 'Save as custom style'}</button>
+            <div className="cz-actions__row">
+              <button type="button" className="ws-btn ws-btn--sm" onClick={resetAll} disabled={!dirty}><RotateCcw size={12} /> Reset style</button>
+              <button type="button" className="ws-btn ws-btn--sm" onClick={duplicate}><Copy size={12} /> Duplicate</button>
+              {isCustom && <button type="button" className="ws-btn ws-btn--sm" onClick={openSave}><Pencil size={12} /> Rename</button>}
+              <button type="button" className="ws-btn ws-btn--sm" onClick={exportJson}><Download size={12} /> Export</button>
+              <button type="button" className="ws-btn ws-btn--sm" onClick={share}>{copied ? <Check size={12} /> : <Link2 size={12} />} Share</button>
+              {isCustom && <button type="button" className="ws-btn ws-btn--sm ws-btn--danger" onClick={() => setDeleteOpen(true)}><Trash2 size={12} /> Delete</button>}
+            </div>
+            <button type="button" className="cz-reset-everything" onClick={() => setResetAllOpen(true)}>Reset everything…</button>
           </div>
-          <div className="cz-history">
-            <button type="button" className="ws-btn ws-btn--sm" onClick={undo} disabled={!canUndo} aria-label="Undo" title="Undo (Ctrl+Z)"><Undo2 size={14} /></button>
-            <button type="button" className="ws-btn ws-btn--sm" onClick={redo} disabled={!canRedo} aria-label="Redo" title="Redo (Ctrl+Shift+Z)"><Redo2 size={14} /></button>
-          </div>
-        </div>
-
-        <div className="ws-settings__scroll">
+        )}
+      >
           <SectionRouteContext.Provider value={sectionRoute}>
           <WorkspaceSection title="Colors" icon={<Palette size={14} />}>
             <SectionHead path="tokens.colors" />
@@ -344,29 +356,13 @@ export const CustomizerPage: React.FC = () => {
           </WorkspaceSection>
 
           </SectionRouteContext.Provider>
-          <div className="cz-actions">
-            <button type="button" className="ws-btn ws-btn--primary cz-actions__btn" onClick={openSave}>{savedFlash ? <Check size={14} /> : <Save size={14} />} {savedFlash ? 'Saved' : isCustom ? 'Save changes' : 'Save as custom style'}</button>
-            <div className="cz-actions__row">
-              <button type="button" className="ws-btn ws-btn--sm" onClick={resetAll} disabled={!dirty}><RotateCcw size={12} /> Reset style</button>
-              <button type="button" className="ws-btn ws-btn--sm" onClick={duplicate}><Copy size={12} /> Duplicate</button>
-              {isCustom && <button type="button" className="ws-btn ws-btn--sm" onClick={openSave}><Pencil size={12} /> Rename</button>}
-              <button type="button" className="ws-btn ws-btn--sm" onClick={exportJson}><Download size={12} /> Export</button>
-              <button type="button" className="ws-btn ws-btn--sm" onClick={share}>{copied ? <Check size={12} /> : <Link2 size={12} />} Share</button>
-              {isCustom && <button type="button" className="ws-btn ws-btn--sm ws-btn--danger" onClick={() => setDeleteOpen(true)}><Trash2 size={12} /> Delete</button>}
-            </div>
-            <button type="button" className="cz-reset-everything" onClick={() => setResetAllOpen(true)}>Reset everything…</button>
-          </div>
-        </div>
-      </aside>
+      </WorkspacePanel>
 
-      <section className="ws-stage" aria-label="Live preview">
-        <header className="ws-stage__bar">
-          <div className="ws-stage__status" aria-live="polite">
-            <span className="ws-stage__dot" aria-hidden="true" />
-            {draft.metadata.name} · {isCustom ? 'custom' : 'built in'}{dirty ? ' · editing' : ''}
-          </div>
-          <span className="labs-blurb">Every change previews across the whole app until you save or reset.</span>
-        </header>
+      <WorkspaceStage
+        label="Live preview"
+        status={`${draft.metadata.name} · ${isCustom ? 'custom' : 'built in'}${dirty ? ' · editing' : ''}`}
+        actions={<span className="ws-stage__hint">Every change previews across the whole app until you save or reset.</span>}
+      >
         <div className="ws-stage__body">
           <div className="labs-canvas cz-canvas">
             <div className="cz-preview-grid">
@@ -399,7 +395,7 @@ export const CustomizerPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </WorkspaceStage>
 
       <Modal open={saveOpen} onClose={() => setSaveOpen(false)} title={isCustom ? 'Save changes' : 'Save as custom style'} description="Saved styles live in your browser and appear in the style picker."
         footer={<><Button variant="ghost" onClick={() => setSaveOpen(false)}>Cancel</Button>{isCustom && !dirty && <Button variant="secondary" onClick={() => { rename(); setSaveOpen(false); }}>Rename only</Button>}<Button onClick={save}>Save</Button></>}>
@@ -415,6 +411,6 @@ export const CustomizerPage: React.FC = () => {
 
       <Modal open={resetAllOpen} onClose={() => setResetAllOpen(false)} role="alertdialog" size="sm" title="Reset everything?" description="Removes all custom styles, favorites, history and settings from this browser. Built-in styles are untouched."
         footer={<><Button variant="ghost" onClick={() => setResetAllOpen(false)}>Cancel</Button><Button variant="destructive" onClick={resetEverything}>Reset everything</Button></>} />
-    </div>
+    </Workspace>
   );
 };

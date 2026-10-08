@@ -86,7 +86,9 @@ export interface StyleDataAttributes {
 }
 
 export function getStyleDataAttributes(style: StyleDefinition): StyleDataAttributes {
-  const baseId = style.metadata.id.replace(/-custom(-\d+)?$/, '').replace(/-copy(-\d+)?$/, '');
+  // Saved variants (custom, copy, tweaked) keep the treatments of the style they came from.
+  let baseId = style.metadata.id;
+  for (let prev = ''; prev !== baseId;) { prev = baseId; baseId = baseId.replace(/-(custom|copy|tweaked)(-\d+)?$/, ''); }
   return {
     'data-style': style.metadata.id,
     'data-family': FAMILY_BY_ID[baseId] ?? inferFamily(style),

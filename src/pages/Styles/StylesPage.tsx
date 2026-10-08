@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useSearchParam } from '../../hooks/useUrlState';
 import {
-  Search, Star, LayoutGrid, Share2, Check, Copy, Wand2, GitCompareArrows, Code2, ExternalLink, X, Filter,
+  Star, LayoutGrid, Share2, Check, Copy, Wand2, GitCompareArrows, Code2, ExternalLink, X, Filter,
   BookOpen, ShieldCheck, Layers, Network, Play, Users, BadgeCheck, FlaskConical, Sparkles
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
@@ -13,7 +13,7 @@ import { buildShareUrl } from '../../engine/share';
 import { communityPackages } from '../../styles';
 import { GITHUB_REPO_URL } from '../../config/app';
 import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
-import { WorkspaceSection, WorkspaceSegmented } from '../../components/workspace/Workspace';
+import { WorkspaceSection, WorkspaceSegmented, Workspace, WorkspacePanel, WorkspaceStage, WorkspaceSearch } from '../../components/workspace/Workspace';
 import { computeFacets, FACET_OPTIONS, type StyleFacets } from './facets';
 import { RelationshipMap, collectRelations } from './RelationshipMap';
 import './StylesPage.css';
@@ -148,18 +148,9 @@ export const StylesPage: React.FC = () => {
   };
 
   return (
-    <div className={`ws-workspace styles-page ${selected ? 'styles-page--drawer' : ''}`}>
-      <aside className="ws-settings" aria-label="Style filters">
-        <div className="ws-settings__header">
-          <div className="ws-title">Styles</div>
-          <div className="ws-subtitle">{counts.official} official · {counts.community} community · {counts.custom} yours</div>
-        </div>
-        <div className="ws-settings__scroll">
-          <div className="styles-search">
-            <Search size={14} aria-hidden="true" />
-            <input className="ws-input" placeholder="Search name, tag, use case…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search styles" />
-            {query && <button type="button" className="styles-search__clear" onClick={() => setQuery('')} aria-label="Clear search"><X size={12} /></button>}
-          </div>
+    <Workspace className={`styles-page ${selected ? 'styles-page--drawer' : ''}`}>
+      <WorkspacePanel title="Styles" subtitle={`${counts.official} official · ${counts.community} community · ${counts.custom} yours`} label="Style filters">
+          <WorkspaceSearch value={query} onChange={setQuery} placeholder="Search name, tag, use case…" label="Search styles" />
 
           <WorkspaceSection title="Source" icon={<Filter size={14} />}>
             <WorkspaceSegmented<SourceFilter>
@@ -220,12 +211,12 @@ export const StylesPage: React.FC = () => {
             <p className="ws-hint">Community styles are plain JSON packages under <code>styles/community/&lt;slug&gt;/style.json</code>. Add one, list it in <code>index.json</code>, and open a pull request.</p>
             <a className="ws-btn ws-btn--sm" href={`${GITHUB_REPO_URL}/tree/main/styles/community`} target="_blank" rel="noreferrer"><ExternalLink size={13} /> Browse the registry</a>
           </WorkspaceSection>
-        </div>
-      </aside>
+      </WorkspacePanel>
 
-      <section className="ws-stage">
-        <div className="ws-stage__bar">
-          <div className="ws-stage__status"><span className="ws-stage__dot" />{filtered.length} of {availableStyles.length} styles{query ? ` matching “${query}”` : ''}</div>
+      <WorkspaceStage
+        label="Style gallery"
+        status={`${filtered.length} of ${availableStyles.length} styles${query ? ` matching “${query}”` : ''}`}
+        actions={(
           <div className="styles-bar__controls">
             <label className="ws-field styles-sort">
               <span>Sort</span>
@@ -235,7 +226,8 @@ export const StylesPage: React.FC = () => {
             </label>
             <WorkspaceSegmented<View> label="View" value={view} onChange={setView} options={[{ value: 'grid', label: <><LayoutGrid size={13} /> Gallery</> }, { value: 'map', label: <><Network size={13} /> Map</> }]} />
           </div>
-        </div>
+        )}
+      >
 
         <div className="styles-stage__body">
           {view === 'map' ? (
@@ -274,7 +266,7 @@ export const StylesPage: React.FC = () => {
             </div>
           )}
         </div>
-      </section>
+      </WorkspaceStage>
 
       {selected && selectedFacets && report && (
         <aside className="styles-drawer" role="dialog" aria-label={`${selected.metadata.name} details`}>
@@ -403,6 +395,6 @@ export const StylesPage: React.FC = () => {
           </div>
         </aside>
       )}
-    </div>
+    </Workspace>
   );
 };

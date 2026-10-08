@@ -5,7 +5,8 @@ import './ShortcutsPanel.css';
 export const SHORTCUTS: { keys: string[]; action: string }[] = [
   { keys: ['Ctrl', 'K'], action: 'Search styles, pages, commands and tokens' },
   { keys: ['Ctrl', 'E'], action: 'Open the Customizer' },
-  { keys: ['Ctrl', 'Shift', 'C'], action: 'Toggle Compare mode' },
+  { keys: ['Ctrl', '.'], action: 'Open or close Tweaks (radius, spacing, shadows, accent, speed)' },
+  { keys: ['Ctrl', 'Shift', 'C'], action: 'Compare three styles on this page' },
   { keys: ['Ctrl', 'Shift', 'A'], action: 'Toggle Style Anatomy' },
   { keys: ['Ctrl', 'S'], action: 'Save the current custom style' },
   { keys: ['Ctrl', 'Shift', 'E'], action: 'Open Export & Import' },

@@ -1,0 +1,262 @@
+/* ============================================================
+   DeviceFrame: the one browser / tablet / phone frame of the app.
+   Chrome colours only; the screen inside carries the style.
+   ============================================================ */
+
+.dv {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 0;
+  margin: 0;
+}
+
+.dv__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 34px;
+  padding: 0 0.125rem 0.375rem;
+  font-size: 0.75rem;
+  color: var(--chrome-text-secondary);
+  white-space: nowrap;
+  /* The caption never widens the frame: it takes the zoomed device's width. */
+  width: 0;
+  min-width: 100%;
+  overflow: hidden;
+}
+
+.dv__device {
+  position: relative;
+  /* Keeps the camera and home indicator from rising above drawers and popovers. */
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--chrome-border);
+  background-color: var(--chrome-surface);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
+}
+
+.dv__viewport {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.dv__screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background-color: var(--color-bg, var(--chrome-bg));
+  color: var(--color-text-primary, var(--chrome-text));
+  scrollbar-width: thin;
+}
+
+/* ---------- Browser ---------- */
+.dv--browser .dv__device {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dv__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 38px;
+  padding: 0 0.875rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--chrome-border);
+  background-color: var(--chrome-surface);
+  color: var(--chrome-text-muted);
+}
+
+.dv__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.dv__dots span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: var(--chrome-surface-3);
+}
+
+.dv__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dv__url {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  flex: 1;
+  min-width: 0;
+  max-width: 520px;
+  margin: 0 auto;
+  height: 24px;
+  padding: 0 0.75rem;
+  border-radius: 7px;
+  background-color: var(--chrome-surface-2);
+  color: var(--chrome-text-secondary);
+  font-family: var(--chrome-font);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* A fluid browser fills its container (Components on desktop). */
+.dv--fluid {
+  width: 100%;
+  max-width: 1280px;
+  height: 100%;
+  flex-shrink: 1;
+}
+
+.dv--fluid .dv__device {
+  flex: 1;
+  min-height: 0;
+}
+
+.dv--fluid .dv__viewport {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------- Tablet ---------- */
+.dv--tablet .dv__device {
+  padding: 14px;
+  border-radius: 30px;
+  border-color: var(--chrome-border-strong);
+  box-shadow: inset 0 0 0 2px var(--chrome-surface-3), 0 24px 60px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
+}
+
+.dv--tablet .dv__viewport {
+  border-radius: 16px;
+}
+
+/* ---------- Phone ---------- */
+.dv--phone .dv__device {
+  padding: 12px;
+  border-radius: 56px;
+  border-color: var(--chrome-border-strong);
+  box-shadow: inset 0 0 0 2px var(--chrome-surface-3), 0 24px 60px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
+}
+
+.dv--phone .dv__viewport {
+  border-radius: 0 0 44px 44px;
+}
+
+.dv--phone .dv__viewport:first-child {
+  border-radius: 44px;
+}
+
+.dv__mobile-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  height: 78px;
+  padding: 0 1rem 0.5rem;
+  flex-shrink: 0;
+  border-radius: 44px 44px 0 0;
+  background-color: var(--chrome-surface-2);
+  color: var(--chrome-text);
+  font-family: var(--chrome-font);
+}
+
+.dv__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 0.875rem 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dv__status > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.dv__url--mobile {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  height: 30px;
+  border-radius: 10px;
+  background-color: var(--chrome-surface-3);
+}
+
+.dv__camera {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  pointer-events: none;
+  background-color: var(--chrome-overlay);
+}
+
+.dv__camera--phone {
+  top: 22px;
+  width: 104px;
+  height: 28px;
+  border-radius: 9999px;
+}
+
+.dv__camera--tablet {
+  top: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--chrome-surface-3);
+}
+
+.dv__home {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 124px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: var(--chrome-text-muted);
+  opacity: 0.8;
+  transform: translateX(-50%);
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ---------- Rulers and grid ---------- */
+.dv__rulers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+  z-index: 2;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--chrome-primary) 60%, transparent) 0 1px, transparent 1px 100px);
+}
+
+.dv__tick {
+  position: absolute;
+  top: 1px;
+  padding-left: 3px;
+  font-family: var(--chrome-font-mono);
+  font-size: 9px;
+  color: var(--chrome-primary);
+}
+
+.dv__screen--grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--chrome-primary) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--chrome-primary) 12%, transparent) 1px, transparent 1px);
+  background-size: 100px 100px;
+}

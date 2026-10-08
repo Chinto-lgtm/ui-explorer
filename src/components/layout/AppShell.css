@@ -1,36 +1,56 @@
 /* ============================================
-   Developer Tool Neutral Chrome Styling
-   (Header, Sidebar, Shell Root)
+   App shell: header, navigation rail, content area.
+   Chrome colours come from src/theme.css only.
    ============================================ */
 
 .shell-root {
+  --shell-header-h: 60px;
+  --shell-rail-w: 236px;
+  --shell-rail-collapsed-w: 64px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   background-color: var(--chrome-bg);
   color: var(--chrome-text);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--chrome-font);
 }
 
-/* Header */
+/* ---------- Header ---------- */
 .shell-header {
-  height: 56px;
-  background-color: var(--chrome-surface);
-  border-bottom: 1px solid var(--chrome-border);
+  position: relative;
+  z-index: 70;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
-  z-index: 50;
   gap: 1rem;
+  height: var(--shell-header-h);
+  padding: 0 1rem 0 1.125rem;
+  flex-shrink: 0;
+  background-color: color-mix(in srgb, var(--chrome-surface) 92%, transparent);
+  border-bottom: 1px solid var(--chrome-border);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* A faint brand gradient line under the header. */
+.shell-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--chrome-brand-gradient);
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 .shell-header__brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .shell-header__logo {
@@ -38,6 +58,11 @@
   align-items: center;
   border-radius: 9px;
   text-decoration: none;
+  transition: opacity 150ms ease;
+}
+
+.shell-header__logo:hover {
+  opacity: 0.85;
 }
 
 .shell-header__logo:focus-visible {
@@ -45,153 +70,192 @@
   outline-offset: 3px;
 }
 
-.shell-header__badge {
-  background-color: var(--chrome-surface-2);
+.shell-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
   color: var(--chrome-text-secondary);
-  font-size: 0.75rem;
-  padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--chrome-border);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.shell-crumb__sep {
+  color: var(--chrome-border-strong);
+  font-weight: 400;
+  font-size: 1.125rem;
+}
+
+.shell-crumb__label {
+  color: var(--chrome-text-strong);
+  white-space: nowrap;
 }
 
 .shell-header__center {
   flex: 1;
-  max-width: 420px;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
 }
 
 .shell-search-btn {
   width: 100%;
+  max-width: 420px;
+  height: 38px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.625rem;
   background-color: var(--chrome-surface-2);
-  color: var(--chrome-text-secondary);
+  color: var(--chrome-text-muted);
   border: 1px solid var(--chrome-border);
-  border-radius: 8px;
-  padding: 0.375rem 0.75rem;
+  border-radius: 10px;
+  padding: 0 0.5rem 0 0.75rem;
+  font: inherit;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
 .shell-search-btn:hover {
   background-color: var(--chrome-surface-3);
-  color: var(--chrome-text-strong);
-  border-color: var(--chrome-text-muted);
+  color: var(--chrome-text-secondary);
+  border-color: var(--chrome-border-strong);
+}
+
+.shell-search-btn__text {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .shell-search-btn kbd {
   background-color: var(--chrome-surface);
   border: 1px solid var(--chrome-border);
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 0.125rem 0.375rem;
-  font-size: 0.75rem;
-  font-family: monospace;
+  font-size: 0.6875rem;
+  font-family: var(--chrome-font-mono);
+  color: var(--chrome-text-secondary);
 }
 
 .shell-header__actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-}
-
-.shell-style-selector {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
-.shell-style-label {
-  font-size: 0.875rem;
-  color: var(--chrome-text-secondary);
-}
-
-.shell-select {
-  background-color: var(--chrome-surface-2);
-  color: var(--chrome-text-strong);
-  border: 1px solid var(--chrome-border);
-  border-radius: 6px;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  outline: none;
-  cursor: pointer;
-}
-
-.shell-select:focus {
-  border-color: var(--chrome-primary);
+.shell-header__divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 0.25rem;
+  background-color: var(--chrome-border);
 }
 
 .shell-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  background-color: var(--chrome-surface-2);
-  color: var(--chrome-text);
-  border: 1px solid var(--chrome-border);
-  border-radius: 6px;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
+  gap: 0.4375rem;
+  height: 36px;
+  background-color: transparent;
+  color: var(--chrome-text-secondary);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 .shell-btn:hover {
-  background-color: var(--chrome-surface-3);
+  background-color: var(--chrome-surface-2);
+  border-color: var(--chrome-border);
   color: var(--chrome-text-strong);
 }
 
-.shell-btn--active {
-  background-color: var(--chrome-primary);
-  color: var(--chrome-on-primary);
-  border-color: var(--chrome-primary);
+.shell-btn--active,
+.shell-btn--active:hover {
+  background-color: var(--chrome-primary-soft);
+  border-color: color-mix(in srgb, var(--chrome-primary) 55%, transparent);
+  color: var(--chrome-primary-hover);
 }
 
-/* Body & Sidebar */
+.shell-btn__dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--chrome-brand-pink-deep);
+  box-shadow: 0 0 0 2px var(--chrome-surface);
+}
+
+/* ---------- Body ---------- */
 .shell-body {
   display: flex;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
+/* ---------- Navigation rail ---------- */
 .shell-sidebar {
-  width: 240px;
-  background-color: var(--chrome-surface);
-  border-right: 1px solid var(--chrome-border);
   display: flex;
   flex-direction: column;
-  padding: 1.25rem 0.75rem;
+  width: var(--shell-rail-w);
+  flex-shrink: 0;
+  background-color: var(--chrome-surface);
+  border-right: 1px solid var(--chrome-border);
+  overflow: hidden;
+  transition: width 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .shell-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.125rem;
+  padding: 1rem 0.625rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--chrome-surface-3) transparent;
 }
 
 .shell-nav__section {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
 
 .shell-nav__heading {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.625rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   color: var(--chrome-text-muted);
-  padding: 0 0.5rem 0.375rem;
+  padding: 0 0.625rem 0.375rem;
+  white-space: nowrap;
 }
 
 .shell-nav__link,
 .shell-nav__action {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  gap: 0.75rem;
+  min-height: 36px;
+  padding: 0.4375rem 0.625rem;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--chrome-text-secondary);
   text-decoration: none;
@@ -200,31 +264,117 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
-  transition: all 150ms ease;
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.shell-nav__icon {
+  flex-shrink: 0;
+}
+
+.shell-nav__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shell-nav__kbd {
+  font-family: var(--chrome-font-mono);
+  font-size: 0.625rem;
+  color: var(--chrome-text-muted);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.shell-nav__action:hover .shell-nav__kbd {
+  opacity: 1;
+}
+
+.shell-nav__version {
+  margin-left: 0.25rem;
+  font-size: 0.6875rem;
+  color: var(--chrome-text-muted);
 }
 
 .shell-nav__link:hover,
 .shell-nav__action:hover {
   background-color: var(--chrome-surface-2);
-  color: var(--chrome-text);
+  color: var(--chrome-text-strong);
 }
 
-.shell-nav__link--active {
+.shell-nav__link--active,
+.shell-nav__link--active:hover {
   background-color: var(--chrome-primary-soft);
-  color: var(--chrome-primary);
+  color: var(--chrome-primary-hover);
 }
 
-/* Main Content Area */
+/* Active indicator: a short bar on the rail's edge. */
+.shell-nav__link--active::before {
+  content: '';
+  position: absolute;
+  left: -0.625rem;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--chrome-primary);
+  transform: translateY(-50%);
+}
+
+.shell-sidebar__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem;
+  border-top: 1px solid var(--chrome-border);
+}
+
+.shell-nav__truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Collapsed rail: icons only (wide screens). */
+@media (min-width: 1024px) {
+  .shell-sidebar--collapsed {
+    width: var(--shell-rail-collapsed-w);
+  }
+
+  .shell-sidebar--collapsed .shell-nav__label,
+  .shell-sidebar--collapsed .shell-nav__kbd {
+    display: none;
+  }
+
+  .shell-sidebar--collapsed .shell-nav__heading {
+    height: 1px;
+    padding: 0;
+    margin: 0.25rem 0.75rem 0.5rem;
+    overflow: hidden;
+    color: transparent;
+    background-color: var(--chrome-border);
+  }
+
+  .shell-sidebar--collapsed .shell-nav__link,
+  .shell-sidebar--collapsed .shell-nav__action {
+    justify-content: center;
+    padding: 0.4375rem;
+  }
+}
+
+/* ---------- Content ---------- */
 .shell-content {
   flex: 1;
+  min-width: 0;
   overflow-y: auto;
   position: relative;
   background-color: var(--chrome-bg);
 }
 
+/* Every page brings its own layout (the Workspace), so the canvas adds no padding. */
 .style-preview-canvas {
   min-height: 100%;
-  padding: 1.5rem;
   background-color: var(--color-bg);
   background-image: var(--background-image, none);
   background-attachment: fixed;
@@ -232,10 +382,7 @@
   transition: background-color var(--duration-normal) var(--motion-easing), color var(--duration-normal) var(--motion-easing);
 }
 
-/* ============================================
-   Shell additions: icon buttons, drawer, responsive chrome
-   ============================================ */
-
+/* ---------- Small controls ---------- */
 .shell-menu-btn {
   display: none;
   align-items: center;
@@ -243,7 +390,7 @@
   width: 36px;
   height: 36px;
   border: 1px solid var(--chrome-border);
-  border-radius: 6px;
+  border-radius: 9px;
   background-color: var(--chrome-surface-2);
   color: var(--chrome-text);
   cursor: pointer;
@@ -253,24 +400,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--chrome-border);
-  border-radius: 6px;
+  border-radius: 9px;
   background-color: var(--chrome-surface-2);
   color: var(--chrome-text-secondary);
   cursor: pointer;
-  transition: all 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .shell-icon-btn:hover {
   color: var(--chrome-text-strong);
   background-color: var(--chrome-surface-3);
-}
-
-.shell-icon-btn--active {
-  color: var(--chrome-warning);
-  border-color: var(--chrome-warning-border);
 }
 
 .shell-icon-btn--mobile-only {
@@ -281,44 +423,52 @@
 .shell-icon-btn:focus-visible,
 .shell-menu-btn:focus-visible,
 .shell-search-btn:focus-visible,
-.shell-select:focus-visible,
 .shell-nav__link:focus-visible,
-.shell-nav__action:focus-visible {
+.shell-nav__action:focus-visible,
+.shell-contrast-warning:focus-visible {
   outline: 2px solid var(--chrome-primary);
   outline-offset: 2px;
-}
-
-.shell-nav__truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.shell-sidebar {
-  overflow-y: auto;
-  flex-shrink: 0;
 }
 
 .shell-sidebar-backdrop {
   display: none;
 }
 
-/* Compact header: hide the search bar text and style label when space is tight */
-@media (max-width: 1180px) {
-  .shell-header__center {
-    max-width: 260px;
-  }
+/* Contrast warning next to the style picker (WCAG AA text/background below 4.5:1). */
+.shell-contrast-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 26px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--chrome-warning-border);
+  border-radius: 999px;
+  background: var(--chrome-warning-soft);
+  color: var(--chrome-warning);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-  .shell-style-label {
+.shell-contrast-warning:hover { background: var(--chrome-warning-border); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .shell-btn span:not(.shell-btn__dot) {
     display: none;
   }
 
-  .shell-select {
-    max-width: 200px;
+  .shell-btn {
+    padding: 0 0.5625rem;
+  }
+
+  .shell-crumb {
+    display: none;
   }
 }
 
-/* Tablet and below: sidebar becomes a drawer */
+/* Tablet and below: the rail becomes a drawer. */
 @media (max-width: 1023px) {
   .shell-menu-btn {
     display: inline-flex;
@@ -326,10 +476,7 @@
 
   .shell-header {
     padding: 0 0.75rem;
-  }
-
-  .shell-header__badge {
-    display: none;
+    gap: 0.5rem;
   }
 
   .shell-header__center {
@@ -340,23 +487,15 @@
     display: inline-flex;
   }
 
-  .shell-btn span {
-    display: none;
-  }
-
-  .shell-btn {
-    padding: 0.375rem 0.5rem;
-  }
-
   .shell-sidebar {
     position: fixed;
-    top: 56px;
+    top: var(--shell-header-h);
     bottom: 0;
     left: 0;
     z-index: 60;
     width: min(280px, 85vw);
-    transform: translateX(-100%);
-    transition: transform 200ms ease;
+    transform: translateX(-105%);
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
     box-shadow: 0 20px 50px color-mix(in srgb, var(--chrome-overlay) 50%, transparent);
   }
 
@@ -364,36 +503,41 @@
     transform: translateX(0);
   }
 
+  .shell-sidebar__collapse {
+    display: none;
+  }
+
   .shell-sidebar-backdrop {
     display: block;
     position: fixed;
-    inset: 56px 0 0 0;
+    inset: var(--shell-header-h) 0 0 0;
     z-index: 55;
     background-color: color-mix(in srgb, var(--chrome-bg) 60%, transparent);
-  }
-
-  .style-preview-canvas {
-    padding: 1rem;
+    backdrop-filter: blur(2px);
   }
 }
 
 @media (max-width: 640px) {
+  .shell-root {
+    --shell-header-h: 56px;
+  }
+
   .shell-header__lockup .brand-lockup__word {
     display: none;
   }
 
-  .shell-select {
-    max-width: 150px;
-    font-size: 0.8125rem;
-  }
-
   .shell-header__actions {
-    gap: 0.375rem;
+    gap: 0.25rem;
   }
 
-  .style-preview-canvas {
-    padding: 0.75rem;
+  .shell-header__divider,
+  .shell-contrast-warning span {
+    display: none;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-sidebar { transition: none; }
 }
 
 /* Keyboard users can jump past the header and sidebar. */
@@ -426,20 +570,3 @@
   color: var(--chrome-text-secondary);
   font-size: 0.875rem;
 }
-
-/* Contrast warning next to the style selector (WCAG AA text/background below 4.5:1). */
-.shell-contrast-warning {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--chrome-warning-border);
-  border-radius: 999px;
-  background: var(--chrome-warning-soft);
-  color: var(--chrome-warning);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.shell-contrast-warning:hover { background: var(--chrome-warning-border); }

@@ -13,7 +13,8 @@ export const STORAGE_KEYS = {
   settings: 'ui_explorer_settings',
   compare: 'ui_explorer_compare',
   generatorHistory: 'ui_explorer_generator_history',
-  onboarded: 'ui_explorer_onboarded'
+  onboarded: 'ui_explorer_onboarded',
+  tweaks: 'ui_explorer_tweaks'
 } as const;
 
 export function readJson<T>(key: string, fallback: T): T {

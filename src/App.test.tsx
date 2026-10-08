@@ -102,6 +102,61 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     });
   });
 
+  describe('layout and tweaks', () => {
+    beforeEach(() => localStorage.setItem('ui_explorer_onboarded', '1'));
+
+    it('tweaks restyle the page live and can be saved as a new style', async () => {
+      localStorage.setItem('ui_explorer_style_id', 'neo-brutalism');
+      window.history.replaceState({}, '', '/components/buttons?tool=tweaks');
+      render(<App />);
+      const panel = await screen.findByRole('dialog', { name: 'Tweaks' }, { timeout: 5000 });
+      expect(within(panel).getByRole('button', { name: /save as new style/i })).toBeDisabled();
+
+      fireEvent.change(within(panel).getByLabelText('Corner radius'), { target: { value: '2' } });
+      const canvas = document.querySelector<HTMLElement>('.style-preview-canvas')!;
+      const brutal = resolveStyleToCssVars(registry.get('neo-brutalism')!)['--radius-md'];
+      expect(canvas.style.getPropertyValue('--radius-md')).not.toBe(brutal);
+      expect(screen.getByRole('button', { name: /active style: neo brutalism/i })).toHaveTextContent(/tweaked/i);
+
+      fireEvent.click(within(panel).getByRole('radio', { name: 'Pink' }));
+      expect(canvas.style.getPropertyValue('--color-accent')).toBe('#ec4899');
+
+      fireEvent.click(within(panel).getByRole('button', { name: /save as new style/i }));
+      expect(await within(panel).findByRole('status')).toHaveTextContent(/saved as neo brutalism \(tweaked\)/i);
+      expect(localStorage.getItem('ui_explorer_style_id')).toBe('neo-brutalism-tweaked');
+      // The saved style carries the change; the dials are back at 100%.
+      expect(canvas.style.getPropertyValue('--color-accent')).toBe('#ec4899');
+      expect(within(panel).getByLabelText('Corner radius')).toHaveValue('1');
+    });
+
+    it('the left panel hides and comes back, and remembers the choice', async () => {
+      window.history.replaceState({}, '', '/generator');
+      const { unmount } = render(<App />);
+      const panel = await screen.findByRole('complementary', { name: 'Generator controls' }, { timeout: 5000 });
+      fireEvent.click(within(panel).getByRole('button', { name: 'Hide panel' }));
+      expect(screen.queryByRole('complementary', { name: 'Generator controls' })).toBeNull();
+      expect(localStorage.getItem('ui_explorer_panel_collapsed')).toBe('1');
+      unmount();
+
+      window.history.replaceState({}, '', '/styles');
+      render(<App />);
+      fireEvent.click(await screen.findByRole('button', { name: 'Show panel' }, { timeout: 5000 }));
+      expect(screen.getByRole('complementary', { name: 'Style filters' })).toBeInTheDocument();
+    });
+
+    it('the style picker filters and applies a style from the keyboard', async () => {
+      window.history.replaceState({}, '', '/styles');
+      render(<App />);
+      fireEvent.click(await screen.findByRole('button', { name: /active style:/i }, { timeout: 5000 }));
+      const input = screen.getByRole('combobox', { name: /find a style/i });
+      fireEvent.change(input, { target: { value: 'cyberpunk' } });
+      expect(screen.getByRole('option', { name: /cyberpunk/i })).toBeInTheDocument();
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(screen.queryByRole('listbox')).toBeNull();
+      expect(localStorage.getItem('ui_explorer_style_id')).toBe('cyberpunk');
+    });
+  });
+
   it('registers all 30 built-in design styles plus community styles', () => {
     expect(allStyles.length).toBeGreaterThanOrEqual(30);
     expect(registry.getAll().length).toBeGreaterThanOrEqual(30);

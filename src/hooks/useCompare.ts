@@ -13,7 +13,7 @@ export const COMPARE_SLOTS = ['A', 'B', 'C'] as const;
  */
 export function useCompare() {
   const [params, setParams] = useSearchParams();
-  const { availableStyles, currentStyle } = useStyle();
+  const { availableStyles, currentStyle, renderStyle } = useStyle();
   const on = params.has(COMPARE_PARAM) || params.get('view') === 'compare';
   const raw = params.get(COMPARE_PARAM) ?? '';
 
@@ -28,6 +28,9 @@ export function useCompare() {
     () => ids.map((id) => availableStyles.find((s) => s.metadata.id === id) ?? currentStyle),
     [ids, availableStyles, currentStyle]
   );
+
+  /** Each slot painted like the main canvas: tweaks and motion settings applied. */
+  const frames = useMemo(() => styles.map(renderStyle), [styles, renderStyle]);
 
   const setOn = useCallback((next: boolean) => {
     setParams((prev) => {
@@ -46,5 +49,5 @@ export function useCompare() {
     }, { replace: true });
   }, [ids, setParams]);
 
-  return { on, ids, styles, setOn, setSlot };
+  return { on, ids, styles, frames, setOn, setSlot };
 }

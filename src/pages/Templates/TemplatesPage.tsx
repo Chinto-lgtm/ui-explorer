@@ -7,15 +7,15 @@ import {
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { useCompare, COMPARE_SLOTS as SLOTS } from '../../hooks/useCompare';
-import { resolveStyleToCssVars } from '../../engine/resolver';
 import { encodeStyleParam } from '../../engine/share';
 import { absoluteUrl } from '../../config/app';
-import type { StyleDefinition } from '../../engine/types';
 import { FAMILIES, getFamily, groupScreens, isFamilyId } from '../../templates/registry';
 import type { FamilyDef, FamilyId } from '../../templates/nav';
 import { TemplateScreen } from '../../templates/TemplateScreen';
 import { userImageStore, useUserImage } from '../../templates/userImage';
-import { TemplateFrame, PHONE_BEZEL, BROWSER_BAR } from './TemplateFrame';
+import { TemplateFrame } from './TemplateFrame';
+import { DEVICE_CHROME } from '../../components/workspace/device';
+import { Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { ComponentsPanel } from './ComponentsPanel';
 import './TemplatesPage.css';
 
@@ -40,17 +40,18 @@ const LABEL_HEIGHT = 34;
 /** Fit a device into the stage. Browser frames fill the height; phones keep their size. */
 function fitDevice(family: FamilyDef, stage: { width: number; height: number }, count: number, zoom: Zoom, labelled: boolean) {
   const isPhone = family.device === 'phone';
-  const outerW = family.width + (isPhone ? PHONE_BEZEL * 2 : 0);
+  const { phoneBezel, browserBar } = DEVICE_CHROME;
+  const outerW = family.width + (isPhone ? phoneBezel * 2 : 0) + 2;
   const availH = Math.max(200, stage.height - (labelled ? LABEL_HEIGHT : 0));
   let scale: number;
   if (zoom !== 'fit') scale = Number(zoom);
   else if (stage.width === 0) scale = isPhone ? 0.8 : 0.6;
   else {
     const byWidth = (stage.width - STAGE_GAP * (count - 1)) / (outerW * count);
-    scale = isPhone ? Math.min(1, byWidth, availH / (family.height + PHONE_BEZEL * 2)) : Math.min(1, byWidth);
+    scale = isPhone ? Math.min(1, byWidth, availH / (family.height + phoneBezel * 2 + 2)) : Math.min(1, byWidth);
   }
   scale = Math.max(0.08, scale);
-  const screenHeight = isPhone ? family.height : (zoom === 'fit' ? Math.max(480, availH / scale - BROWSER_BAR - 2) : family.height);
+  const screenHeight = isPhone ? family.height : (zoom === 'fit' ? Math.max(480, availH / scale - browserBar - 2) : family.height);
   return { scale, screenHeight };
 }
 
@@ -58,7 +59,7 @@ export const TemplatesPage: React.FC = () => {
   const params = useParams<{ family?: string; screen?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { renderedStyle, resolvedCssVars, availableStyles } = useStyle();
+  const { renderedStyle, resolvedCssVars, availableStyles, isTweaked } = useStyle();
   const userImage = useUserImage();
 
   const family = getFamily(params.family);
@@ -132,7 +133,8 @@ export const TemplatesPage: React.FC = () => {
   const next = family.screens[index + 1];
 
   const shareUrl = () => {
-    const isBuiltIn = !renderedStyle.metadata.isCustom;
+    // Tweaked styles travel as a full definition so the link shows exactly what is on screen.
+    const isBuiltIn = !renderedStyle.metadata.isCustom && !isTweaked;
     const qs = new URLSearchParams();
     qs.set('style', encodeStyleParam(renderedStyle, isBuiltIn));
     if (view === 'flow') qs.set('view', 'flow');
@@ -169,8 +171,7 @@ export const TemplatesPage: React.FC = () => {
 
   const renderCompare = () => {
     const { scale, screenHeight } = fitDevice(family, stage, 3, zoom, true);
-    return compareIds.map((id, i) => {
-      const style: StyleDefinition = availableStyles.find((s) => s.metadata.id === id) ?? renderedStyle;
+    return compare.frames.map(({ style, vars }, i) => {
       return (
         <TemplateFrame
           key={SLOTS[i]}
@@ -180,7 +181,7 @@ export const TemplatesPage: React.FC = () => {
           screenHeight={screenHeight}
           label={(
             <>
-              <span className="tp-slot">{SLOTS[i]}</span>
+              <span className="ws-slot">{SLOTS[i]}</span>
               <select
                 className="tp-select tp-select--slot"
                 aria-label={`Style ${SLOTS[i]}`}
@@ -192,7 +193,7 @@ export const TemplatesPage: React.FC = () => {
             </>
           )}
         >
-          <TemplateScreen family={family} screenId={screen.id} style={style} vars={resolveStyleToCssVars(style)} go={goScreen} screenRef={i === 0 ? setScanTarget : undefined} />
+          <TemplateScreen family={family} screenId={screen.id} style={style} vars={vars} go={goScreen} screenRef={i === 0 ? setScanTarget : undefined} />
         </TemplateFrame>
       );
     });
@@ -229,14 +230,10 @@ export const TemplatesPage: React.FC = () => {
   };
 
   return (
-    <div className="tp-workspace">
+    <Workspace className="tp-workspace">
       {/* ===== Template and screen picker ===== */}
-      <aside className="tp-side" aria-label="Templates">
-        <div className="tp-side__header">
-          <h1 className="tp-title">Templates</h1>
-          <p className="tp-subtitle">Orbit, one product in three templates. Every screen is built from the component library and follows the active style.</p>
-        </div>
-        <div className="tp-side__scroll">
+      <WorkspacePanel title="Templates" subtitle="Orbit, one product in three templates. Every screen is built from the component library and follows the active style." label="Templates">
+        <div className="tp-side">
           <div className="tp-families" role="group" aria-label="Template">
             {FAMILIES.map((f) => (
               <button
@@ -291,11 +288,13 @@ export const TemplatesPage: React.FC = () => {
             <p className="tp-hint">Shown in every picture slot. It stays in this tab only: nothing is uploaded, and it is gone when you reload.</p>
           </div>
         </div>
-      </aside>
+      </WorkspacePanel>
 
       {/* ===== Stage ===== */}
-      <section className="tp-stage" aria-label="Template preview">
-        <header className="tp-toolbar">
+      <WorkspaceStage
+        label="Template preview"
+        className="tp-stage"
+        start={(
           <div className="tp-toolbar__group">
             <div className="tp-seg" role="radiogroup" aria-label="View">
               {VIEWS.map((v) => (
@@ -312,6 +311,8 @@ export const TemplatesPage: React.FC = () => {
               </div>
             )}
           </div>
+        )}
+        actions={(
           <div className="tp-toolbar__group">
             {view !== 'flow' && (
               <label className="tp-zoom">
@@ -328,7 +329,8 @@ export const TemplatesPage: React.FC = () => {
             <button type="button" className="tp-btn" onClick={copyLink}>{copied ? <Check size={14} /> : <Link2 size={14} />}<span>{copied ? 'Copied' : 'Copy link'}</span></button>
             <Link className="tp-btn tp-btn--primary" to={`/preview/${family.id}/${screen.id}`}><Maximize2 size={14} /><span>Full screen</span></Link>
           </div>
-        </header>
+        )}
+      >
 
         <div className="tp-stage__body">
           <div ref={setStageEl} className={`tp-canvas tp-canvas--${view} tp-canvas--${family.device} ${zoom !== 'fit' ? 'tp-canvas--zoomed' : ''}`}>
@@ -338,7 +340,7 @@ export const TemplatesPage: React.FC = () => {
           </div>
           {panelOpen && <ComponentsPanel target={scanTarget} scope={view === 'flow' ? 'template' : 'screen'} onClose={() => setPanelOpen(false)} />}
         </div>
-      </section>
-    </div>
+      </WorkspaceStage>
+    </Workspace>
   );
 };

@@ -13,7 +13,7 @@ import { findSimilarStyles, DNA_AXES } from '../../engine/generator/dna';
 import { STORAGE_KEYS, readJson, writeJson } from '../../engine/storage';
 import { absoluteUrl } from '../../config/app';
 import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
-import { WorkspaceSection, WorkspaceSegmented } from '../../components/workspace/Workspace';
+import { WorkspaceSection, WorkspaceSegmented, Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { Badge } from '../../components/ui/Badge';
 import {
   Sparkles, Shuffle, Lock, Unlock, Copy, Check, Layers, Wand2, Dna, Bug, History, Link2, Save,
@@ -340,15 +340,23 @@ export const GeneratorPage: React.FC = () => {
   const inspected = result?.trace.find((t) => t.axis === inspectAxis);
 
   return (
-    <div className="ws-workspace gen-workspace">
+    <Workspace className="gen-workspace">
       {/* ===== Controls ===== */}
-      <aside className="ws-settings" aria-label="Generator controls">
-        <div className="ws-settings__header">
-          <h1 className="ws-title">Style Generator</h1>
-          <p className="ws-subtitle">Deterministic design systems from a seed. Same seed, same style, every time.</p>
-        </div>
-
-        <div className="ws-settings__scroll">
+      <WorkspacePanel
+        title="Style Generator"
+        subtitle="Deterministic design systems from a seed. Same seed, same style, every time."
+        label="Generator controls"
+        footer={(
+          <div className="gen-actions">
+            <button type="button" className="ws-btn ws-btn--primary gen-actions__btn" onClick={handleGenerate}>
+              <Sparkles size={16} /> Generate new style
+            </button>
+            <button type="button" className="ws-btn gen-actions__btn" onClick={handleSurprise}>
+              <Shuffle size={16} /> Surprise me
+            </button>
+          </div>
+        )}
+      >
           <WorkspaceSection title="Seed" icon={<Hash size={14} />}>
             <div className="gen-seed-row">
               <input
@@ -444,33 +452,22 @@ export const GeneratorPage: React.FC = () => {
               <Layers size={14} /> Generate {batchSize} candidates
             </button>
           </WorkspaceSection>
-
-          <div className="gen-actions">
-            <button type="button" className="ws-btn ws-btn--primary gen-actions__btn" onClick={handleGenerate}>
-              <Sparkles size={16} /> Generate new style
-            </button>
-            <button type="button" className="ws-btn gen-actions__btn" onClick={handleSurprise}>
-              <Shuffle size={16} /> Surprise me
-            </button>
-          </div>
-        </div>
-      </aside>
+      </WorkspacePanel>
 
       {/* ===== Result stage ===== */}
-      <section className="ws-stage" aria-label="Generated style">
-        <header className="ws-stage__bar">
-          <div className="ws-stage__status" aria-live="polite">
-            <span className="ws-stage__dot" aria-hidden="true" />
-            {result ? `${result.style.metadata.name} · seed ${result.seedNumber} · ${result.mode}${result.fromCache ? ' · cached' : ''}` : 'Generating…'}
-          </div>
+      <WorkspaceStage
+        label="Generated style"
+        status={result ? `${result.style.metadata.name} · seed ${result.seedNumber} · ${result.mode}${result.fromCache ? ' · cached' : ''}` : 'Generating…'}
+        actions={(
           <div className="gen-actionbar">
-            <button type="button" className="ws-btn ws-btn--primary" onClick={() => result && handleApply(result)} disabled={!result}><Save size={14} /> Use & save</button>
-            <button type="button" className="ws-btn" onClick={handleVariations} disabled={!result}><Layers size={14} /> 3 variations</button>
-            <button type="button" className="ws-btn" onClick={() => copy('seed')} disabled={!result}>{copied === 'seed' ? <Check size={14} /> : <Copy size={14} />} Seed</button>
-            <button type="button" className="ws-btn" onClick={() => copy('link')} disabled={!result}>{copied === 'link' ? <Check size={14} /> : <Link2 size={14} />} Share link</button>
-            <button type="button" className="ws-btn" onClick={handleExport} disabled={!result}><Download size={14} /> JSON</button>
+            <button type="button" className="ws-btn ws-btn--primary" onClick={() => result && handleApply(result)} disabled={!result}><Save size={14} /> <span>Use & save</span></button>
+            <button type="button" className="ws-btn" onClick={handleVariations} disabled={!result}><Layers size={14} /> <span>3 variations</span></button>
+            <button type="button" className="ws-btn" onClick={() => copy('seed')} disabled={!result} aria-label="Copy seed">{copied === 'seed' ? <Check size={14} /> : <Copy size={14} />} <span>Seed</span></button>
+            <button type="button" className="ws-btn" onClick={() => copy('link')} disabled={!result} aria-label="Copy share link">{copied === 'link' ? <Check size={14} /> : <Link2 size={14} />} <span>Share link</span></button>
+            <button type="button" className="ws-btn" onClick={handleExport} disabled={!result} aria-label="Download JSON"><Download size={14} /> <span>JSON</span></button>
           </div>
-        </header>
+        )}
+      >
 
         <div className="ws-stage__body">
           {error && <div className="ws-error" role="alert">{error}</div>}
@@ -706,7 +703,7 @@ export const GeneratorPage: React.FC = () => {
             <div className="ws-empty">Generating your first style…</div>
           )}
         </div>
-      </section>
-    </div>
+      </WorkspaceStage>
+    </Workspace>
   );
 };

@@ -4,6 +4,8 @@ import type { StyleDefinition } from './types';
 import { registry } from './registry';
 import { resolveStyleToCssVars } from './resolver';
 import { coerceStyleDefinition } from './validate';
+import { DEFAULT_TWEAKS, MOTION_SPEED, applyTweaks, coerceTweaks, isDefaultTweaks } from './tweaks';
+import type { Tweaks } from './tweaks';
 import { STORAGE_KEYS, readJson, readString, writeJson, writeString } from './storage';
 import { allStyles } from '../styles'; // Ensures all styles register
 
@@ -13,23 +15,47 @@ export const DEFAULT_STYLE_ID = 'neumorphism';
 export interface UserSettings {
   /** Force reduced motion regardless of the OS setting. */
   reduceMotion: boolean;
-  /** 0.5 = calmer, 1 = as designed, 1.5 = more expressive. */
-  motionIntensity: 0.5 | 1 | 1.5;
+  /** Motion speed: 0.5 = half speed (calmer), 1 = as designed, 2 = twice as fast. */
+  motionIntensity: number;
   /** Stronger blur, glow and shadows. Clearly labelled as experimental. */
   experimental: boolean;
 }
 
-const DEFAULT_SETTINGS: UserSettings = { reduceMotion: false, motionIntensity: 1, experimental: false };
-
 const MAX_RECENT_STYLES = 8;
+
+function loadSettings(): UserSettings {
+  const raw = readJson<Partial<UserSettings>>(STORAGE_KEYS.settings, {});
+  const speed = typeof raw.motionIntensity === 'number' && Number.isFinite(raw.motionIntensity) ? raw.motionIntensity : 1;
+  return {
+    reduceMotion: raw.reduceMotion === true,
+    experimental: raw.experimental === true,
+    motionIntensity: Math.max(MOTION_SPEED.min, Math.min(MOTION_SPEED.max, speed))
+  };
+}
+
+/** A style ready to paint: tweaks applied, CSS variables resolved with the user's motion and effect settings. */
+export interface RenderedFrame {
+  style: StyleDefinition;
+  vars: Record<string, string>;
+}
 
 interface StyleContextType {
   currentStyle: StyleDefinition;
   setStyle: (styleId: string) => void;
   availableStyles: StyleDefinition[];
   resolvedCssVars: Record<string, string>;
-  /** The style actually shown in the canvas: the preview if one is set, else the current style. */
+  /** The style actually shown in the canvas: the preview if one is set, else the current style, with tweaks applied. */
   renderedStyle: StyleDefinition;
+  /** Paint any other style (a compare frame) exactly like the canvas: same tweaks, same settings. */
+  renderStyle: (style: StyleDefinition) => RenderedFrame;
+
+  /** Global dials layered over every rendered style (the Tweaks panel). */
+  tweaks: Tweaks;
+  setTweaks: (patch: Partial<Tweaks>) => void;
+  resetTweaks: () => void;
+  isTweaked: boolean;
+  /** Bake the tweaks into a new custom style based on the shown style, select it and clear the tweaks. */
+  saveTweaksAsStyle: () => StyleDefinition | undefined;
 
   customStyles: StyleDefinition[];
   addCustomStyle: (style: StyleDefinition) => void;
@@ -89,7 +115,8 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [previewStyle, setPreviewStyle] = useState<StyleDefinition | undefined>(undefined);
   const [favoriteIds, setFavoriteIds] = useState<string[]>(() => readJson<string[]>(STORAGE_KEYS.favorites, []));
   const [recentStyleIds, setRecentStyleIds] = useState<string[]>(() => readJson<string[]>(STORAGE_KEYS.recentStyles, []));
-  const [settings, setSettings] = useState<UserSettings>(() => ({ ...DEFAULT_SETTINGS, ...readJson<Partial<UserSettings>>(STORAGE_KEYS.settings, {}) }));
+  const [settings, setSettings] = useState<UserSettings>(loadSettings);
+  const [tweaks, setTweaksState] = useState<Tweaks>(() => coerceTweaks(readJson<unknown>(STORAGE_KEYS.tweaks, null)));
 
   // Bumped whenever the registry contents change so derived lists refresh.
   const [registryVersion, setRegistryVersion] = useState(0);
@@ -104,10 +131,9 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     [currentStyleId, registryVersion]
   );
 
-  const renderedStyle = previewStyle ?? currentStyle;
-
-  const resolvedCssVars = useMemo(() => {
-    const vars = resolveStyleToCssVars(renderedStyle);
+  const renderStyle = useCallback((style: StyleDefinition): RenderedFrame => {
+    const tweaked = applyTweaks(style, tweaks);
+    const vars = resolveStyleToCssVars(tweaked);
     const factor = settings.reduceMotion ? 0 : 1 / settings.motionIntensity;
     for (const key of ['--duration-fast', '--duration-normal', '--duration-slow']) {
       vars[key] = settings.reduceMotion ? '0ms' : scaleDuration(vars[key], factor);
@@ -122,8 +148,18 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       vars['--backdrop-blur'] = `${Math.max(blur * 2, blur > 0 ? 12 : 0)}px`;
       if (vars['--shadow-glow'] === 'none') vars['--shadow-glow'] = `0 0 24px ${vars['--color-accent']}`;
     }
-    return vars;
-  }, [renderedStyle, settings]);
+    return { style: tweaked, vars };
+  }, [tweaks, settings]);
+
+  const baseStyle = previewStyle ?? currentStyle;
+  const rendered = useMemo(() => renderStyle(baseStyle), [renderStyle, baseStyle]);
+  const renderedStyle = rendered.style;
+  const resolvedCssVars = rendered.vars;
+
+  useEffect(() => { writeJson(STORAGE_KEYS.tweaks, tweaks); }, [tweaks]);
+  const setTweaks = useCallback((patch: Partial<Tweaks>) => setTweaksState((prev) => coerceTweaks({ ...prev, ...patch })), []);
+  const resetTweaks = useCallback(() => setTweaksState(DEFAULT_TWEAKS), []);
+  const isTweaked = !isDefaultTweaks(tweaks);
 
   useEffect(() => { writeJson(STORAGE_KEYS.settings, settings); }, [settings]);
 
@@ -227,6 +263,32 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return copy;
   }, [customStyles]);
 
+  const saveTweaksAsStyle = useCallback((): StyleDefinition | undefined => {
+    if (isDefaultTweaks(tweaks)) return undefined;
+    const baked = applyTweaks(baseStyle, tweaks);
+    const baseId = baseStyle.metadata.id.replace(/-tweaked(-\d+)?$/, '');
+    let n = 1;
+    let id = `${baseId}-tweaked`;
+    while (registry.has(id)) { n += 1; id = `${baseId}-tweaked-${n}`; }
+    const style: StyleDefinition = {
+      ...JSON.parse(JSON.stringify(baked)),
+      metadata: {
+        ...baked.metadata,
+        id,
+        name: `${baseStyle.metadata.name.replace(/ \(Tweaked( \d+)?\)$/, '')} (Tweaked${n > 1 ? ` ${n}` : ''})`,
+        category: 'Custom',
+        isCustom: true,
+        source: 'custom',
+        author: undefined,
+        license: undefined,
+        version: undefined
+      }
+    };
+    addCustomStyle(style);
+    setTweaksState(DEFAULT_TWEAKS);
+    return style;
+  }, [tweaks, baseStyle, addCustomStyle]);
+
   const toggleFavorite = useCallback((styleId: string) => {
     setFavoriteIds((prev) => {
       const next = prev.includes(styleId) ? prev.filter((id) => id !== styleId) : [...prev, styleId];
@@ -249,6 +311,12 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         availableStyles,
         resolvedCssVars,
         renderedStyle,
+        renderStyle,
+        tweaks,
+        setTweaks,
+        resetTweaks,
+        isTweaked,
+        saveTweaksAsStyle,
         customStyles,
         addCustomStyle,
         deleteCustomStyle,

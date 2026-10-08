@@ -54,7 +54,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.75rem 0.5rem 0;
 }
 
 .gen-actions__btn {
@@ -66,9 +65,20 @@
 /* Action bar in the stage header */
 .gen-actionbar {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.375rem;
   flex-shrink: 0;
+}
+
+@media (max-width: 1440px) {
+  .gen-actionbar .ws-btn:not(.ws-btn--primary) span {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .gen-actionbar .ws-btn span {
+    display: none;
+  }
 }
 
 .gen-result {

@@ -1,46 +1,70 @@
 /* ============================================
-   Shared workspace chrome: settings sidebar, sections, controls, stage bar.
-   Pages that are tools (Generator, Components Lab) share this look.
+   Shared workspace layout: the left panel, its sections and controls, and
+   the preview stage. Every page of the app is laid out with these.
    ============================================ */
 
 .ws-workspace {
-  margin: -1.5rem;
-  height: calc(100vh - 56px);
+  position: relative;
+  height: calc(100dvh - var(--shell-header-h, 56px));
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: var(--ws-panel-w, 300px) minmax(0, 1fr) auto;
   background-color: var(--chrome-bg);
   color: var(--chrome-text);
   font-family: var(--chrome-font);
   overflow: hidden;
 }
 
-/* ---------- Settings sidebar (chrome, not themed) ---------- */
+.ws-workspace--panel-hidden:not(.ws-workspace--narrow) {
+  grid-template-columns: 0 minmax(0, 1fr) auto;
+}
+
+/* ---------- Left panel (chrome, not themed) ---------- */
 .ws-settings {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   background-color: var(--chrome-surface);
   border-right: 1px solid var(--chrome-border);
 }
 
+.ws-settings[hidden] {
+  display: none;
+}
+
 .ws-settings__header {
-  padding: 0.875rem 1rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.875rem 0.75rem 0.75rem 1rem;
   border-bottom: 1px solid var(--chrome-border);
 }
 
+.ws-settings__titles {
+  flex: 1;
+  min-width: 0;
+}
+
 .ws-title {
+  margin: 0;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--chrome-text);
+  color: var(--chrome-text-strong);
   line-height: 1.3;
 }
 
 .ws-subtitle {
-  margin-top: 0.25rem;
+  margin: 0.25rem 0 0;
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--chrome-text-muted);
+}
+
+.ws-settings__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .ws-settings__scroll {
@@ -50,6 +74,111 @@
   padding: 0.5rem 0.5rem 1rem;
   scrollbar-width: thin;
   scrollbar-color: var(--chrome-surface-3) transparent;
+}
+
+.ws-settings__footer {
+  padding: 0.75rem;
+  border-top: 1px solid var(--chrome-border);
+  background-color: var(--chrome-surface);
+}
+
+.ws-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: var(--chrome-text-muted);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.ws-icon-btn:hover:not(:disabled) {
+  background-color: var(--chrome-surface-2);
+  border-color: var(--chrome-border);
+  color: var(--chrome-text-strong);
+}
+
+.ws-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ws-icon-btn:focus-visible {
+  outline: 2px solid var(--chrome-primary);
+  outline-offset: 2px;
+}
+
+.ws-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background-color: color-mix(in srgb, var(--chrome-overlay) 55%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+/* Panel search */
+.ws-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.ws-search__icon {
+  position: absolute;
+  left: 0.625rem;
+  color: var(--chrome-text-muted);
+  pointer-events: none;
+}
+
+.ws-search__input {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 8px;
+  background-color: var(--chrome-surface-2);
+  color: var(--chrome-text-strong);
+  font: inherit;
+  font-size: 0.8125rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.ws-search__input::placeholder {
+  color: var(--chrome-text-muted);
+}
+
+.ws-search__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.ws-search__input:focus-visible {
+  outline: none;
+  border-color: var(--chrome-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--chrome-primary) 25%, transparent);
+}
+
+.ws-search__clear {
+  position: absolute;
+  right: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--chrome-surface-3);
+  color: var(--chrome-text-secondary);
+  cursor: pointer;
+}
+
+.ws-search__clear:hover {
+  color: var(--chrome-text-strong);
 }
 
 /* Collapsible section */
@@ -118,6 +247,9 @@
 
 /* Category list */
 .ws-category-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
@@ -139,6 +271,43 @@
   text-align: left;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
+}
+
+.ws-category-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.ws-category-group + .ws-category-group {
+  margin-top: 0.625rem;
+}
+
+.ws-category-group__title {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+}
+
+.ws-category {
+  text-decoration: none;
+}
+
+.ws-category__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ws-category__hits {
+  font-size: 0.6875rem;
+  color: var(--chrome-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ws-category__icon {
@@ -266,6 +435,13 @@
   transition: background-color 150ms ease, color 150ms ease;
 }
 
+/* Icon above label when an option carries both (viewport pickers). */
+.ws-segmented__btn:has(> svg + span) {
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0.25rem;
+}
+
 .ws-segmented__btn:hover {
   color: var(--chrome-text);
   background-color: var(--chrome-surface-3);
@@ -274,6 +450,29 @@
 .ws-segmented__btn--active {
   background-color: var(--chrome-primary);
   color: var(--chrome-on-primary);
+}
+
+/* Compare slot badge (A / B / C) above a frame */
+.ws-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background-color: var(--chrome-primary-soft);
+  color: var(--chrome-primary-hover);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ws-slot__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--chrome-text);
 }
 
 /* Compare slots */
@@ -331,9 +530,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  height: 44px;
-  padding: 0 1rem;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.375rem 0.75rem 0.375rem 1rem;
   background-color: var(--chrome-surface);
   border-bottom: 1px solid var(--chrome-border);
   flex-shrink: 0;
@@ -343,12 +542,31 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex: 1;
   min-width: 0;
   font-size: 0.8125rem;
   color: var(--chrome-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.ws-stage__panel-btn {
+  margin-left: -0.375rem;
+}
+
+.ws-stage__status-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ws-stage__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  min-width: 0;
 }
 
 .ws-stage__dot {
@@ -401,10 +619,34 @@
   scrollbar-color: var(--chrome-surface-3) transparent;
 }
 
-/* Three-up comparison: Style A | Style B | Style C (frames are zoomed to fit the stage) */
-.ws-stage__canvas--compare .ws-device--desktop {
+/* Three-up comparison: Style A | Style B | Style C (fixed frames are zoomed to fit the stage). */
+.ws-stage__canvas--compare .dv--fluid {
   flex: 1 1 0;
   max-width: none;
+}
+
+/* Fixed-size frames sit centred; when zoomed past the stage they scroll from the start. */
+.ws-stage__canvas--fixed {
+  align-items: flex-start;
+  justify-content: safe center;
+}
+
+.ws-stage__hint {
+  font-size: 0.75rem;
+  color: var(--chrome-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1023px) {
+  .ws-stage__canvas {
+    padding: 1rem;
+  }
+
+  .ws-stage__hint {
+    display: none;
+  }
 }
 
 
@@ -566,30 +808,48 @@
   font-size: 0.8125rem;
 }
 
+/* Narrow screens: the panel is a drawer over the stage. */
+.ws-workspace--narrow {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ws-workspace--narrow > .ws-stage {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.ws-workspace--narrow > .ws-settings {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  width: min(340px, 88vw);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--chrome-overlay) 55%, transparent);
+  transform: translateX(-105%);
+  visibility: hidden;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 220ms;
+}
+
+.ws-workspace--narrow > .ws-settings[data-open] {
+  transform: none;
+  visibility: visible;
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
 @media (max-width: 1023px) {
-  .ws-workspace {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .ws-settings {
-    max-height: 44vh;
-    border-right: none;
-    border-bottom: 1px solid var(--chrome-border);
-  }
-
-  .ws-settings__scroll {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0 0.5rem;
-    align-content: start;
-  }
-
-  .ws-section {
-    border-bottom: none;
-  }
-
   .ws-stage__body {
     padding: 1rem;
+  }
+
+  .ws-stage__bar {
+    padding-left: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ws-workspace--narrow > .ws-settings,
+  .ws-workspace--narrow > .ws-settings[data-open] {
+    transition: none;
   }
 }

@@ -7,52 +7,15 @@
   position: relative;
 }
 
-/* Detail drawer becomes a third column on wide screens so the stage bar stays reachable. */
-.styles-page--drawer {
-  grid-template-columns: 300px minmax(0, 1fr) 400px;
+/* The detail drawer is the workspace's third column, so the stage bar stays reachable. */
+.styles-page--drawer .styles-drawer {
+  width: 400px;
 }
 
 .styles-page .ws-stage__bar {
-  height: auto;
-  min-height: 44px;
   flex-wrap: wrap;
-  padding: 0.375rem 1rem;
   row-gap: 0.375rem;
 }
-
-.styles-search {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin: 0.5rem 0.25rem 0.25rem;
-  color: var(--chrome-text-muted);
-}
-
-.styles-search > svg {
-  position: absolute;
-  left: 0.625rem;
-  pointer-events: none;
-}
-
-.styles-search .ws-input {
-  width: 100%;
-  padding-left: 1.875rem;
-  padding-right: 1.75rem;
-}
-
-.styles-search__clear {
-  position: absolute;
-  right: 0.375rem;
-  display: inline-flex;
-  padding: 0.25rem;
-  border: none;
-  border-radius: 4px;
-  background: none;
-  color: var(--chrome-text-secondary);
-  cursor: pointer;
-}
-
-.styles-search__clear:hover { background: var(--chrome-surface-2); color: var(--chrome-text); }
 
 .ws-category__count {
   margin-left: auto;
@@ -437,7 +400,6 @@
 .relmap__legend i { width: 18px; height: 2px; display: inline-block; }
 
 @media (max-width: 1023px) {
-  .styles-page--drawer { grid-template-columns: minmax(0, 1fr); }
-  .styles-drawer { position: absolute; inset: 0; width: 100%; }
+  .styles-page--drawer .styles-drawer { position: absolute; inset: 0; z-index: 45; width: 100%; }
   .styles-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
