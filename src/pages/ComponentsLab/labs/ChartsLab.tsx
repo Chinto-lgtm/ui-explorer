@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ChartColumn, Sliders, Database } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSegmented, WorkspaceSwitch } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
 import { LineChart } from '../../../components/charts/LineChart';
@@ -16,19 +18,19 @@ type Dataset = 'revenue' | 'traffic' | 'signups';
 const DATASET_SEED: Record<Dataset, number> = { revenue: 11, traffic: 23, signups: 37 };
 
 export const ChartsLab: React.FC = () => {
-  const [type, setType] = useState<ChartType>('line');
-  const [dataset, setDataset] = useState<Dataset>('revenue');
-  const [points, setPoints] = useState(12);
-  const [seriesCount, setSeriesCount] = useState<'1' | '2' | '3'>('2');
-  const [scaleMax, setScaleMax] = useState(0);
-  const [labels, setLabels] = useState(true);
-  const [grid, setGrid] = useState(true);
-  const [tooltip, setTooltip] = useState(true);
-  const [animate, setAnimate] = useState(true);
-  const [gradient, setGradient] = useState(true);
-  const [strokeWidth, setStrokeWidth] = useState(3);
-  const [fill, setFill] = useState(true);
-  const [showAll, setShowAll] = useState(true);
+  const [type, setType] = useLabState<ChartType>('charts.type', 'line');
+  const [dataset, setDataset] = useLabState<Dataset>('charts.dataset', 'revenue');
+  const [points, setPoints] = useLabState('charts.points', 12);
+  const [seriesCount, setSeriesCount] = useLabState<'1' | '2' | '3'>('charts.seriesCount', '2');
+  const [scaleMax, setScaleMax] = useLabState('charts.scaleMax', 0);
+  const [labels, setLabels] = useLabState('charts.labels', true);
+  const [grid, setGrid] = useLabState('charts.grid', true);
+  const [tooltip, setTooltip] = useLabState('charts.tooltip', true);
+  const [animate, setAnimate] = useLabState('charts.animate', true);
+  const [gradient, setGradient] = useLabState('charts.gradient', true);
+  const [strokeWidth, setStrokeWidth] = useLabState('charts.strokeWidth', 3);
+  const [fill, setFill] = useLabState('charts.fill', true);
+  const [showAll, setShowAll] = useLabState('charts.showAll', true);
   useLabStatus(`${type} · ${points} points · ${seriesCount} series`);
 
   const series = useMemo(() => {

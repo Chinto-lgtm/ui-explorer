@@ -20,7 +20,7 @@ const CHROME_DIRS = ['src/components/layout', 'src/components/workspace', 'src/p
 const CHROME_FILES = ['src/App.css', 'src/index.css'];
 // Icon treatments (3D / skeuomorphic shading) are black-and-white drop shadows rendered inside the
 // styled preview — part of the icon style, not of the chrome.
-const ALLOW = new Set(['src/pages/Labs/labs/IconLab.tsx']);
+const ALLOW = new Set(['src/pages/ComponentsLab/labs/IconLab.tsx']);
 
 const COLOUR = /#[0-9a-f]{3,8}\b|rgba?\(\s*\d/i;
 const DECLARATION = /(?:^|[\s{;"'`(])(?:background|color|border|outline|fill|stroke|box-shadow|stop-color|stopColor)[a-z-]*\s*[:=]/i;

@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { SectionRouteContext, sectionSlug } from './sectionRoute';
 import '../layout/Workspace.css';
 
 /** Collapsible settings group. Native <details> keeps keyboard and screen-reader behaviour. */
 export const WorkspaceSection: React.FC<{ title: string; icon: ReactNode; defaultOpen?: boolean; children: ReactNode }> = ({
   title, icon, defaultOpen = true, children
-}) => (
-  <details className="ws-section" open={defaultOpen}>
-    <summary className="ws-section__summary">
-      <span className="ws-section__icon">{icon}</span>
-      <span className="ws-section__title">{title}</span>
-      <ChevronDown size={14} className="ws-section__chevron" aria-hidden="true" />
-    </summary>
-    <div className="ws-section__body">{children}</div>
-  </details>
-);
+}) => {
+  const route = useContext(SectionRouteContext);
+  const slug = sectionSlug(title);
+  const isActive = route?.active === slug;
+  const ref = useRef<HTMLDetailsElement>(null);
+  // A section named in the URL scrolls into view once, when the page opens on it.
+  useEffect(() => { if (isActive) ref.current?.scrollIntoView?.({ block: 'start' }); }, [isActive]);
+  return (
+    <details
+      ref={ref}
+      className="ws-section"
+      id={route ? `section-${slug}` : undefined}
+      open={route?.active ? isActive : defaultOpen}
+      onToggle={(e) => { if (route && (e.currentTarget as HTMLDetailsElement).open && !isActive) route.onOpen(slug); }}
+    >
+      <summary className="ws-section__summary">
+        <span className="ws-section__icon">{icon}</span>
+        <span className="ws-section__title">{title}</span>
+        <ChevronDown size={14} className="ws-section__chevron" aria-hidden="true" />
+      </summary>
+      <div className="ws-section__body">{children}</div>
+    </details>
+  );
+};
 
 /** Native checkbox visually rendered as a switch. */
 export const WorkspaceSwitch: React.FC<{ checked: boolean; onChange: (v: boolean) => void; label: ReactNode; disabled?: boolean }> = ({

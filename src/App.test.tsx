@@ -19,43 +19,87 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     expect(screen.getAllByRole('button', { name: /start exploring/i }).length).toBeGreaterThan(0);
   });
 
-  it('starting from the landing page finishes onboarding and opens the lab', () => {
+  it('starting from the landing page finishes onboarding and opens the styles gallery', async () => {
     render(<App />);
     fireEvent.click(screen.getAllByRole('button', { name: /start exploring/i })[0]);
     expect(localStorage.getItem('ui_explorer_onboarded')).toBe('1');
-    expect(window.location.pathname).toBe('/');
-    expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/styles');
+    expect(await screen.findByLabelText(/search styles/i, {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
-  it('skips the landing page once onboarding is complete', () => {
+  it('the landing page sends returning visitors back to their last page', () => {
     localStorage.setItem('ui_explorer_onboarded', '1');
+    localStorage.setItem('ui_explorer_last_route', '/generator');
     render(<App />);
-    expect(screen.queryByRole('heading', { level: 1, name: /one interface/i })).not.toBeInTheDocument();
-    expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /back to the lab/i }));
+    expect(window.location.pathname).toBe('/generator');
   });
 
-  it('the header logo and wordmark open the landing page', () => {
-    localStorage.setItem('ui_explorer_onboarded', '1');
+  it('the header logo and wordmark open the landing page', async () => {
+    window.history.replaceState({}, '', '/styles');
     render(<App />);
-    const home = screen.getByRole('link', { name: 'UI Explorer home' });
-    expect(home).toHaveAttribute('href', '/welcome');
+    const home = await screen.findByRole('link', { name: 'UI Explorer home' });
+    expect(home).toHaveAttribute('href', '/');
     expect(home.querySelector('svg.brand-mark')).not.toBeNull();
-    fireEvent.click(home);
-    expect(window.location.pathname).toBe('/welcome');
-    expect(screen.getByRole('heading', { level: 1, name: /one interface/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /back to the lab/i })).toBeInTheDocument();
-  });
-
-  it('renders the brand title in header', () => {
-    localStorage.setItem('ui_explorer_onboarded', '1');
-    render(<App />);
     expect(screen.getByText('Explorer', { exact: false, selector: '.brand-lockup__word' })).toBeInTheDocument();
+    fireEvent.click(home);
+    expect(window.location.pathname).toBe('/');
+    expect(screen.getByRole('heading', { level: 1, name: /one interface/i })).toBeInTheDocument();
   });
 
-  it('renders active style hero on dashboard', () => {
-    localStorage.setItem('ui_explorer_onboarded', '1');
-    render(<App />);
-    expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+  describe('addresses', () => {
+    it('old addresses redirect to their new homes', async () => {
+      window.history.replaceState({}, '', '/welcome');
+      const { unmount } = render(<App />);
+      expect(window.location.pathname).toBe('/');
+      unmount();
+      window.history.replaceState({}, '', '/labs?lab=motion');
+      const second = render(<App />);
+      await waitFor(() => expect(window.location.pathname).toBe('/components/motion'));
+      second.unmount();
+      window.history.replaceState({}, '', '/data');
+      render(<App />);
+      await waitFor(() => expect(window.location.pathname).toBe('/components/table'));
+    });
+
+    it('unknown pages say so and list every real page', async () => {
+      window.history.replaceState({}, '', '/nowhere');
+      render(<App />);
+      expect(await screen.findByRole('heading', { name: /nothing lives at/i })).toBeInTheDocument();
+      expect(screen.getAllByRole('link', { name: /styles/i }).length).toBeGreaterThan(0);
+    });
+
+    it('a style detail is a real address', async () => {
+      window.history.replaceState({}, '', '/styles/glassmorphism/tokens');
+      render(<App />);
+      expect(await screen.findByRole('tab', { name: /docs/i }, { timeout: 5000 })).toBeInTheDocument();
+      expect(screen.getAllByText('Glassmorphism').length).toBeGreaterThan(0);
+      fireEvent.click(screen.getByRole('tab', { name: /relations/i }));
+      expect(window.location.pathname).toBe('/styles/glassmorphism/relations');
+    });
+
+    it('components sections, device and compare live in the URL', async () => {
+      window.history.replaceState({}, '', '/components/table?device=mobile');
+      render(<App />);
+      expect(await screen.findByRole('heading', { name: 'Components' }, { timeout: 5000 })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /^mobile/i })).toHaveAttribute('aria-pressed', 'true');
+      // The deep-dive section brings its own settings into the sidebar.
+      expect(await screen.findByText('Table settings')).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('link', { name: /charts/i }));
+      expect(window.location.pathname).toBe('/components/charts');
+      expect(window.location.search).toContain('device=mobile');
+      fireEvent.click(screen.getByRole('button', { name: /compare/i }));
+      expect(new URLSearchParams(window.location.search).has('compare')).toBe(true);
+      expect((await screen.findAllByText('Style C')).length).toBeGreaterThan(0);
+    });
+
+    it('tools open from the URL and close back to the page', async () => {
+      window.history.replaceState({}, '', '/styles?tool=shortcuts');
+      render(<App />);
+      expect(await screen.findByRole('dialog', { name: /keyboard shortcuts/i }, { timeout: 5000 })).toBeInTheDocument();
+      fireEvent.keyDown(window, { key: 'Escape' });
+      await waitFor(() => expect(new URLSearchParams(window.location.search).has('tool')).toBe(false));
+    });
   });
 
   it('registers all 30 built-in design styles plus community styles', () => {

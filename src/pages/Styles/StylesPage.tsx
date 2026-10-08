@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParam } from '../../hooks/useUrlState';
 import {
   Search, Star, LayoutGrid, Share2, Check, Copy, Wand2, GitCompareArrows, Code2, ExternalLink, X, Filter,
   BookOpen, ShieldCheck, Layers, Network, Play, Users, BadgeCheck, FlaskConical, Sparkles
@@ -21,6 +22,18 @@ type SourceFilter = 'all' | 'official' | 'community' | 'custom' | 'favorites';
 type SortKey = 'name' | 'category' | 'recent';
 type View = 'grid' | 'map';
 type DrawerTab = 'docs' | 'validator' | 'similar' | 'relations' | 'source';
+type FacetFilter = Partial<Record<keyof StyleFacets, string>>;
+
+const SOURCES: readonly SourceFilter[] = ['all', 'official', 'community', 'custom', 'favorites'];
+const SORTS: readonly SortKey[] = ['name', 'category', 'recent'];
+const VIEWS: readonly View[] = ['grid', 'map'];
+const DRAWER_TABS: readonly DrawerTab[] = ['docs', 'validator', 'similar', 'relations', 'source'];
+
+/** Facet filters travel as ?facets=material:glass,mood:calm. */
+const parseFacets = (raw: string | null): FacetFilter =>
+  Object.fromEntries((raw ?? '').split(',').map((pair) => pair.split(':')).filter(([k, v]) => k && v)) as FacetFilter;
+const serializeFacets = (f: FacetFilter): string =>
+  Object.entries(f).filter(([, v]) => v).map(([k, v]) => `${k}:${v}`).join(',');
 
 const CATEGORIES = ['Morphism', 'Modern', 'Expressive', 'Futuristic', 'Retro', 'Minimalist', 'Custom'];
 
@@ -41,14 +54,24 @@ export const StylesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { availableStyles, currentStyle, setStyle, favoriteIds, toggleFavorite, isFavorite, recentStyleIds, duplicateStyle } = useStyle();
 
-  const [query, setQuery] = useState('');
-  const [source, setSource] = useState<SourceFilter>('all');
-  const [category, setCategory] = useState<string>('All');
-  const [facetFilter, setFacetFilter] = useState<Partial<Record<keyof StyleFacets, string>>>({});
-  const [sort, setSort] = useState<SortKey>('name');
-  const [view, setView] = useState<View>('grid');
-  const [selectedId, setSelectedId] = useState<string | null>(searchParams.get('style'));
-  const [tab, setTab] = useState<DrawerTab>('docs');
+  // Everything a visitor can set here lives in the address: /styles/<id>/<tab>?q=&source=&category=&facets=&sort=&view=
+  const { styleId, tab: tabParam } = useParams<{ styleId?: string; tab?: string }>();
+  const { search } = useLocation();
+  const [query, setQuery] = useSearchParam<string>('q', '');
+  const [source, setSource] = useSearchParam<SourceFilter>('source', 'all', SOURCES);
+  const [category, setCategory] = useSearchParam<string>('category', 'All');
+  const [sort, setSort] = useSearchParam<SortKey>('sort', 'name', SORTS);
+  const [view, setView] = useSearchParam<View>('view', 'grid', VIEWS);
+  const facetFilter = useMemo(() => parseFacets(searchParams.get('facets')), [searchParams]);
+  const setFacetFilter = (update: (prev: FacetFilter) => FacetFilter) => {
+    const next = serializeFacets(update(facetFilter));
+    setSearchParams((prev) => { const p = new URLSearchParams(prev); if (next) p.set('facets', next); else p.delete('facets'); return p; }, { replace: true });
+  };
+  const selectedId = styleId && availableStyles.some((s) => s.metadata.id === styleId) ? styleId : null;
+  const tab: DrawerTab = DRAWER_TABS.includes(tabParam as DrawerTab) ? (tabParam as DrawerTab) : 'docs';
+  const openStyle = (id: string, nextTab: DrawerTab = 'docs') => navigate(`/styles/${encodeURIComponent(id)}${nextTab === 'docs' ? '' : `/${nextTab}`}${search}`);
+  const closeStyle = useCallback(() => navigate(`/styles${search}`), [navigate, search]);
+  const setTab = (nextTab: DrawerTab) => { if (selectedId) openStyle(selectedId, nextTab); };
   const [copied, setCopied] = useState<string | null>(null);
 
   const facetsById = useMemo(() => new Map(availableStyles.map((s) => [s.metadata.id, computeFacets(s)])), [availableStyles]);
@@ -87,28 +110,13 @@ export const StylesPage: React.FC = () => {
   const similar = useMemo(() => (selected ? findSimilarStyles(selected, availableStyles, 5) : []), [selected, availableStyles]);
   const selectedRelations = useMemo(() => relations.filter((r) => r.from === selectedId || r.to === selectedId), [relations, selectedId]);
 
-  // Deep links and share links: the shell resolves ?style= to a registered id; follow it into the drawer.
-  const urlStyle = searchParams.get('style');
-  useEffect(() => {
-    if (urlStyle && urlStyle !== selectedId && availableStyles.some((s) => s.metadata.id === urlStyle)) setSelectedId(urlStyle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlStyle, availableStyles]);
-
-  // Keep the drawer deep-linkable: /styles?style=<id>
-  useEffect(() => {
-    const next = new URLSearchParams(searchParams);
-    if (selectedId) next.set('style', selectedId); else next.delete('style');
-    if (next.toString() !== searchParams.toString()) setSearchParams(next, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedId]);
-
   useEffect(() => {
     if (!selected) return;
     // Modals stacked above the drawer (diff, mixer, export) take the Escape first.
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !document.querySelector('[aria-modal="true"]')) setSelectedId(null); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !document.querySelector('[aria-modal="true"]')) closeStyle(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selected]);
+  }, [selected, closeStyle]);
 
   const copy = async (key: string, text: string) => {
     try { await navigator.clipboard.writeText(text); } catch { /* clipboard unavailable */ }
@@ -123,13 +131,13 @@ export const StylesPage: React.FC = () => {
   }, [facetsById]);
 
   const activeFilterCount = (source !== 'all' ? 1 : 0) + (category !== 'All' ? 1 : 0) + Object.values(facetFilter).filter(Boolean).length;
-  const clearFilters = () => { setSource('all'); setCategory('All'); setFacetFilter({}); setQuery(''); };
+  const clearFilters = () => navigate(selectedId ? `/styles/${selectedId}` : '/styles', { replace: true });
 
   const applyStyle = (s: StyleDefinition) => setStyle(s.metadata.id);
   const remix = (s: StyleDefinition) => navigate(`/generator?remix=${encodeURIComponent(s.metadata.id)}`);
   const openDiff = (s: StyleDefinition) => window.dispatchEvent(new CustomEvent('ui-explorer:open-diff', { detail: { a: s.metadata.id, b: currentStyle.metadata.id === s.metadata.id ? undefined : currentStyle.metadata.id } }));
-  const share = (s: StyleDefinition) => copy('share', buildShareUrl(s, !s.metadata.isCustom, '/styles'));
-  const duplicate = (s: StyleDefinition) => { const copyStyle = duplicateStyle(s.metadata.id); if (copyStyle) { setSelectedId(copyStyle.metadata.id); } };
+  const share = (s: StyleDefinition) => copy('share', buildShareUrl(s, !s.metadata.isCustom, `/styles/${encodeURIComponent(s.metadata.id)}`));
+  const duplicate = (s: StyleDefinition) => { const copyStyle = duplicateStyle(s.metadata.id); if (copyStyle) openStyle(copyStyle.metadata.id); };
   const sourceJson = (s: StyleDefinition) => selectedPackage?.source ?? JSON.stringify(s, null, 2);
   const sourceUrl = (s: StyleDefinition) => {
     const pkg = packageById.get(s.metadata.id);
@@ -231,7 +239,7 @@ export const StylesPage: React.FC = () => {
 
         <div className="styles-stage__body">
           {view === 'map' ? (
-            <RelationshipMap styles={filtered} relations={relations} selectedId={selectedId ?? undefined} onSelect={(id) => { setSelectedId(id); setTab('relations'); }} />
+            <RelationshipMap styles={filtered} relations={relations} selectedId={selectedId ?? undefined} onSelect={(id) => openStyle(id, 'relations')} />
           ) : filtered.length === 0 ? (
             <div className="ws-empty">No styles match. <button type="button" className="ws-btn ws-btn--sm" onClick={clearFilters}>Clear filters</button></div>
           ) : (
@@ -242,7 +250,7 @@ export const StylesPage: React.FC = () => {
                 const badge = SOURCE_LABEL[f.source];
                 return (
                   <article key={s.metadata.id} className={`styles-card ${isCurrent ? 'styles-card--current' : ''} ${selectedId === s.metadata.id ? 'styles-card--selected' : ''}`}>
-                    <StylePreviewCard style={s} size="thumb" onClick={() => { setSelectedId(s.metadata.id); setTab('docs'); }} />
+                    <StylePreviewCard style={s} size="thumb" onClick={() => openStyle(s.metadata.id)} />
                     <div className="styles-card__meta">
                       <div className="styles-card__row">
                         <h3 className="styles-card__name">{s.metadata.name}</h3>
@@ -257,7 +265,7 @@ export const StylesPage: React.FC = () => {
                       </div>
                       <div className="styles-card__actions">
                         <button type="button" className={`ws-btn ws-btn--sm ${isCurrent ? '' : 'ws-btn--primary'}`} onClick={() => applyStyle(s)} disabled={isCurrent}>{isCurrent ? <><Check size={12} /> In use</> : <><Play size={12} /> Use</>}</button>
-                        <button type="button" className="ws-btn ws-btn--sm" onClick={() => { setSelectedId(s.metadata.id); setTab('docs'); }}><BookOpen size={12} /> Details</button>
+                        <button type="button" className="ws-btn ws-btn--sm" onClick={() => openStyle(s.metadata.id)}><BookOpen size={12} /> Details</button>
                       </div>
                     </div>
                   </article>
@@ -283,7 +291,7 @@ export const StylesPage: React.FC = () => {
                 {selected.metadata.license && <span className="styles-badge styles-badge--muted">{selected.metadata.license}</span>}
               </div>
             </div>
-            <button type="button" className="styles-drawer__close" onClick={() => setSelectedId(null)} aria-label="Close details"><X size={16} /></button>
+            <button type="button" className="styles-drawer__close" onClick={() => closeStyle()} aria-label="Close details"><X size={16} /></button>
           </div>
 
           <div className="styles-drawer__actions">
@@ -352,7 +360,7 @@ export const StylesPage: React.FC = () => {
               <div className="styles-similar">
                 <p className="ws-hint">Closest styles in DNA space — shared characteristics, not a ranking.</p>
                 {similar.map((s) => (
-                  <div key={s.style.metadata.id} className="styles-similar__item" role="button" tabIndex={0} onClick={() => { setSelectedId(s.style.metadata.id); }} onKeyDown={(e) => { if (e.key === 'Enter') setSelectedId(s.style.metadata.id); }}>
+                  <div key={s.style.metadata.id} className="styles-similar__item" role="button" tabIndex={0} onClick={() => openStyle(s.style.metadata.id, tab)} onKeyDown={(e) => { if (e.key === 'Enter') openStyle(s.style.metadata.id, tab); }}>
                     <StylePreviewCard style={s.style} size="thumb" className="styles-similar__thumb" />
                     <div>
                       <div className="styles-similar__name">{s.style.metadata.name}</div>
@@ -373,7 +381,7 @@ export const StylesPage: React.FC = () => {
                   return (
                     <div key={`${r.from}-${r.to}-${r.kind}`} className="styles-relations__row">
                       <span className={`styles-badge styles-badge--${r.kind}`}>{label}</span>
-                      <button type="button" className="styles-link" onClick={() => setSelectedId(otherId)}>{other?.metadata.name ?? otherId}</button>
+                      <button type="button" className="styles-link" onClick={() => openStyle(otherId, tab)}>{other?.metadata.name ?? otherId}</button>
                     </div>
                   );
                 })}

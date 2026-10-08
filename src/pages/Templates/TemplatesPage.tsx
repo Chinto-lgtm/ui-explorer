@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -6,6 +6,7 @@ import {
   ChevronLeft, ChevronRight, ImagePlus, Trash2, ZoomIn
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
+import { useCompare, COMPARE_SLOTS as SLOTS } from '../../hooks/useCompare';
 import { resolveStyleToCssVars } from '../../engine/resolver';
 import { encodeStyleParam } from '../../engine/share';
 import { absoluteUrl } from '../../config/app';
@@ -33,7 +34,6 @@ const VIEWS: { id: ViewMode; label: string; icon: ReactNode }[] = [
   { id: 'compare', label: 'A / B / C', icon: <Columns3 size={14} /> }
 ];
 
-const SLOTS = ['A', 'B', 'C'] as const;
 const STAGE_GAP = 24;
 const LABEL_HEIGHT = 34;
 
@@ -58,24 +58,20 @@ export const TemplatesPage: React.FC = () => {
   const params = useParams<{ family?: string; screen?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { renderedStyle, resolvedCssVars, availableStyles, currentStyle } = useStyle();
+  const { renderedStyle, resolvedCssVars, availableStyles } = useStyle();
   const userImage = useUserImage();
 
   const family = getFamily(params.family);
   const screen = family.screens.find((s) => s.id === params.screen) ?? family.screens[0];
-  const view = (['screen', 'flow', 'compare'].includes(searchParams.get('view') ?? '') ? searchParams.get('view') : 'screen') as ViewMode;
+  const compare = useCompare();
+  const view: ViewMode = compare.on ? 'compare' : searchParams.get('view') === 'flow' ? 'flow' : 'screen';
   const zoom = (['fit', '0.5', '0.75', '1'].includes(searchParams.get('zoom') ?? '') ? searchParams.get('zoom') : 'fit') as Zoom;
   const [panelOpen, setPanelOpen] = useState(true);
   const [copied, setCopied] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const compareIds = useMemo(() => {
-    const fromUrl = (searchParams.get('compare') ?? '').split(',').filter((id) => availableStyles.some((s) => s.metadata.id === id));
-    const others = availableStyles.map((s) => s.metadata.id).filter((id) => id !== currentStyle.metadata.id);
-    const defaults = [currentStyle.metadata.id, others[0], others[1]];
-    return SLOTS.map((_, i) => fromUrl[i] ?? defaults[i] ?? currentStyle.metadata.id);
-  }, [searchParams, availableStyles, currentStyle]);
+  const compareIds = compare.ids;
 
   const setParam = useCallback((key: string, value: string | null) => {
     setSearchParams((prev) => {
@@ -87,10 +83,21 @@ export const TemplatesPage: React.FC = () => {
 
   const urlFor = (familyId: string, screenId: string, nextView?: ViewMode) => {
     const next = new URLSearchParams(searchParams);
-    if (nextView) { if (nextView === 'screen') next.delete('view'); else next.set('view', nextView); }
+    if (nextView) { next.delete('compare'); if (nextView === 'flow') next.set('view', 'flow'); else next.delete('view'); }
     const qs = next.toString();
     return `/templates/${familyId}/${screenId}${qs ? `?${qs}` : ''}`;
   };
+  const selectView = (next: ViewMode) => {
+    setSearchParams((prev) => {
+      const p = new URLSearchParams(prev);
+      p.delete('view');
+      p.delete('compare');
+      if (next === 'flow') p.set('view', 'flow');
+      if (next === 'compare') p.set('compare', compareIds.join(','));
+      return p;
+    }, { replace: true });
+  };
+
   const goTo = (familyId: string, screenId: string, nextView?: ViewMode) => navigate(urlFor(familyId, screenId, nextView));
 
   // Links inside a template keep the current view and comparison.
@@ -128,7 +135,7 @@ export const TemplatesPage: React.FC = () => {
     const isBuiltIn = !renderedStyle.metadata.isCustom;
     const qs = new URLSearchParams();
     qs.set('style', encodeStyleParam(renderedStyle, isBuiltIn));
-    if (view !== 'screen') qs.set('view', view);
+    if (view === 'flow') qs.set('view', 'flow');
     if (view === 'compare') qs.set('compare', compareIds.join(','));
     return `${absoluteUrl(`/templates/${family.id}/${screen.id}`)}?${qs.toString()}`;
   };
@@ -178,7 +185,7 @@ export const TemplatesPage: React.FC = () => {
                 className="tp-select tp-select--slot"
                 aria-label={`Style ${SLOTS[i]}`}
                 value={style.metadata.id}
-                onChange={(e) => setParam('compare', compareIds.map((x, j) => (j === i ? e.target.value : x)).join(','))}
+                onChange={(e) => compare.setSlot(i, e.target.value)}
               >
                 {availableStyles.map((s) => <option key={s.metadata.id} value={s.metadata.id}>{s.metadata.name}</option>)}
               </select>
@@ -292,7 +299,7 @@ export const TemplatesPage: React.FC = () => {
           <div className="tp-toolbar__group">
             <div className="tp-seg" role="radiogroup" aria-label="View">
               {VIEWS.map((v) => (
-                <button key={v.id} type="button" role="radio" aria-checked={view === v.id} className={`tp-seg__btn ${view === v.id ? 'tp-seg__btn--active' : ''}`} onClick={() => setParam('view', v.id === 'screen' ? null : v.id)}>
+                <button key={v.id} type="button" role="radio" aria-checked={view === v.id} className={`tp-seg__btn ${view === v.id ? 'tp-seg__btn--active' : ''}`} onClick={() => selectView(v.id)}>
                   {v.icon}<span>{v.label}</span>
                 </button>
               ))}

@@ -1,60 +1,65 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { StyleProvider } from './engine/context';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
-import { DashboardPage } from './pages/Dashboard/DashboardPage';
-import { WelcomePage } from './pages/Welcome/WelcomePage';
-import { hasCompletedOnboarding, BASE_PATH } from './config/app';
+import { NotFound } from './components/layout/NotFound';
+import { LandingPage } from './pages/Landing/LandingPage';
+import { BASE_PATH } from './config/app';
+import { PAGES } from './config/routes';
 
-// Tool pages are code-split so the first paint only carries the shell, the engine and the dashboard.
-const GeneratorPage = lazy(() => import('./pages/Generator/GeneratorPage').then((m) => ({ default: m.GeneratorPage })));
-const ComponentsLabPage = lazy(() => import('./pages/ComponentsLab/ComponentsLabPage').then((m) => ({ default: m.ComponentsLabPage })));
-const LabsPage = lazy(() => import('./pages/Labs/LabsPage').then((m) => ({ default: m.LabsPage })));
-const CustomizerPage = lazy(() => import('./pages/Customizer/CustomizerPage').then((m) => ({ default: m.CustomizerPage })));
-const StylesPage = lazy(() => import('./pages/Styles/StylesPage').then((m) => ({ default: m.StylesPage })));
-const TemplatesPage = lazy(() => import('./pages/Templates/TemplatesPage').then((m) => ({ default: m.TemplatesPage })));
+// Tool pages are code-split so the first paint only carries the landing page, the shell and the engine.
+const PAGE_COMPONENTS = Object.fromEntries(PAGES.map((p) => [p.id, lazy(p.load)]));
 const TemplatePreviewPage = lazy(() => import('./pages/Templates/TemplatePreviewPage').then((m) => ({ default: m.TemplatePreviewPage })));
 
 const PageFallback: React.FC = () => (
   <div className="page-loading" role="status" aria-live="polite">Loading…</div>
 );
 
+/** Old addresses keep working: /data and /labs?lab=x now live under /components/x. */
+const LabsRedirect: React.FC = () => {
+  const [params] = useSearchParams();
+  const { lab } = useParams();
+  return <Navigate to={`/components/${lab ?? params.get('lab') ?? 'table'}`} replace />;
+};
+
+/** The old welcome address now points at the landing page, keeping any query. */
+const WelcomeRedirect: React.FC = () => {
+  const { search } = useLocation();
+  return <Navigate to={`/${search}`} replace />;
+};
+
 /** Pages that live inside the app shell (header, sidebar, themed canvas). */
 const ShellRoutes: React.FC = () => (
   <AppShell>
     <Suspense fallback={<PageFallback />}>
-    <Routes>
-      <Route path="/" element={hasCompletedOnboarding() ? <DashboardPage /> : <Navigate to="/welcome" replace />} />
-      <Route path="/styles" element={<StylesPage />} />
-      <Route path="/generator" element={<GeneratorPage />} />
-      <Route path="/components" element={<ComponentsLabPage />} />
-      <Route path="/templates/:family?/:screen?" element={<TemplatesPage />} />
-      <Route path="/data" element={<LabsPage />} />
-      <Route path="/labs" element={<LabsPage />} />
-      <Route path="/customizer" element={<CustomizerPage />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      <Routes>
+        {PAGES.map((p) => {
+          const Page = PAGE_COMPONENTS[p.id];
+          return <Route key={p.id} path={p.pattern} element={<Page />} />;
+        })}
+        <Route path="/data" element={<LabsRedirect />} />
+        <Route path="/labs/:lab?" element={<LabsRedirect />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </Suspense>
   </AppShell>
 );
 
-export const App: React.FC = () => {
-  return (
-    <ErrorBoundary>
-      <BrowserRouter basename={BASE_PATH || undefined}>
-        <StyleProvider>
-          <Routes>
-            {/* The welcome view is full-bleed and renders outside the shell. */}
-            <Route path="/welcome" element={<WelcomePage />} />
-            {/* Full-screen template preview: just the template, no tool around it. */}
-            <Route path="/preview/:family/:screen" element={<Suspense fallback={<PageFallback />}><TemplatePreviewPage /></Suspense>} />
-            <Route path="/*" element={<ShellRoutes />} />
-          </Routes>
-        </StyleProvider>
-      </BrowserRouter>
-    </ErrorBoundary>
-  );
-};
+export const App: React.FC = () => (
+  <ErrorBoundary>
+    <BrowserRouter basename={BASE_PATH || undefined}>
+      <StyleProvider>
+        <Routes>
+          {/* The landing page and the full-screen template preview render without the shell. */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/welcome" element={<WelcomeRedirect />} />
+          <Route path="/preview/:family/:screen" element={<Suspense fallback={<PageFallback />}><TemplatePreviewPage /></Suspense>} />
+          <Route path="/*" element={<ShellRoutes />} />
+        </Routes>
+      </StyleProvider>
+    </BrowserRouter>
+  </ErrorBoundary>
+);
 
 export default App;

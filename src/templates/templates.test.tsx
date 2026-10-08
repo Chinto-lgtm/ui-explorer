@@ -50,7 +50,7 @@ describe('template registry', () => {
   });
 
   it('the landing page counts the template screens correctly', async () => {
-    const { TEMPLATE_SCREEN_COUNT } = await import('../pages/Welcome/WelcomePage');
+    const { TEMPLATE_SCREEN_COUNT } = await import('../pages/Landing/LandingPage');
     expect(TEMPLATE_SCREEN_COUNT).toBe(getFamily('landing-desktop').screens.length + getFamily('app').screens.length);
   });
 

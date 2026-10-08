@@ -1,24 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Columns, Search, Sliders, Menu, X, Star, Crosshair, AlertTriangle } from 'lucide-react';
 import { BrandLockup } from './BrandMark';
 import { contrastRatio } from '../../engine/color';
 import { useStyle } from '../../hooks/useStyle';
 import { APP_VERSION } from '../../config/app';
+import { COMPARE_PARAM } from '../../config/routes';
+import { useTools } from './tools';
 import './AppShell.css';
 
 export interface HeaderProps {
-  onOpenCommandPalette: () => void;
-  onToggleAnatomy: () => void;
   onToggleSidebar: () => void;
-  onToggleInspect: () => void;
   isSidebarOpen: boolean;
-  isAnatomyOpen: boolean;
-  isInspecting: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAnatomy, onToggleSidebar, onToggleInspect, isSidebarOpen, isAnatomyOpen, isInspecting }) => {
-  const { currentStyle, setStyle, availableStyles, isCompareActive, setIsCompareActive, favoriteIds, toggleFavorite } = useStyle();
+export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }) => {
+  const { currentStyle, setStyle, availableStyles, favoriteIds, toggleFavorite } = useStyle();
+  const { activeTool, openTool, toggleTool, isInspecting, toggleCompare } = useTools();
+  const { search } = useLocation();
+  const isCompareActive = new URLSearchParams(search).has(COMPARE_PARAM);
+  const isAnatomyOpen = activeTool === 'anatomy';
+  const onOpenCommandPalette = () => openTool('search');
+  const onToggleAnatomy = () => toggleTool('anatomy');
+  const onToggleInspect = () => openTool('inspect');
 
   const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
   const others = availableStyles.filter((s) => !favoriteIds.includes(s.metadata.id));
@@ -40,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
         >
           {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
-        <Link to="/welcome" className="shell-header__logo" aria-label="UI Explorer home">
+        <Link to="/" className="shell-header__logo" aria-label="UI Explorer home">
           <BrandLockup size={28} className="shell-header__lockup" />
         </Link>
         <span className="shell-header__badge">v{APP_VERSION}</span>
@@ -115,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
         {/* Compare Toggle */}
         <button
           className={`shell-btn ${isCompareActive ? 'shell-btn--active' : ''}`}
-          onClick={() => setIsCompareActive(!isCompareActive)}
+          onClick={toggleCompare}
           title="Compare Mode (Ctrl+Shift+C)"
           aria-pressed={isCompareActive}
         >

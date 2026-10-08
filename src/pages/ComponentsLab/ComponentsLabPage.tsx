@@ -1,38 +1,23 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { Suspense, useState, useRef, useLayoutEffect } from 'react';
 import type { ReactNode } from 'react';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
+import { useSearchParam, useSearchFlag } from '../../hooks/useUrlState';
+import { useCompare, COMPARE_SLOTS } from '../../hooks/useCompare';
 import { resolveStyleToCssVars } from '../../engine/resolver';
 import { getStyleDataAttributes } from '../../engine/styleAttributes';
 import type { StyleDefinition } from '../../engine/types';
 import { ToastProvider } from '../../components/ui/Feedback';
-import { LAB_SECTIONS } from './sections';
+import { LAB_SECTIONS, SECTION_GROUPS, DEFAULT_SECTION, sectionById } from './sections';
+import { LabStateProvider, LabFrame } from './labState';
 import {
-  Search, Palette, MousePointerClick, TextCursorInput, CheckSquare, Compass, BellRing, Layers,
-  LayoutPanelTop, Tag, ListTree, ChartColumn, Megaphone,
+  Search, LayoutPanelTop, SlidersHorizontal,
   Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown, X, Ruler
 } from 'lucide-react';
 import './ComponentsLabPage.css';
 
-type CategoryId = string;
 type ViewportId = 'desktop' | 'tablet' | 'mobile' | 'custom';
-
-const SECTION_ICONS: Record<string, ReactNode> = {
-  foundations: <Palette size={16} />,
-  buttons: <MousePointerClick size={16} />,
-  inputs: <TextCursorInput size={16} />,
-  selection: <CheckSquare size={16} />,
-  navigation: <Compass size={16} />,
-  feedback: <BellRing size={16} />,
-  overlays: <Layers size={16} />,
-  cards: <LayoutPanelTop size={16} />,
-  badges: <Tag size={16} />,
-  lists: <ListTree size={16} />,
-  charts: <ChartColumn size={16} />,
-  content: <Megaphone size={16} />,
-  mobile: <Smartphone size={16} />
-};
-
-const CATEGORIES = LAB_SECTIONS.map((sec) => ({ id: sec.id, label: sec.label, icon: SECTION_ICONS[sec.id], keywords: sec.keywords }));
+const VIEWPORT_IDS: readonly ViewportId[] = ['desktop', 'tablet', 'mobile', 'custom'];
 
 const VIEWPORTS: { id: ViewportId; label: string; width: string; icon: ReactNode }[] = [
   { id: 'desktop', label: 'Desktop', width: 'Fluid', icon: <Monitor size={16} /> },
@@ -48,8 +33,6 @@ const BREAKPOINTS: { max: number; name: string; layout: string; sidebar: string;
   { max: 1280, name: 'Laptop', layout: '3 columns', sidebar: 'Expanded', nav: 'Sidebar' },
   { max: Infinity, name: 'Desktop', layout: 'Fluid grid', sidebar: 'Expanded', nav: 'Sidebar' }
 ];
-
-const COMPARE_SLOTS = ['A', 'B', 'C'] as const;
 
 /** Device frame dimensions in CSS px. Frames render at true size and are zoomed down to fit the stage. */
 const FRAME_SIZE: Record<Exclude<ViewportId, 'desktop' | 'custom'>, { width: number; height: number }> = {
@@ -114,23 +97,25 @@ const DeviceFrame: React.FC<{
 );
 
 export const ComponentsLabPage: React.FC = () => {
-  const { currentStyle, availableStyles } = useStyle();
+  const { currentStyle } = useStyle();
+  const params = useParams<{ section?: string }>();
+  const { search } = useLocation();
+  const section = sectionById(params.section);
 
-  const [activeCategory, setActiveCategory] = useState<CategoryId>('buttons');
-  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('');
   const [buttonStateDisabled, setButtonStateDisabled] = useState<boolean>(false);
   const [buttonStateLoading, setButtonStateLoading] = useState<boolean>(false);
-  const [viewport, setViewport] = useState<ViewportId>('desktop');
-  const [customWidth, setCustomWidth] = useState<number>(1024);
-  const [rulers, setRulers] = useState<boolean>(false);
+  const [viewport, setViewport] = useSearchParam<ViewportId>('device', 'desktop', VIEWPORT_IDS);
+  const [widthParam, setWidthParam] = useSearchParam<string>('width', '1024');
+  const customWidth = Math.max(280, Math.min(2560, Number(widthParam) || 1024));
+  const setCustomWidth = (w: number) => setWidthParam(String(w));
+  const [rulers, setRulers] = useSearchFlag('rulers');
+  const compare = useCompare();
+  const isCompareEnabled = compare.on;
   const [inspector, setInspector] = useState<{ width: number; columns: number } | null>(null);
+  const [controlsHost, setControlsHost] = useState<HTMLElement | null>(null);
+  const [labStatus, setLabStatus] = useState('');
   const screenRef = useRef<HTMLDivElement>(null);
-  const [isCompareEnabled, setIsCompareEnabled] = useState<boolean>(false);
-  const [compareIds, setCompareIds] = useState<string[]>(() => {
-    // Seed the three slots with the active style followed by the next two distinct styles.
-    const others = availableStyles.filter((s) => s.metadata.id !== currentStyle.metadata.id).map((s) => s.metadata.id);
-    return [currentStyle.metadata.id, others[0] ?? currentStyle.metadata.id, others[1] ?? currentStyle.metadata.id];
-  });
 
   // Measure the stage so fixed-size device frames can be zoomed to fit (single or three-up).
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -150,21 +135,7 @@ export const ComponentsLabPage: React.FC = () => {
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
-
-  const frameScale = (() => {
-    if (viewport === 'desktop' || stageSize.width === 0) return 1;
-    const { width, height } = viewport === 'custom' ? { width: customWidth, height: 900 } : FRAME_SIZE[viewport];
-    const count = isCompareEnabled ? 3 : 1;
-    const gap = 24;
-    const labelHeight = isCompareEnabled ? 28 : 0;
-    const byWidth = (stageSize.width - gap * (count - 1)) / (width * count);
-    const byHeight = stageSize.height / (height + labelHeight);
-    return Math.min(1, byWidth, byHeight);
-  })();
-
-  const activeCategoryMeta = CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
-  const activeViewportMeta = VIEWPORTS.find((v) => v.id === viewport) ?? VIEWPORTS[0];
+  }, [section]);
 
   // Responsive inspector: measure the live preview so the readout reflects the real layout.
   useLayoutEffect(() => {
@@ -179,101 +150,117 @@ export const ComponentsLabPage: React.FC = () => {
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [viewport, customWidth, activeCategory, isCompareEnabled]);
+  }, [viewport, customWidth, section, isCompareEnabled]);
 
+  if (!section) return <Navigate to={`/components/${DEFAULT_SECTION}${search}`} replace />;
+
+  const frameScale = (() => {
+    if (viewport === 'desktop' || stageSize.width === 0) return 1;
+    const { width, height } = viewport === 'custom' ? { width: customWidth, height: 900 } : FRAME_SIZE[viewport];
+    const count = isCompareEnabled ? 3 : 1;
+    const gap = 24;
+    const labelHeight = isCompareEnabled ? 28 : 0;
+    const byWidth = (stageSize.width - gap * (count - 1)) / (width * count);
+    const byHeight = stageSize.height / (height + labelHeight);
+    return Math.min(1, byWidth, byHeight);
+  })();
+
+  const activeViewportMeta = VIEWPORTS.find((v) => v.id === viewport) ?? VIEWPORTS[0];
   const breakpoint = inspector ? BREAKPOINTS.find((b) => inspector.width <= b.max) ?? BREAKPOINTS[BREAKPOINTS.length - 1] : null;
 
-  const compareStyles: StyleDefinition[] = compareIds.map(
-    (id) => availableStyles.find((s) => s.metadata.id === id) ?? currentStyle
+  const ActiveSection = section.Component;
+  const renderShowcase = (primary: boolean) => (
+    <LabFrame primary={primary}>
+      <ToastProvider position="bottom-right">
+        <Suspense fallback={<div className="page-loading" role="status">Loading…</div>}>
+          <ActiveSection disabled={buttonStateDisabled} loading={buttonStateLoading} />
+        </Suspense>
+      </ToastProvider>
+    </LabFrame>
   );
 
-  const setCompareSlot = (index: number, id: string) => {
-    setCompareIds((prev) => prev.map((existing, i) => (i === index ? id : existing)));
-  };
+  const query = filter.trim().toLowerCase();
+  const visible = query
+    ? LAB_SECTIONS.filter((c) => c.label.toLowerCase().includes(query) || c.keywords.some((k) => k.includes(query)))
+    : LAB_SECTIONS;
+  const matchedKeywords = (c: typeof LAB_SECTIONS[number]) => (query ? c.keywords.filter((k) => k.includes(query)).slice(0, 3) : []);
 
-  const ActiveSection = (LAB_SECTIONS.find((sec) => sec.id === activeCategory) ?? LAB_SECTIONS[0]).Component;
-  const renderShowcase = () => (
-    <ToastProvider position="bottom-right">
-      <ActiveSection disabled={buttonStateDisabled} loading={buttonStateLoading} />
-    </ToastProvider>
-  );
-
-  const query = search.trim().toLowerCase();
-  const visibleCategories = query
-    ? CATEGORIES.filter((c) => c.label.toLowerCase().includes(query) || c.keywords.some((k) => k.includes(query)))
-    : CATEGORIES;
-  const matchedKeywords = (c: typeof CATEGORIES[number]) => (query ? c.keywords.filter((k) => k.includes(query)).slice(0, 3) : []);
-
-  const stageStatus = `${activeCategoryMeta.label} · ${activeViewportMeta.label} ${viewport === 'custom' ? `${customWidth}px` : activeViewportMeta.width}` +
-    (isCompareEnabled ? ' · Comparing 3 styles' : ` · ${currentStyle.metadata.name}`);
+  const stageStatus = `${section.label} · ${activeViewportMeta.label} ${viewport === 'custom' ? `${customWidth}px` : activeViewportMeta.width}` +
+    (isCompareEnabled ? ' · Comparing 3 styles' : ` · ${currentStyle.metadata.name}`) + (labStatus ? ` · ${labStatus}` : '');
 
   return (
+    <LabStateProvider key={section.id} controlsHost={controlsHost} setStatus={setLabStatus}>
     <div className="lab-workspace">
       {/* ===== Settings sidebar ===== */}
-      <aside className="lab-settings" aria-label="Components Lab settings">
+      <aside className="lab-settings" aria-label="Components settings">
         <div className="lab-settings__header">
-          <h1 className="lab-title">Components Lab</h1>
-          <p className="lab-subtitle">Test states, viewports and styles against the live component set.</p>
+          <h1 className="lab-title">Components</h1>
+          <p className="lab-subtitle">Every building block in every state, on any device, in any style.</p>
         </div>
 
         <div className="lab-settings__scroll">
-          <LabSection title="Component" icon={<LayoutPanelTop size={14} />}>
+          <LabSection title="Section" icon={<LayoutPanelTop size={14} />}>
             <div className="lab-search">
               <Search size={14} className="lab-search__icon" aria-hidden="true" />
               <input
                 type="search"
                 className="lab-search__input"
                 placeholder="Search components…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
                 aria-label="Search components"
               />
-              {search && (
-                <button type="button" className="lab-search__clear" onClick={() => setSearch('')} aria-label="Clear search"><X size={12} /></button>
+              {filter && (
+                <button type="button" className="lab-search__clear" onClick={() => setFilter('')} aria-label="Clear search"><X size={12} /></button>
               )}
             </div>
-            <div className="lab-category-list" role="group" aria-label="Component category">
-              {visibleCategories.length === 0 && <p className="lab-hint">No component matches "{search}".</p>}
-              {visibleCategories.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  className={`lab-category ${activeCategory === cat.id ? 'lab-category--active' : ''}`}
-                  aria-pressed={activeCategory === cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                >
-                  <span className="lab-category__icon">{cat.icon}</span>
-                  <span className="lab-category__text">
-                    <span>{cat.label}</span>
-                    {matchedKeywords(cat).length > 0 && <span className="lab-category__hits">{matchedKeywords(cat).join(', ')}</span>}
-                  </span>
-                </button>
-              ))}
-            </div>
+            <nav className="lab-category-list" aria-label="Component sections">
+              {visible.length === 0 && <p className="lab-hint">No section matches "{filter}".</p>}
+              {SECTION_GROUPS.map((group) => {
+                const items = visible.filter((c) => c.group === group);
+                if (items.length === 0) return null;
+                return (
+                  <div key={group} className="lab-category-group">
+                    <span className="lab-category-group__title">{group}</span>
+                    {items.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        to={`/components/${cat.id}${search}`}
+                        className={`lab-category ${section.id === cat.id ? 'lab-category--active' : ''}`}
+                        aria-current={section.id === cat.id ? 'page' : undefined}
+                      >
+                        <span className="lab-category__icon"><cat.icon size={16} /></span>
+                        <span className="lab-category__text">
+                          <span>{cat.label}</span>
+                          {matchedKeywords(cat).length > 0 && <span className="lab-category__hits">{matchedKeywords(cat).join(', ')}</span>}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                );
+              })}
+            </nav>
           </LabSection>
 
-          <LabSection title="State" icon={<ToggleLeft size={14} />}>
-            <label className="lab-switch">
-              <input
-                type="checkbox"
-                checked={buttonStateDisabled}
-                onChange={(e) => setButtonStateDisabled(e.target.checked)}
-              />
-              <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
-              <span className="lab-switch__text">Disabled state</span>
-            </label>
-
-            <label className="lab-switch">
-              <input
-                type="checkbox"
-                checked={buttonStateLoading}
-                onChange={(e) => setButtonStateLoading(e.target.checked)}
-              />
-              <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
-              <span className="lab-switch__text">Loading state</span>
-            </label>
-            <p className="lab-hint">Applies to interactive components in the preview.</p>
-          </LabSection>
+          {section.hasSettings ? (
+            <LabSection title={`${section.label} settings`} icon={<SlidersHorizontal size={14} />}>
+              <div ref={setControlsHost} className="labs-controls-host" />
+            </LabSection>
+          ) : (
+            <LabSection title="State" icon={<ToggleLeft size={14} />}>
+              <label className="lab-switch">
+                <input type="checkbox" checked={buttonStateDisabled} onChange={(e) => setButtonStateDisabled(e.target.checked)} />
+                <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
+                <span className="lab-switch__text">Disabled state</span>
+              </label>
+              <label className="lab-switch">
+                <input type="checkbox" checked={buttonStateLoading} onChange={(e) => setButtonStateLoading(e.target.checked)} />
+                <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
+                <span className="lab-switch__text">Loading state</span>
+              </label>
+              <p className="lab-hint">Applies to interactive components in the preview.</p>
+            </LabSection>
+          )}
 
           <LabSection title="Viewport" icon={<Monitor size={14} />}>
             <div className="lab-segmented" role="group" aria-label="Preview viewport">
@@ -329,34 +316,11 @@ export const ComponentsLabPage: React.FC = () => {
 
           <LabSection title="Compare" icon={<Columns3 size={14} />}>
             <label className="lab-switch">
-              <input
-                type="checkbox"
-                checked={isCompareEnabled}
-                onChange={(e) => setIsCompareEnabled(e.target.checked)}
-              />
+              <input type="checkbox" checked={isCompareEnabled} onChange={(e) => compare.setOn(e.target.checked)} />
               <span className="lab-switch__track" aria-hidden="true"><span className="lab-switch__thumb" /></span>
               <span className="lab-switch__text">Compare three styles</span>
             </label>
-
-            <div className={`lab-compare-slots ${isCompareEnabled ? '' : 'lab-compare-slots--muted'}`}>
-              {COMPARE_SLOTS.map((slot, index) => (
-                <label key={slot} className="lab-field">
-                  <span className="lab-field__label">Style {slot}</span>
-                  <select
-                    className="lab-select"
-                    value={compareIds[index]}
-                    disabled={!isCompareEnabled}
-                    onChange={(e) => setCompareSlot(index, e.target.value)}
-                  >
-                    {availableStyles.map((s) => (
-                      <option key={s.metadata.id} value={s.metadata.id}>
-                        {s.metadata.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-            </div>
+            <CompareSlots disabled={!isCompareEnabled} />
           </LabSection>
         </div>
       </aside>
@@ -368,9 +332,9 @@ export const ComponentsLabPage: React.FC = () => {
             <span className="lab-stage__dot" aria-hidden="true" />
             {stageStatus}
           </div>
-          <div className="lab-stage__chips" aria-hidden="true">
-            <span className="lab-chip">{activeViewportMeta.icon}{activeViewportMeta.label}</span>
-            {isCompareEnabled && <span className="lab-chip lab-chip--accent"><Columns3 size={14} />A | B | C</span>}
+          <div className="lab-stage__chips">
+            <span className="lab-stage__blurb">{section.blurb}</span>
+            {isCompareEnabled && <span className="lab-chip lab-chip--accent" aria-hidden="true"><Columns3 size={14} />A | B | C</span>}
           </div>
         </header>
 
@@ -379,7 +343,7 @@ export const ComponentsLabPage: React.FC = () => {
           className={`lab-stage__canvas lab-stage__canvas--${viewport} ${isCompareEnabled ? 'lab-stage__canvas--compare' : ''}`}
         >
           {isCompareEnabled ? (
-            compareStyles.map((style, index) => (
+            compare.styles.map((style: StyleDefinition, index) => (
               <DeviceFrame
                 key={`${COMPARE_SLOTS[index]}-${style.metadata.id}`}
                 viewport={viewport}
@@ -392,16 +356,35 @@ export const ComponentsLabPage: React.FC = () => {
                 rulers={rulers}
                 screenRef={index === 0 ? screenRef : undefined}
               >
-                {renderShowcase()}
+                {renderShowcase(index === 0)}
               </DeviceFrame>
             ))
           ) : (
             <DeviceFrame viewport={viewport} scale={frameScale} styleName={currentStyle.metadata.name} frameStyle={currentStyle} customWidth={customWidth} rulers={rulers} screenRef={screenRef}>
-              {renderShowcase()}
+              {renderShowcase(true)}
             </DeviceFrame>
           )}
         </div>
       </section>
+    </div>
+    </LabStateProvider>
+  );
+};
+
+/** The three compare slots, each a style picker writing to ?compare=. */
+const CompareSlots: React.FC<{ disabled: boolean }> = ({ disabled }) => {
+  const { availableStyles } = useStyle();
+  const compare = useCompare();
+  return (
+    <div className={`lab-compare-slots ${disabled ? 'lab-compare-slots--muted' : ''}`}>
+      {COMPARE_SLOTS.map((slot, index) => (
+        <label key={slot} className="lab-field">
+          <span className="lab-field__label">Style {slot}</span>
+          <select className="lab-select" value={compare.ids[index]} disabled={disabled} onChange={(e) => compare.setSlot(index, e.target.value)}>
+            {availableStyles.map((s) => <option key={s.metadata.id} value={s.metadata.id}>{s.metadata.name}</option>)}
+          </select>
+        </label>
+      ))}
     </div>
   );
 };

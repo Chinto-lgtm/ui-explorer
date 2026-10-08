@@ -2,25 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
-import {
-  Search, Sparkles, LayoutDashboard, Component, Database, Sliders, Wand2, X,
-  Columns, Download, Shuffle, Star, Keyboard, Eye, Braces, Zap, Info, GitCompareArrows, Crosshair, LayoutTemplate, Smartphone, Monitor
-} from 'lucide-react';
+import { Search, Sparkles, X, Columns, Star, Zap, Braces, Home, Monitor, Smartphone, AppWindow } from 'lucide-react';
+import { PAGES, TOOLS } from '../../config/routes';
+import { useTools } from '../../components/layout/tools';
+import { LAB_SECTIONS } from '../../pages/ComponentsLab/sections';
 import './CommandPalette.css';
-
-export interface PaletteActions {
-  openAnatomy: () => void;
-  openExport: () => void;
-  openMixer: () => void;
-  openShortcuts: () => void;
-  openDiff: () => void;
-  toggleInspect: () => void;
-  toggleCompare: () => void;
-}
 
 interface PaletteItem {
   id: string;
-  group: 'Commands' | 'Styles' | 'Pages' | 'Tokens';
+  group: 'Commands' | 'Pages' | 'Tools' | 'Styles' | 'Tokens';
   label: string;
   hint?: string;
   icon: ReactNode;
@@ -28,22 +18,16 @@ interface PaletteItem {
   run: () => void;
 }
 
-const PAGES: { name: string; path: string; icon: ReactNode; keywords?: string }[] = [
-  { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={16} /> },
-  { name: 'Styles', path: '/styles', icon: <LayoutDashboard size={16} /> },
-  { name: 'Style Generator', path: '/generator', icon: <Wand2 size={16} /> },
-  { name: 'Components Lab', path: '/components', icon: <Component size={16} /> },
-  { name: 'Templates', path: '/templates', icon: <LayoutTemplate size={16} />, keywords: 'landing website app screens orbit' },
-  { name: 'Templates: Desktop landing', path: '/templates/landing-desktop/home', icon: <Monitor size={16} />, keywords: 'website marketing site pages' },
-  { name: 'Templates: Mobile landing', path: '/templates/landing-mobile/home', icon: <Smartphone size={16} />, keywords: 'responsive website phone' },
-  { name: 'Templates: Mobile app', path: '/templates/app/home', icon: <Smartphone size={16} />, keywords: 'app screens ios android onboarding' },
-  { name: 'Labs', path: '/data', icon: <Database size={16} /> },
-  { name: 'Style Customizer', path: '/customizer', icon: <Sliders size={16} /> },
-  { name: 'About UI Explorer', path: '/welcome', icon: <Info size={16} /> }
+/** Template entry points; the full screen lists live on the Templates page. */
+const TEMPLATE_LINKS = [
+  { label: 'Templates: Desktop landing', path: '/templates/landing-desktop/home', icon: <Monitor size={16} />, keywords: 'website marketing site pages' },
+  { label: 'Templates: Mobile landing', path: '/templates/landing-mobile/home', icon: <Smartphone size={16} />, keywords: 'responsive website phone' },
+  { label: 'Templates: Mobile app', path: '/templates/app/home', icon: <AppWindow size={16} />, keywords: 'app screens ios android onboarding' }
 ];
 
-export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteActions }> = ({ onClose, actions }) => {
+export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { availableStyles, currentStyle, setStyle, resolvedCssVars, toggleFavorite, isFavorite, settings, updateSettings } = useStyle();
+  const { openTool, toggleCompare } = useTools();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
@@ -54,23 +38,29 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
 
   const items = useMemo<PaletteItem[]>(() => {
     const commands: PaletteItem[] = [
-      { id: 'cmd-components', group: 'Commands', label: 'Open Components Lab', icon: <Component size={16} />, keywords: 'components lab buttons inputs', run: () => go('/components') },
-      { id: 'cmd-customizer', group: 'Commands', label: 'Open Customizer', hint: 'Ctrl+E', icon: <Sliders size={16} />, keywords: 'customizer edit tokens', run: () => go('/customizer') },
-      { id: 'cmd-anatomy', group: 'Commands', label: 'Open Style Anatomy', hint: 'Ctrl+Shift+A', icon: <Eye size={16} />, keywords: 'anatomy inspect tokens why', run: () => { actions.openAnatomy(); close(); } },
-      { id: 'cmd-compare', group: 'Commands', label: 'Compare styles', hint: 'Ctrl+Shift+C', icon: <Columns size={16} />, keywords: 'compare side by side triple', run: () => { actions.toggleCompare(); close(); } },
-      { id: 'cmd-create', group: 'Commands', label: 'Create a style', icon: <Wand2 size={16} />, keywords: 'create generate new style seed', run: () => go('/generator') },
-      { id: 'cmd-mixer', group: 'Commands', label: 'Open Style Mixer', icon: <Shuffle size={16} />, keywords: 'mixer remix hybrid combine', run: () => { actions.openMixer(); close(); } },
-      { id: 'cmd-export', group: 'Commands', label: 'Export style', hint: 'Ctrl+Shift+E', icon: <Download size={16} />, keywords: 'export json css download import', run: () => { actions.openExport(); close(); } },
-      { id: 'cmd-random', group: 'Commands', label: 'Randomize style', hint: 'Surprise me', icon: <Sparkles size={16} />, keywords: 'random surprise shuffle', run: () => go(`/generator?seed=${Math.floor(Math.random() * 900000) + 100000}&surprise=1`) },
-      { id: 'cmd-gallery', group: 'Commands', label: 'Browse all styles', hint: 'Gallery', icon: <LayoutDashboard size={16} />, keywords: 'styles gallery browse community official map relationships docs', run: () => go('/styles') },
+      { id: 'cmd-compare', group: 'Commands', label: 'Compare styles', hint: 'Ctrl+Shift+C', icon: <Columns size={16} />, keywords: 'compare side by side triple a b c', run: () => { toggleCompare(); close(); } },
+      { id: 'cmd-random', group: 'Commands', label: 'Randomize style', hint: 'Surprise me', icon: <Sparkles size={16} />, keywords: 'random surprise shuffle generate', run: () => go(`/generator?seed=${Math.floor(Math.random() * 900000) + 100000}&surprise=1`) },
       { id: 'cmd-favorite', group: 'Commands', label: isFavorite(currentStyle.metadata.id) ? `Remove ${currentStyle.metadata.name} from favorites` : `Favorite ${currentStyle.metadata.name}`, icon: <Star size={16} />, keywords: 'favorite star bookmark', run: () => { toggleFavorite(currentStyle.metadata.id); close(); } },
       { id: 'cmd-motion', group: 'Commands', label: settings.reduceMotion ? 'Turn motion back on' : 'Reduce motion', icon: <Zap size={16} />, keywords: 'motion animation reduce accessibility', run: () => { updateSettings({ reduceMotion: !settings.reduceMotion }); close(); } },
-      { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } },
-      { id: 'cmd-viewport', group: 'Commands', label: 'Toggle viewport', hint: 'Components Lab', icon: <Component size={16} />, keywords: 'viewport mobile tablet desktop responsive', run: () => go('/components') },
-      { id: 'cmd-diff', group: 'Commands', label: 'Style diff', hint: 'Ctrl+Shift+D', icon: <GitCompareArrows size={16} />, keywords: 'diff compare tokens differences', run: () => { actions.openDiff(); close(); } },
-      { id: 'cmd-inspect', group: 'Commands', label: 'Inspect tokens', hint: 'Ctrl+Shift+X', icon: <Crosshair size={16} />, keywords: 'inspect token inspector click element', run: () => { actions.toggleInspect(); close(); } },
-      { id: 'cmd-shortcuts', group: 'Commands', label: 'Keyboard shortcuts', hint: '?', icon: <Keyboard size={16} />, keywords: 'keyboard shortcuts help keys', run: () => { actions.openShortcuts(); close(); } }
+      { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } }
     ];
+
+    const pages: PaletteItem[] = [
+      ...PAGES.map((p) => ({ id: `page-${p.id}`, group: 'Pages' as const, label: p.label, hint: p.group, icon: <p.icon size={16} />, keywords: `page open ${p.description} ${p.keywords}`, run: () => go(p.path) })),
+      ...TEMPLATE_LINKS.map((t) => ({ id: `page-${t.path}`, group: 'Pages' as const, label: t.label, icon: t.icon, keywords: `templates ${t.keywords}`, run: () => go(t.path) })),
+      ...LAB_SECTIONS.map((sec) => ({ id: `page-components-${sec.id}`, group: 'Pages' as const, label: `Components: ${sec.label}`, hint: sec.group, icon: <Sparkles size={16} />, keywords: `components lab ${sec.keywords.join(' ')}`, run: () => go(`/components/${sec.id}`) })),
+      { id: 'page-landing', group: 'Pages', label: 'About UI Explorer', icon: <Home size={16} />, keywords: 'landing home welcome about', run: () => go('/') }
+    ];
+
+    const tools: PaletteItem[] = TOOLS.filter((t) => t.id !== 'search').map((t) => ({
+      id: `tool-${t.id}`,
+      group: 'Tools',
+      label: t.label,
+      hint: t.shortcut,
+      icon: <t.icon size={16} />,
+      keywords: `tool open ${t.description} ${t.keywords}`,
+      run: () => { openTool(t.id); close(); }
+    }));
 
     const styles: PaletteItem[] = availableStyles.map((s) => ({
       id: `style-${s.metadata.id}`,
@@ -82,15 +72,6 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
       run: () => { setStyle(s.metadata.id); close(); }
     }));
 
-    const pages: PaletteItem[] = PAGES.map((p) => ({
-      id: `page-${p.path}`,
-      group: 'Pages',
-      label: p.name,
-      icon: p.icon,
-      keywords: `page navigate open ${p.keywords ?? ''}`,
-      run: () => go(p.path)
-    }));
-
     const tokens: PaletteItem[] = Object.entries(resolvedCssVars).map(([name, value]) => ({
       id: `token-${name}`,
       group: 'Tokens',
@@ -98,10 +79,10 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
       hint: value,
       icon: <Braces size={16} />,
       keywords: `token property ${name.replace(/-/g, ' ')} ${value}`,
-      run: () => { actions.openAnatomy(); close(); }
+      run: () => { openTool('anatomy'); close(); }
     }));
 
-    return [...commands, ...styles, ...pages, ...tokens];
+    return [...pages, ...tools, ...commands, ...styles, ...tokens];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableStyles, currentStyle, resolvedCssVars, settings, isFavorite]);
 
@@ -129,7 +110,7 @@ export const CommandPalette: React.FC<{ onClose: () => void; actions: PaletteAct
     else if (e.key === 'Escape') { e.preventDefault(); close(); }
   };
 
-  const groups = (['Commands', 'Styles', 'Pages', 'Tokens'] as const)
+  const groups = (['Pages', 'Tools', 'Commands', 'Styles', 'Tokens'] as const)
     .map((g) => ({ name: g, items: filtered.filter((i) => i.group === g) }))
     .filter((g) => g.items.length > 0);
 

@@ -1,30 +1,8 @@
-.labs-blurb {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.75rem;
-  color: var(--chrome-text-muted);
-  text-align: right;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* Deep-dive sections of the Components page (charts, table, notifications, motion, material, icons, SVG). */
 
 .labs-controls-host {
   display: flex;
   flex-direction: column;
-}
-
-/* Themed canvas inside the chrome stage */
-.labs-canvas {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  border-radius: 16px;
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-family-sans);
-  border: 1px solid var(--chrome-border);
-  box-shadow: 0 20px 50px color-mix(in srgb, var(--chrome-overlay) 40%, transparent);
 }
 
 .labs-slider {
@@ -116,14 +94,4 @@
 
 .labs-notifications {
   max-width: 560px;
-}
-
-@media (max-width: 1023px) {
-  .labs-blurb {
-    display: none;
-  }
-
-  .labs-canvas {
-    padding: 1rem;
-  }
 }

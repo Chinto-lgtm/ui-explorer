@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Table2, ToggleLeft } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSegmented, WorkspaceSwitch } from '../../../components/workspace/Workspace';
 import { DataTable } from '../../../components/ui/DataTable';
 import type { Column } from '../../../components/ui/DataTable';
@@ -49,11 +51,11 @@ const STATUS_TONE: Record<Person['status'], 'success' | 'default' | 'warning'> =
 
 export const TableLab: React.FC = () => {
   const { toast } = useToast();
-  const [state, setState] = useState<'ready' | 'loading' | 'empty' | 'error'>('ready');
-  const [pageSize, setPageSize] = useState<'5' | '10' | '20'>('5');
-  const [selectable, setSelectable] = useState(true);
-  const [actions, setActions] = useState(true);
-  const [rowCount, setRowCount] = useState<'8' | '40' | '120'>('40');
+  const [state, setState] = useLabState<'ready' | 'loading' | 'empty' | 'error'>('table.state', 'ready');
+  const [pageSize, setPageSize] = useLabState<'5' | '10' | '20'>('table.pageSize', '5');
+  const [selectable, setSelectable] = useLabState('table.selectable', true);
+  const [actions, setActions] = useLabState('table.actions', true);
+  const [rowCount, setRowCount] = useLabState<'8' | '40' | '120'>('table.rowCount', '40');
   const rows = useMemo(() => makePeople(Number(rowCount)), [rowCount]);
   useLabStatus(`${rows.length} rows · ${state}`);
 

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BellRing, Plus } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSegmented } from '../../../components/workspace/Workspace';
 import { NotificationCenter } from '../../../components/ui/NotificationCenter';
 import type { Notification, NotificationType } from '../../../components/ui/NotificationCenter';
@@ -20,9 +22,9 @@ const TYPES: NotificationType[] = ['success', 'warning', 'error', 'info', 'messa
 
 export const NotificationsLab: React.FC = () => {
   const { toast } = useToast();
-  const [items, setItems] = useState<Notification[]>(SEED);
-  const [mode, setMode] = useState<'panel' | 'popover'>('panel');
-  const [counter, setCounter] = useState(7);
+  const [items, setItems] = useLabState<Notification[]>('notifications.items', SEED);
+  const [mode, setMode] = useLabState<'panel' | 'popover'>('notifications.mode', 'panel');
+  const [counter, setCounter] = useLabState('notifications.counter', 7);
   const unread = items.filter((n) => !n.read).length;
   useLabStatus(`${items.length} notifications · ${unread} unread`);
 

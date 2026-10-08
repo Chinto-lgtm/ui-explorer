@@ -138,8 +138,37 @@
   font-size: 0.8125rem;
   font-weight: 500;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
+}
+
+.lab-category-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.lab-category-group + .lab-category-group {
+  margin-top: 0.5rem;
+}
+
+.lab-category-group__title {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+}
+
+.lab-stage__blurb {
+  max-width: 34rem;
+  font-size: 0.75rem;
+  color: var(--chrome-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lab-category__icon {
@@ -364,7 +393,8 @@
 .lab-stage__chips {
   display: flex;
   gap: 0.5rem;
-  flex-shrink: 0;
+  min-width: 0;
+  align-items: center;
 }
 
 .lab-chip {

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Palette, Image as ImageIcon, Type, Square, Layers, Minus, Box, LayoutGrid, Shapes, Zap, MousePointerClick,
   Undo2, Redo2, Save, RotateCcw, Trash2, Copy, Download, Link2, Check, Pencil, Sparkles
@@ -7,6 +7,7 @@ import {
 import { useStyle } from '../../hooks/useStyle';
 import { useStyleEditor, getPath } from './useStyleEditor';
 import { WorkspaceSection, WorkspaceSegmented } from '../../components/workspace/Workspace';
+import { SectionRouteContext } from '../../components/workspace/sectionRoute';
 import { ColorPicker } from '../../components/ui/ColorPicker';
 import { Slider } from '../../components/ui/Selection';
 import { Modal } from '../../components/ui/Overlay';
@@ -66,6 +67,9 @@ const inferBackgroundMode = (img: string | undefined): BackgroundMode =>
 export const CustomizerPage: React.FC = () => {
   const { currentStyle, addCustomStyle, deleteCustomStyle, renameCustomStyle, duplicateStyle, setPreviewStyle, availableStyles, setStyle } = useStyle();
   const navigate = useNavigate();
+  // The open section lives in the URL: /customizer/typography opens Typography.
+  const { section } = useParams<{ section?: string }>();
+  const sectionRoute = useMemo(() => ({ active: section ?? null, onOpen: (slug: string) => navigate(`/customizer/${slug}`, { replace: true }) }), [section, navigate]);
   const editor = useStyleEditor(currentStyle);
   const { draft, set, setMany, dirty, isChanged, resetPath, resetSection, resetAll, undo, redo, canUndo, canRedo } = editor;
 
@@ -203,6 +207,7 @@ export const CustomizerPage: React.FC = () => {
         </div>
 
         <div className="ws-settings__scroll">
+          <SectionRouteContext.Provider value={sectionRoute}>
           <WorkspaceSection title="Colors" icon={<Palette size={14} />}>
             <SectionHead path="tokens.colors" />
             {COLOR_FIELDS.map((f) => (
@@ -338,6 +343,7 @@ export const CustomizerPage: React.FC = () => {
             ))}
           </WorkspaceSection>
 
+          </SectionRouteContext.Provider>
           <div className="cz-actions">
             <button type="button" className="ws-btn ws-btn--primary cz-actions__btn" onClick={openSave}>{savedFlash ? <Check size={14} /> : <Save size={14} />} {savedFlash ? 'Saved' : isCustom ? 'Save changes' : 'Save as custom style'}</button>
             <div className="cz-actions__row">

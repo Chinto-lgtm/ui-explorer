@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Zap, Settings2 } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSegmented, WorkspaceSwitch } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
 import { useStyle } from '../../../hooks/useStyle';
@@ -25,18 +27,18 @@ const EASINGS = [
 export const MotionLab: React.FC = () => {
   const { resolvedCssVars: v, settings, updateSettings } = useStyle();
   const { toast } = useToast();
-  const [duration, setDuration] = useState(0);
-  const [delay, setDelay] = useState(0);
-  const [easing, setEasing] = useState('style');
-  const [scale, setScale] = useState(1.05);
-  const [translate, setTranslate] = useState(12);
-  const [blur, setBlur] = useState(0);
-  const [opacity, setOpacity] = useState(0);
-  const [rotation, setRotation] = useState(0);
-  const [replay, setReplay] = useState(0);
-  const [modal, setModal] = useState(false);
-  const [tab, setTab] = useState('a');
-  const [chartKey, setChartKey] = useState(0);
+  const [duration, setDuration] = useLabState('motion.duration', 0);
+  const [delay, setDelay] = useLabState('motion.delay', 0);
+  const [easing, setEasing] = useLabState('motion.easing', 'style');
+  const [scale, setScale] = useLabState('motion.scale', 1.05);
+  const [translate, setTranslate] = useLabState('motion.translate', 12);
+  const [blur, setBlur] = useLabState('motion.blur', 0);
+  const [opacity, setOpacity] = useLabState('motion.opacity', 0);
+  const [rotation, setRotation] = useLabState('motion.rotation', 0);
+  const [replay, setReplay] = useLabState('motion.replay', 0);
+  const [modal, setModal] = useLabState('motion.modal', false);
+  const [tab, setTab] = useLabState('motion.tab', 'a');
+  const [chartKey, setChartKey] = useLabState('motion.chartKey', 0);
   useLabStatus(`${duration === 0 ? v['--duration-normal'] : `${duration}ms`} · ${EASINGS.find((e) => e.id === easing)?.label}`);
 
   const vars = {

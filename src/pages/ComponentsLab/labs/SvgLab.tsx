@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { PenTool, Sliders, Copy, Check } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSwitch } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
 import { Card, CardHeader, CardTitle, CardBody } from '../../../components/ui/Card';
@@ -30,13 +32,13 @@ export const SvgLab: React.FC = () => {
   const { renderedStyle } = useStyle();
   const styleSvg = useMemo(() => deriveRecipeFromStyle(renderedStyle).svg, [renderedStyle]);
   const suggested = presetForLanguage(styleSvg);
-  const [preset, setPreset] = useState<BackdropPreset>(suggested);
-  const [seed, setSeed] = useState(7);
-  const [intensity, setIntensity] = useState(0.6);
-  const [density, setDensity] = useState(0.5);
-  const [curve, setCurve] = useState(0.6);
-  const [animate, setAnimate] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [preset, setPreset] = useLabState<BackdropPreset>('svg.preset', suggested);
+  const [seed, setSeed] = useLabState('svg.seed', 7);
+  const [intensity, setIntensity] = useLabState('svg.intensity', 0.6);
+  const [density, setDensity] = useLabState('svg.density', 0.5);
+  const [curve, setCurve] = useLabState('svg.curve', 0.6);
+  const [animate, setAnimate] = useLabState('svg.animate', true);
+  const [copied, setCopied] = useLabState('svg.copied', false);
   useLabStatus(`${preset} · seed ${seed}`);
 
   const exportSvg = async () => {

@@ -3,8 +3,6 @@ import { Card, CardHeader, CardTitle, CardBody } from '../../../components/ui/Ca
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
 import { Avatar, AvatarGroup, List, Timeline, ActivityFeed, Stat } from '../../../components/ui/DataDisplay';
-import { LineChart } from '../../../components/charts/LineChart';
-import { BarChart } from '../../../components/charts/BarChart';
 import { GitCommit, Rocket, AlertTriangle, CheckCircle2, ChevronRight, FileText, Folder } from 'lucide-react';
 import type { SectionProps } from './types';
 
@@ -116,20 +114,3 @@ export const ListsSection: React.FC<SectionProps> = () => {
     </div>
   );
 };
-
-export const ChartsSection: React.FC<SectionProps> = () => (
-  <div className="lab-grid">
-    <Card>
-      <CardHeader><CardTitle>Line chart</CardTitle></CardHeader>
-      <CardBody>
-        <LineChart data={[{ label: 'Mon', value: 30 }, { label: 'Tue', value: 75 }, { label: 'Wed', value: 45 }, { label: 'Thu', value: 90 }, { label: 'Fri', value: 120 }]} />
-      </CardBody>
-    </Card>
-    <Card>
-      <CardHeader><CardTitle>Bar chart</CardTitle></CardHeader>
-      <CardBody>
-        <BarChart data={[{ label: 'Q1', value: 450 }, { label: 'Q2', value: 620 }, { label: 'Q3', value: 810 }, { label: 'Q4', value: 950 }]} />
-      </CardBody>
-    </Card>
-  </div>
-);

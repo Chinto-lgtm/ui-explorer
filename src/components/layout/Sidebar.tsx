@@ -1,53 +1,39 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard, Component, Database, Sliders, Wand2, Shuffle, Download,
-  GitPullRequest, Info, Keyboard, Star, GitCompareArrows, Palette, BookOpen, LayoutTemplate
-} from 'lucide-react';
+import { Star, BookOpen, Home } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { DOCS_URL } from '../../config/app';
+import { PAGES, TOOLS } from '../../config/routes';
+import { useTools } from './tools';
 import './AppShell.css';
 
 export interface SidebarProps {
   isOpen: boolean;
-  onOpenMixer: () => void;
-  onOpenExport: () => void;
-  onOpenContribution?: () => void;
-  onOpenShortcuts: () => void;
-  onOpenDiff: () => void;
 }
 
-const PAGES = [
-  { to: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-  { to: '/styles', label: 'Styles', icon: <Palette size={18} /> },
-  { to: '/generator', label: 'Style Generator', icon: <Wand2 size={18} /> },
-  { to: '/components', label: 'Components Lab', icon: <Component size={18} /> },
-  { to: '/templates', label: 'Templates', icon: <LayoutTemplate size={18} /> },
-  { to: '/data', label: 'Labs', icon: <Database size={18} /> },
-  { to: '/customizer', label: 'Style Customizer', icon: <Sliders size={18} /> }
-];
+const GROUPS = ['Explore', 'Create'] as const;
+/** Tools that open from the sidebar; Inspect, Anatomy and Search live in the header. */
+const SIDEBAR_TOOLS = TOOLS.filter((t) => ['tweaks', 'mixer', 'diff', 'export', 'contribute', 'shortcuts'].includes(t.id));
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExport, onOpenContribution, onOpenShortcuts, onOpenDiff }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const { availableStyles, favoriteIds, setStyle, currentStyle } = useStyle();
+  const { activeTool, toggleTool } = useTools();
   const favorites = availableStyles.filter((s) => favoriteIds.includes(s.metadata.id));
 
   return (
     <aside className={`shell-sidebar ${isOpen ? 'shell-sidebar--open' : ''}`} id="shell-sidebar" aria-label="Main navigation">
       <nav className="shell-nav">
-        <div className="shell-nav__section">
-          <span className="shell-nav__heading">Pages</span>
-          {PAGES.map((p) => (
-            <NavLink
-              key={p.to}
-              to={p.to}
-              end={p.to === '/'}
-              className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-            >
-              {p.icon}
-              <span>{p.label}</span>
-            </NavLink>
-          ))}
-        </div>
+        {GROUPS.map((group) => (
+          <div key={group} className="shell-nav__section">
+            <span className="shell-nav__heading">{group}</span>
+            {PAGES.filter((p) => p.group === group).map((p) => (
+              <NavLink key={p.id} to={p.path} title={p.description} className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}>
+                <p.icon size={18} />
+                <span>{p.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        ))}
 
         {favorites.length > 0 && (
           <div className="shell-nav__section">
@@ -67,38 +53,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onOpenMixer, onOpenExp
         )}
 
         <div className="shell-nav__section">
-          <span className="shell-nav__heading">Tools & Open Source</span>
-          <button className="shell-nav__action" onClick={onOpenMixer}>
-            <Shuffle size={18} />
-            <span>Style Mixer</span>
-          </button>
-          <button className="shell-nav__action" onClick={onOpenDiff}>
-            <GitCompareArrows size={18} />
-            <span>Style Diff</span>
-          </button>
-          <button className="shell-nav__action" onClick={onOpenExport}>
-            <Download size={18} />
-            <span>Export & Import</span>
-          </button>
-          {onOpenContribution && (
-            <button className="shell-nav__action" onClick={onOpenContribution}>
-              <GitPullRequest size={18} />
-              <span>Contribute Package</span>
+          <span className="shell-nav__heading">Tools</span>
+          {SIDEBAR_TOOLS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              className={`shell-nav__action ${activeTool === t.id ? 'shell-nav__link--active' : ''}`}
+              aria-pressed={activeTool === t.id}
+              title={t.shortcut ? `${t.description} (${t.shortcut})` : t.description}
+              onClick={() => toggleTool(t.id)}
+            >
+              <t.icon size={18} />
+              <span>{t.label}</span>
             </button>
-          )}
-          <button className="shell-nav__action" onClick={onOpenShortcuts}>
-            <Keyboard size={18} />
-            <span>Keyboard Shortcuts</span>
-          </button>
+          ))}
+        </div>
+
+        <div className="shell-nav__section">
+          <span className="shell-nav__heading">Project</span>
           <a className="shell-nav__link" href={DOCS_URL} target="_blank" rel="noreferrer">
             <BookOpen size={18} />
             <span>Documentation</span>
           </a>
-          <NavLink
-            to="/welcome"
-            className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
-          >
-            <Info size={18} />
+          <NavLink to="/" end className="shell-nav__link">
+            <Home size={18} />
             <span>About UI Explorer</span>
           </NavLink>
         </div>

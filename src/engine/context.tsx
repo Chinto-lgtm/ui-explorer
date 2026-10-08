@@ -46,10 +46,6 @@ interface StyleContextType {
   isFavorite: (styleId: string) => boolean;
   recentStyleIds: string[];
 
-  compareStyleIds: string[];
-  setCompareStyleIds: (ids: string[]) => void;
-  isCompareActive: boolean;
-  setIsCompareActive: (active: boolean) => void;
 
   settings: UserSettings;
   updateSettings: (patch: Partial<UserSettings>) => void;
@@ -93,8 +89,6 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [previewStyle, setPreviewStyle] = useState<StyleDefinition | undefined>(undefined);
   const [favoriteIds, setFavoriteIds] = useState<string[]>(() => readJson<string[]>(STORAGE_KEYS.favorites, []));
   const [recentStyleIds, setRecentStyleIds] = useState<string[]>(() => readJson<string[]>(STORAGE_KEYS.recentStyles, []));
-  const [compareStyleIds, setCompareStyleIdsState] = useState<string[]>(() => readJson<string[]>(STORAGE_KEYS.compare, []));
-  const [isCompareActive, setIsCompareActive] = useState<boolean>(false);
   const [settings, setSettings] = useState<UserSettings>(() => ({ ...DEFAULT_SETTINGS, ...readJson<Partial<UserSettings>>(STORAGE_KEYS.settings, {}) }));
 
   // Bumped whenever the registry contents change so derived lists refresh.
@@ -243,11 +237,6 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const isFavorite = useCallback((styleId: string) => favoriteIds.includes(styleId), [favoriteIds]);
 
-  const setCompareStyleIds = useCallback((ids: string[]) => {
-    setCompareStyleIdsState(ids);
-    writeJson(STORAGE_KEYS.compare, ids);
-  }, []);
-
   const updateSettings = useCallback((patch: Partial<UserSettings>) => {
     setSettings((prev) => ({ ...prev, ...patch }));
   }, []);
@@ -271,10 +260,6 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         toggleFavorite,
         isFavorite,
         recentStyleIds,
-        compareStyleIds,
-        setCompareStyleIds,
-        isCompareActive,
-        setIsCompareActive,
         settings,
         updateSettings
       }}

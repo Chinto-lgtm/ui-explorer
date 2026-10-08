@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, BookOpen, Code2, Palette, LayoutTemplate, Wand2, Component, Sliders, ScanSearch, Shuffle, Download,
+  ArrowRight, BookOpen, Code2, LayoutTemplate, Wand2,
   Copy, Check, MousePointerClick, Microscope, PackageOpen, Star
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
@@ -10,7 +10,8 @@ import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
 import { BrandLockup, BrandMark } from '../../components/layout/BrandMark';
 import { COMPONENT_CATALOG } from '../../templates/catalog';
 import { ONBOARDING_STORAGE_KEY, GITHUB_REPO_URL, DOCS_URL, APP_VERSION } from '../../config/app';
-import './WelcomePage.css';
+import { PAGES, TOOLS, APP_HOME, LAST_ROUTE_KEY } from '../../config/routes';
+import './LandingPage.css';
 
 /** Styles that read as clearly different universes when dealt into the hero deck. */
 const HERO_STYLE_IDS = [
@@ -35,16 +36,28 @@ const STEPS = [
   { icon: <PackageOpen size={20} />, title: 'Make it yours', text: 'Generate from a seed, tune every token, mix styles, then export CSS variables or JSON.' }
 ];
 
-const FEATURES: { id: string; icon: React.ReactNode; name: string; text: string; to: string; span?: 'wide' | 'tall' }[] = [
-  { id: 'styles', icon: <Palette size={20} />, name: 'Thirty styles', text: 'Neumorphism to Neo Brutalism, each a full token system with its own construction, not a palette swap.', to: '/styles', span: 'wide' },
-  { id: 'templates', icon: <LayoutTemplate size={20} />, name: 'Product templates', text: 'A landing site and a 17-screen mobile app, fully clickable, restyled by whatever style you pick.', to: '/templates', span: 'tall' },
-  { id: 'generator', icon: <Wand2 size={20} />, name: 'Style generator', text: 'Seed in, coherent style out. Lock axes, remix, and share the exact result by link.', to: '/generator', span: 'tall' },
-  { id: 'components', icon: <Component size={20} />, name: 'Components Lab', text: 'Every component, every state, on desktop, tablet and phone frames.', to: '/components' },
-  { id: 'customizer', icon: <Sliders size={20} />, name: 'Customizer', text: 'A real colour picker with contrast checks, undo, and live preview everywhere.', to: '/customizer' },
-  { id: 'inspect', icon: <ScanSearch size={20} />, name: 'Anatomy & inspector', text: 'Click any element to see the tokens behind it.', to: '/' },
-  { id: 'mixer', icon: <Shuffle size={20} />, name: 'Style mixer', text: 'Typography from one style, surfaces from another.', to: '/' },
-  { id: 'export', icon: <Download size={20} />, name: 'Export', text: 'CSS variables, JSON tokens or a contribution package.', to: '/customizer', span: 'wide' }
+/** The feature grid is drawn from the page and tool registry, so its names and descriptions never drift. */
+const FEATURE_TILES: { kind: 'page' | 'tool'; id: string; span?: 'wide' | 'tall' }[] = [
+  { kind: 'page', id: 'styles', span: 'wide' },
+  { kind: 'page', id: 'templates', span: 'tall' },
+  { kind: 'page', id: 'generator', span: 'tall' },
+  { kind: 'page', id: 'components' },
+  { kind: 'page', id: 'customizer' },
+  { kind: 'tool', id: 'anatomy' },
+  { kind: 'tool', id: 'mixer' },
+  { kind: 'tool', id: 'export', span: 'wide' }
 ];
+
+const FEATURES = FEATURE_TILES.map((t) => {
+  const def = t.kind === 'page' ? PAGES.find((p) => p.id === t.id)! : TOOLS.find((x) => x.id === t.id)!;
+  const to = t.kind === 'page' ? (def as (typeof PAGES)[number]).path : `${APP_HOME}?tool=${t.id}`;
+  return { id: t.id, span: t.span, Icon: def.icon, name: def.label, text: def.description, to };
+});
+
+/** Where "Open the lab" goes: the last page the visitor used, or the styles gallery the first time. */
+const appEntry = () => {
+  try { return localStorage.getItem(LAST_ROUTE_KEY) || APP_HOME; } catch { return APP_HOME; }
+};
 
 /** The tokens shown in the live code sample, in reading order. */
 const SAMPLE_TOKENS = ['--color-bg', '--color-surface', '--color-accent', '--color-text-primary', '--radius-md', '--border-width', '--duration-normal', '--font-family-sans'];
@@ -54,7 +67,7 @@ const prefersReducedMotion = () =>
 
 const isColour = (v: string) => /^(#|rgb|hsl)/i.test(v.trim());
 
-export const WelcomePage: React.FC = () => {
+export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const { availableStyles, setStyle } = useStyle();
 
@@ -106,13 +119,11 @@ export const WelcomePage: React.FC = () => {
           <BrandLockup size={30} />
         </button>
         <nav className="lp-nav__links" aria-label="Sections">
-          <button type="button" onClick={() => finish('/styles')}>Styles</button>
-          <button type="button" onClick={() => finish('/templates')}>Templates</button>
-          <button type="button" onClick={() => finish('/generator')}>Generator</button>
+          {PAGES.map((p) => <button key={p.id} type="button" onClick={() => finish(p.path)}>{p.label}</button>)}
           <a href={DOCS_URL} target="_blank" rel="noreferrer">Docs</a>
           <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">GitHub</a>
         </nav>
-        <button type="button" className="lp-btn lp-btn--primary lp-btn--sm" onClick={() => finish('/')}>
+        <button type="button" className="lp-btn lp-btn--primary lp-btn--sm" onClick={() => finish(appEntry())}>
           {hasOnboarded ? 'Back to the lab' : 'Open the lab'} <ArrowRight size={15} />
         </button>
       </header>
@@ -134,7 +145,7 @@ export const WelcomePage: React.FC = () => {
                 and template rebuilds — then see why it looks that way, remix it, and take the tokens home.
               </p>
               <div className="lp-actions">
-                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish('/')}>Start exploring <ArrowRight size={18} /></button>
+                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
                 <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/templates')}><LayoutTemplate size={18} /> See the templates</button>
               </div>
               <ul className="lp-proof">
@@ -224,7 +235,7 @@ export const WelcomePage: React.FC = () => {
               {FEATURES.map((f) => (
                 <li key={f.id} className={`lp-tile ${f.span ? `lp-tile--${f.span}` : ''} lp-tile--${f.id}`}>
                   <button type="button" className="lp-tile__btn" onClick={() => finish(f.to)}>
-                    <span className="lp-tile__icon">{f.icon}</span>
+                    <span className="lp-tile__icon"><f.Icon size={20} /></span>
                     <span className="lp-tile__name">{f.name}</span>
                     <span className="lp-tile__text">{f.text}</span>
                     {f.id === 'templates' && (
@@ -324,7 +335,7 @@ export const WelcomePage: React.FC = () => {
               <h2 className="lp-h2">Pick a style. Break it. Make it yours.</h2>
               <p className="lp-muted">Free, open source, and nothing to install.</p>
               <div className="lp-actions lp-actions--center">
-                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish('/')}>Start exploring <ArrowRight size={18} /></button>
+                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
                 <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/generator')}><Wand2 size={18} /> Generate a style</button>
               </div>
             </div>
@@ -349,4 +360,4 @@ export const WelcomePage: React.FC = () => {
   );
 };
 
-export default WelcomePage;
+export default LandingPage;

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Shapes, Sliders, Home, Search, Bell, Settings, Heart, Star, Mail, Calendar, Camera, Cloud,
   Folder, Lock, Map, Music, Zap, User, Trash2, Download, Sparkles, Layers
 } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSegmented } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
 import { Card, CardHeader, CardTitle, CardBody } from '../../../components/ui/Card';
@@ -38,13 +40,13 @@ function iconProps(type: IconType, strokeWidth: number, corner: number, opacity:
 
 export const IconLab: React.FC = () => {
   const { resolvedCssVars: v } = useStyle();
-  const [type, setType] = useState<IconType>('outline');
-  const [strokeWidth, setStrokeWidth] = useState(Number(v['--icon-stroke-width']) || 2);
-  const [size, setSize] = useState(24);
-  const [corner, setCorner] = useState(1);
-  const [weight, setWeight] = useState(1);
-  const [opacity, setOpacity] = useState(1);
-  const [nav, setNav] = useState('home');
+  const [type, setType] = useLabState<IconType>('icon.type', 'outline');
+  const [strokeWidth, setStrokeWidth] = useLabState('icon.strokeWidth', Number(v['--icon-stroke-width']) || 2);
+  const [size, setSize] = useLabState('icon.size', 24);
+  const [corner, setCorner] = useLabState('icon.corner', 1);
+  const [weight, setWeight] = useLabState('icon.weight', 1);
+  const [opacity, setOpacity] = useLabState('icon.opacity', 1);
+  const [nav, setNav] = useLabState('icon.nav', 'home');
   useLabStatus(`${type} · stroke ${strokeWidth} · ${size}px`);
 
   const props = iconProps(type, strokeWidth * weight, corner, opacity);

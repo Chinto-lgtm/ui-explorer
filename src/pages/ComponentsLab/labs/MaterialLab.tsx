@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Layers, Sliders } from 'lucide-react';
-import { LabControls, useLabStatus } from '../LabsPage';
+import { LabControls } from '../labState';
+import { useLabState, useLabStatus } from '../labContext';
+import './labs.css';
 import { WorkspaceSection, WorkspaceSwitch } from '../../../components/workspace/Workspace';
 import { Slider } from '../../../components/ui/Selection';
 import { useStyle } from '../../../hooks/useStyle';
@@ -33,10 +35,10 @@ const MATERIAL_INFO: Record<SurfaceType, { name: string; blurb: string; depth: D
 
 export const MaterialLab: React.FC = () => {
   const { currentStyle, setPreviewStyle, previewStyle } = useStyle();
-  const [selected, setSelected] = useState<SurfaceType>('glass');
-  const [blurBoost, setBlurBoost] = useState(0);
-  const [opacity, setOpacity] = useState(100);
-  const [showBackdrop, setShowBackdrop] = useState(true);
+  const [selected, setSelected] = useLabState<SurfaceType>('material.selected', 'glass');
+  const [blurBoost, setBlurBoost] = useLabState('material.blurBoost', 0);
+  const [opacity, setOpacity] = useLabState('material.opacity', 100);
+  const [showBackdrop, setShowBackdrop] = useLabState('material.showBackdrop', true);
   useLabStatus(`${MATERIAL_INFO[selected].name}${previewStyle ? ' · applied to preview' : ''}`);
 
   /** The current style re-materialized with a given surface. */
