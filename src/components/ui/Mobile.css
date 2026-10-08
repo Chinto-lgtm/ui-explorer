@@ -1,0 +1,357 @@
+/* ---------- Status bar ---------- */
+.ui-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 1.5rem 0 1.75rem;
+  flex-shrink: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.ui-statusbar__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* ---------- App bar ---------- */
+.ui-appbar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 0.25rem 0.5rem 0.5rem;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+}
+
+.ui-appbar__row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 44px;
+}
+
+.ui-appbar__leading,
+.ui-appbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+
+.ui-appbar__actions {
+  margin-left: auto;
+}
+
+.ui-appbar__spacer {
+  flex: 1;
+}
+
+.ui-appbar__titles {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 0 0.5rem;
+}
+
+.ui-appbar__title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-appbar__subtitle {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-appbar--center .ui-appbar__titles {
+  align-items: center;
+  text-align: center;
+}
+
+.ui-appbar--center .ui-appbar__row {
+  display: grid;
+  grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
+}
+
+.ui-appbar--center .ui-appbar__leading { grid-column: 1; justify-self: start; }
+.ui-appbar--center .ui-appbar__titles { grid-column: 2; }
+.ui-appbar--center .ui-appbar__actions { grid-column: 3; justify-self: end; }
+
+.ui-appbar--large > .ui-appbar__titles {
+  padding: 0.25rem 0.75rem 0;
+}
+
+.ui-appbar--large > .ui-appbar__titles .ui-appbar__title {
+  font-size: var(--font-size-2xl);
+  white-space: normal;
+}
+
+.ui-appbar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ui-appbar__btn:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.ui-appbar__btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+/* ---------- Bottom tab bar ---------- */
+.ui-tabbar {
+  flex-shrink: 0;
+  padding: 0.375rem 0.5rem calc(0.5rem + 14px);
+  border-top: max(1px, var(--border-width)) var(--border-style) var(--color-border);
+  background-color: var(--color-surface);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  box-shadow: 0 -6px 18px -12px var(--color-shadow);
+  font-family: var(--font-family-sans);
+}
+
+.ui-tabbar__list {
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-tabbar__cell {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.ui-tabbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1875rem;
+  width: 100%;
+  padding: 0.25rem 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-tertiary);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--motion-easing);
+}
+
+.ui-tabbar__item:hover {
+  color: var(--color-text-primary);
+}
+
+.ui-tabbar__item:focus-visible,
+.ui-tabbar__center:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.ui-tabbar__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 1.75rem;
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-normal) var(--motion-easing);
+}
+
+.ui-tabbar__item--active {
+  color: var(--color-accent);
+}
+
+.ui-tabbar__item--active .ui-tabbar__icon {
+  background-color: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+.ui-tabbar__label {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.ui-tabbar__badge {
+  position: absolute;
+  top: -2px;
+  right: 0.625rem;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-error);
+  color: var(--color-accent-text);
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 16px;
+  text-align: center;
+}
+
+.ui-tabbar__center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-top: -1.5rem;
+  border: var(--border-width) var(--border-style) var(--border-color);
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--motion-easing);
+}
+
+.ui-tabbar__center:hover {
+  transform: scale(var(--hover-scale));
+  background-color: var(--color-accent-hover);
+}
+
+.ui-tabbar__center:active {
+  transform: scale(var(--active-scale));
+}
+
+/* ---------- Chat bubble ---------- */
+.ui-chat {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  max-width: 100%;
+  font-family: var(--font-family-sans);
+}
+
+.ui-chat--me {
+  justify-content: flex-end;
+}
+
+.ui-chat__avatar-space {
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.ui-chat__bubble {
+  max-width: 78%;
+  padding: 0.5rem 0.75rem;
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height);
+  overflow-wrap: anywhere;
+}
+
+.ui-chat--them .ui-chat__bubble {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.ui-chat--me .ui-chat__bubble {
+  background-color: var(--color-accent);
+  border-color: transparent;
+  color: var(--color-accent-text);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.ui-chat--grouped.ui-chat--them .ui-chat__bubble { border-top-left-radius: var(--radius-sm); }
+.ui-chat--grouped.ui-chat--me .ui-chat__bubble { border-top-right-radius: var(--radius-sm); }
+
+.ui-chat__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
+  opacity: 0.75;
+}
+
+.ui-chat__status--read {
+  color: inherit;
+  opacity: 1;
+}
+
+/* Waveforms and charts inside my bubble draw in the bubble's text colour. */
+.ui-chat--me .ui-chat__content {
+  --color-accent: currentColor;
+}
+
+/* ---------- PIN input ---------- */
+.ui-pin {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-family: var(--font-family-sans);
+}
+
+.ui-pin__boxes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ui-pin__box {
+  flex: 1;
+  min-width: 0;
+  max-width: 3.25rem;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: max(1px, var(--border-width)) var(--border-style) var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-inset, none);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  caret-color: var(--color-accent);
+  transition: all var(--duration-fast) var(--motion-easing);
+}
+
+.ui-pin__box:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+}
+
+.ui-pin__box--filled {
+  border-color: var(--color-border-hover);
+}
+
+.ui-pin--error .ui-pin__box {
+  border-color: var(--color-error);
+}
+
+.ui-pin__box:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

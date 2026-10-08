@@ -128,6 +128,18 @@
 .ui-drawer--left { top: 0; left: 0; bottom: 0; width: min(360px, 90%); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; --drawer-from: translateX(-20px); }
 .ui-drawer--bottom { left: 0; right: 0; bottom: 0; max-height: 70%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; --drawer-from: translateY(20px); }
 
+/* ---------- Bottom sheet (Drawer side="bottom") grab handle ---------- */
+.ui-drawer--bottom::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  margin: 0.5rem auto 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-border);
+  flex-shrink: 0;
+}
+
 @keyframes ui-drawer-in {
   from { opacity: 0; transform: var(--drawer-from); }
   to { opacity: 1; transform: none; }

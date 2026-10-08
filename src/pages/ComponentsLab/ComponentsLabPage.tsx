@@ -8,7 +8,7 @@ import { ToastProvider } from '../../components/ui/Feedback';
 import { LAB_SECTIONS } from './sections';
 import {
   Search, Palette, MousePointerClick, TextCursorInput, CheckSquare, Compass, BellRing, Layers,
-  LayoutPanelTop, Tag, ListTree, ChartColumn,
+  LayoutPanelTop, Tag, ListTree, ChartColumn, Megaphone,
   Monitor, Tablet, Smartphone, Columns3, ToggleLeft, ChevronDown, X, Ruler
 } from 'lucide-react';
 import './ComponentsLabPage.css';
@@ -27,7 +27,9 @@ const SECTION_ICONS: Record<string, ReactNode> = {
   cards: <LayoutPanelTop size={16} />,
   badges: <Tag size={16} />,
   lists: <ListTree size={16} />,
-  charts: <ChartColumn size={16} />
+  charts: <ChartColumn size={16} />,
+  content: <Megaphone size={16} />,
+  mobile: <Smartphone size={16} />
 };
 
 const CATEGORIES = LAB_SECTIONS.map((sec) => ({ id: sec.id, label: sec.label, icon: SECTION_ICONS[sec.id], keywords: sec.keywords }));
