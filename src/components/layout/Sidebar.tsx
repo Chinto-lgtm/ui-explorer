@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { SPRING_SNAPPY } from '../../motion/presets';
 import { BookOpen, Home, Star, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import { DOCS_URL, GITHUB_REPO_URL, APP_VERSION } from '../../config/app';
@@ -17,6 +19,11 @@ export interface SidebarProps {
 }
 
 const GROUPS = ['Explore', 'Create'] as const;
+
+/** The highlight behind the active item; it glides from item to item (one per group of items). */
+const Indicator: React.FC<{ id: string }> = ({ id }) => (
+  <motion.span layoutId={id} className="shell-nav__indicator" transition={SPRING_SNAPPY} aria-hidden="true" />
+);
 /** Every tool except Search, which lives in the header. */
 const RAIL_TOOLS = TOOLS.filter((t) => t.id !== 'search');
 
@@ -43,8 +50,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, collapsed, onToggleCol
                 title={collapsed ? `${p.label}: ${p.description}` : p.description}
                 className={({ isActive }) => `shell-nav__link ${isActive ? 'shell-nav__link--active' : ''}`}
               >
-                <p.icon size={18} className="shell-nav__icon" />
-                <span className="shell-nav__label">{p.label}</span>
+                {({ isActive }) => (
+                  <>
+                    {isActive && <Indicator id="rail-page" />}
+                    <p.icon size={18} className="shell-nav__icon" />
+                    <span className="shell-nav__label">{p.label}</span>
+                  </>
+                )}
               </NavLink>
             ))}
           </div>
@@ -61,6 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, collapsed, onToggleCol
               title={t.shortcut ? `${t.label}: ${t.description} (${t.shortcut})` : `${t.label}: ${t.description}`}
               onClick={() => toggleTool(t.id)}
             >
+              {toolActive(t.id) && t.id !== 'inspect' && <Indicator id="rail-tool" />}
               <t.icon size={18} className="shell-nav__icon" />
               <span className="shell-nav__label">{t.label}</span>
               {t.shortcut && <kbd className="shell-nav__kbd">{t.shortcut.replace('Ctrl+', '⌃').replace('Shift+', '⇧')}</kbd>}

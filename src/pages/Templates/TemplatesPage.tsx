@@ -5,6 +5,8 @@ import {
   Monitor, Smartphone, AppWindow, LayoutTemplate, Columns3, Workflow, ListChecks, Link2, Check, Maximize2,
   ChevronLeft, ChevronRight, ImagePlus, Trash2, ZoomIn
 } from 'lucide-react';
+import { motion } from 'motion/react';
+import { EASE_OUT } from '../../motion/presets';
 import { useStyle } from '../../hooks/useStyle';
 import { useCompare, COMPARE_SLOTS as SLOTS } from '../../hooks/useCompare';
 import { encodeStyleParam } from '../../engine/share';
@@ -33,6 +35,13 @@ const VIEWS: { id: ViewMode; label: string; icon: ReactNode }[] = [
   { id: 'flow', label: 'Flow', icon: <Workflow size={14} /> },
   { id: 'compare', label: 'A / B / C', icon: <Columns3 size={14} /> }
 ];
+
+/** Following a link inside a template fades the next screen in, like a real app would. */
+const ScreenSwap: React.FC<{ id: string; children: ReactNode }> = ({ id, children }) => (
+  <motion.div key={id} className="tp-swap" initial={{ opacity: 0, scale: 0.985 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.32, ease: EASE_OUT }}>
+    {children}
+  </motion.div>
+);
 
 const STAGE_GAP = 24;
 const LABEL_HEIGHT = 34;
@@ -164,7 +173,9 @@ export const TemplatesPage: React.FC = () => {
     const { scale, screenHeight } = fitDevice(family, stage, 1, zoom, false);
     return (
       <TemplateFrame family={family} screenId={screen.id} scale={scale} screenHeight={screenHeight}>
-        <TemplateScreen family={family} screenId={screen.id} style={renderedStyle} vars={resolvedCssVars} go={goScreen} screenRef={setScanTarget} />
+        <ScreenSwap id={screen.id}>
+          <TemplateScreen family={family} screenId={screen.id} style={renderedStyle} vars={resolvedCssVars} go={goScreen} screenRef={setScanTarget} />
+        </ScreenSwap>
       </TemplateFrame>
     );
   };
@@ -193,7 +204,9 @@ export const TemplatesPage: React.FC = () => {
             </>
           )}
         >
-          <TemplateScreen family={family} screenId={screen.id} style={style} vars={vars} go={goScreen} screenRef={i === 0 ? setScanTarget : undefined} />
+          <ScreenSwap id={screen.id}>
+            <TemplateScreen family={family} screenId={screen.id} style={style} vars={vars} go={goScreen} screenRef={i === 0 ? setScanTarget : undefined} />
+          </ScreenSwap>
         </TemplateFrame>
       );
     });

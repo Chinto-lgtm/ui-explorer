@@ -181,7 +181,29 @@
   color: var(--chrome-text-strong);
 }
 
-/* Collapsible section */
+/* Collapsible section: opens and closes smoothly where the browser can animate to auto height. */
+@supports (interpolate-size: allow-keywords) {
+  .ws-section {
+    interpolate-size: allow-keywords;
+  }
+
+  .ws-section::details-content {
+    height: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: height 260ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 200ms ease, content-visibility 260ms allow-discrete;
+  }
+
+  .ws-section[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ws-section::details-content { transition: none; }
+  }
+}
+
 .ws-section {
   border-bottom: 1px solid var(--chrome-border);
 }
@@ -447,9 +469,25 @@
   background-color: var(--chrome-surface-3);
 }
 
-.ws-segmented__btn--active {
-  background-color: var(--chrome-primary);
+.ws-segmented__btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.ws-segmented__btn--active,
+.ws-segmented__btn--active:hover {
+  background: none;
   color: var(--chrome-on-primary);
+}
+
+/* The active option's background glides between options. */
+.ws-segmented__pill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 6px;
+  background-color: var(--chrome-primary);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--chrome-primary) 35%, transparent);
 }
 
 /* Compare slot badge (A / B / C) above a frame */

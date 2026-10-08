@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { SlidersHorizontal, X, RotateCcw, Save, Check, Square, Layers, Type, Palette, Zap, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
+import { panelRight } from '../../motion/presets';
 import { useStyle } from '../../hooks/useStyle';
 import { DEFAULT_TWEAKS, MOTION_SPEED, TWEAK_DEFS, formatTweak } from '../../engine/tweaks';
 import type { NumericTweak, TweakDef } from '../../engine/tweaks';
@@ -81,7 +83,7 @@ export const TweaksPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   };
 
   return (
-    <aside className="tw-panel" role="dialog" aria-modal="false" aria-labelledby="tw-title">
+    <motion.aside className="tw-panel" role="dialog" aria-modal="false" aria-labelledby="tw-title" variants={panelRight} initial="hidden" animate="show" exit="exit">
       <header className="tw-panel__head">
         <span className="tw-panel__icon" aria-hidden="true"><SlidersHorizontal size={16} /></span>
         <div className="tw-panel__heading">
@@ -185,6 +187,6 @@ export const TweaksPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </button>
         </div>
       </footer>
-    </aside>
+    </motion.aside>
   );
 };

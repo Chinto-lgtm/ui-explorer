@@ -13,6 +13,7 @@ import { LineChart } from '../../components/charts/LineChart';
 import { makeSeries } from '../../components/charts/chartUtils';
 import { Shuffle, Sparkles, X, Save, Eye } from 'lucide-react';
 import './StyleMixerModal.css';
+import '../../components/preview/showcase.css';
 
 type SourceKey = 'colors' | 'typography' | 'surface' | 'borders' | 'shadows' | 'radii' | 'icons' | 'motion' | 'svg';
 

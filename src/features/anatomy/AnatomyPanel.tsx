@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { panelRight } from '../../motion/presets';
 import { useStyle } from '../../hooks/useStyle';
 import { X, Copy, Check, Sliders, Crosshair, ChevronDown, Braces } from 'lucide-react';
 import { buildAnatomy } from './anatomy';
@@ -42,7 +44,7 @@ export const AnatomyPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   };
 
   return (
-    <aside className="anatomy-panel" aria-label="Style anatomy">
+    <motion.aside className="anatomy-panel" aria-label="Style anatomy" variants={panelRight} initial="hidden" animate="show" exit="exit">
       <div className="anatomy-header">
         <div className="anatomy-title-row">
           <Sliders size={18} />
@@ -109,6 +111,6 @@ export const AnatomyPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           )}
         </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 };

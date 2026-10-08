@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useSearchParam } from '../../hooks/useUrlState';
+import { AnimatePresence, motion } from 'motion/react';
+import { SPRING_SOFT, rise, stagger } from '../../motion/presets';
 import {
   Star, LayoutGrid, Share2, Check, Copy, Wand2, GitCompareArrows, Code2, ExternalLink, X, Filter,
   BookOpen, ShieldCheck, Layers, Network, Play, Users, BadgeCheck, FlaskConical, Sparkles
@@ -235,13 +237,21 @@ export const StylesPage: React.FC = () => {
           ) : filtered.length === 0 ? (
             <div className="ws-empty">No styles match. <button type="button" className="ws-btn ws-btn--sm" onClick={clearFilters}>Clear filters</button></div>
           ) : (
-            <div className="styles-grid">
-              {filtered.map((s) => {
+            <motion.div className="styles-grid" variants={stagger(0.035)} initial="hidden" animate="show">
+              <AnimatePresence mode="popLayout" initial={false}>
+              {filtered.map((s, i) => {
                 const f = facetsById.get(s.metadata.id)!;
                 const isCurrent = s.metadata.id === currentStyle.metadata.id;
                 const badge = SOURCE_LABEL[f.source];
                 return (
-                  <article key={s.metadata.id} className={`styles-card ${isCurrent ? 'styles-card--current' : ''} ${selectedId === s.metadata.id ? 'styles-card--selected' : ''}`}>
+                  <motion.article
+                    key={s.metadata.id}
+                    layout
+                    variants={i < 24 ? rise : undefined}
+                    exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.15 } }}
+                    transition={SPRING_SOFT}
+                    className={`styles-card ${isCurrent ? 'styles-card--current' : ''} ${selectedId === s.metadata.id ? 'styles-card--selected' : ''}`}
+                  >
                     <StylePreviewCard style={s} size="thumb" onClick={() => openStyle(s.metadata.id)} />
                     <div className="styles-card__meta">
                       <div className="styles-card__row">
@@ -260,10 +270,11 @@ export const StylesPage: React.FC = () => {
                         <button type="button" className="ws-btn ws-btn--sm" onClick={() => openStyle(s.metadata.id)}><BookOpen size={12} /> Details</button>
                       </div>
                     </div>
-                  </article>
+                  </motion.article>
                 );
               })}
-            </div>
+              </AnimatePresence>
+            </motion.div>
           )}
         </div>
       </WorkspaceStage>

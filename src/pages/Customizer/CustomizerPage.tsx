@@ -32,6 +32,7 @@ import type { StyleDefinition, ComponentBehavior } from '../../engine/types';
 import { makeSeries } from '../../components/charts/chartUtils';
 import { STORAGE_KEYS, removeKey } from '../../engine/storage';
 import './CustomizerPage.css';
+import '../../components/preview/showcase.css';
 
 const FONTS = ['Inter', 'Geist', 'DM Sans', 'Manrope', 'Poppins', 'Space Grotesk', 'Plus Jakarta Sans', 'IBM Plex Sans', 'Playfair Display', 'Georgia', 'Helvetica Neue', 'Roboto', 'Orbitron', 'System Sans', 'Monospace'];
 const fontStack = (name: string) => name === 'System Sans' ? 'system-ui, -apple-system, Segoe UI, sans-serif' : name === 'Monospace' ? 'JetBrains Mono, Fira Code, monospace' : /Georgia|Playfair/.test(name) ? `${name}, serif` : `${name}, sans-serif`;
@@ -364,7 +365,7 @@ export const CustomizerPage: React.FC = () => {
         actions={<span className="ws-stage__hint">Every change previews across the whole app until you save or reset.</span>}
       >
         <div className="ws-stage__body">
-          <div className="labs-canvas cz-canvas">
+          <div className="cz-canvas">
             <div className="cz-preview-grid">
               <StylePreviewCard style={draft} size="hero" />
               <div className="cz-preview-components">

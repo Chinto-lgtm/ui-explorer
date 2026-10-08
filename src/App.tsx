@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { StyleProvider } from './engine/context';
+import { MotionRoot } from './motion/MotionRoot';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { NotFound } from './components/layout/NotFound';
@@ -50,6 +51,7 @@ export const App: React.FC = () => (
   <ErrorBoundary>
     <BrowserRouter basename={BASE_PATH || undefined}>
       <StyleProvider>
+        <MotionRoot>
         <Routes>
           {/* The landing page and the full-screen template preview render without the shell. */}
           <Route path="/" element={<LandingPage />} />
@@ -57,6 +59,7 @@ export const App: React.FC = () => (
           <Route path="/preview/:family/:screen" element={<Suspense fallback={<PageFallback />}><TemplatePreviewPage /></Suspense>} />
           <Route path="/*" element={<ShellRoutes />} />
         </Routes>
+        </MotionRoot>
       </StyleProvider>
     </BrowserRouter>
   </ErrorBoundary>

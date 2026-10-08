@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import { dialog, fade } from '../../motion/presets';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
@@ -117,8 +119,8 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
   let runningIndex = -1;
 
   return (
-    <div className="cmd-backdrop" onClick={close}>
-      <div className="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown}>
+    <motion.div className="cmd-backdrop" onClick={close} variants={fade} initial="hidden" animate="show" exit="exit">
+      <motion.div className="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} variants={dialog}>
         <div className="cmd-input-row">
           <Search size={18} className="cmd-search-icon" />
           <input
@@ -173,7 +175,7 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
           <span><kbd>Enter</kbd> select</span>
           <span><kbd>Esc</kbd> close</span>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

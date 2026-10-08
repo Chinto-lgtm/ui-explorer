@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { pageIn } from '../../motion/presets';
 import { useSearchParams } from 'react-router-dom';
 import { useStyle } from '../../hooks/useStyle';
 import {
@@ -473,7 +475,7 @@ export const GeneratorPage: React.FC = () => {
           {error && <div className="ws-error" role="alert">{error}</div>}
 
           {result && (
-            <div className="gen-result">
+            <motion.div key={result.seedNumber + result.mode} className="gen-result" variants={pageIn} initial="hidden" animate="show">
               {/* Live preview: the whole page canvas is already themed by the generated style */}
               <div className="gen-preview">
                 <StylePreviewCard style={result.style} size="hero" />
@@ -696,7 +698,7 @@ export const GeneratorPage: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {!result && !error && (

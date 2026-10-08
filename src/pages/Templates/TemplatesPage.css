@@ -406,6 +406,10 @@
   overflow: hidden;
 }
 
+.tp-swap {
+  height: 100%;
+}
+
 /* ---------- Flow board ---------- */
 .tp-flow {
   display: flex;

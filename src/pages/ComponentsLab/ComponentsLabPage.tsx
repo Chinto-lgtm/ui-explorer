@@ -13,6 +13,8 @@ import { DeviceFrame } from '../../components/workspace/DeviceFrame';
 import { deviceOuterSize } from '../../components/workspace/device';
 import type { DeviceKind } from '../../components/workspace/device';
 import { LayoutPanelTop, SlidersHorizontal, Monitor, Tablet, Smartphone, Columns3, ToggleLeft, Ruler } from 'lucide-react';
+import { motion } from 'motion/react';
+import { pageIn } from '../../motion/presets';
 import '../../components/preview/showcase.css';
 import './ComponentsLabPage.css';
 
@@ -122,7 +124,10 @@ export const ComponentsLabPage: React.FC = () => {
     <LabFrame primary={primary}>
       <ToastProvider position="bottom-right">
         <Suspense fallback={<div className="page-loading" role="status">Loading…</div>}>
-          <ActiveSection disabled={buttonStateDisabled} loading={buttonStateLoading} />
+          {/* Each section arrives with a short rise inside the frame. */}
+          <motion.div key={section.id} variants={pageIn} initial="hidden" animate="show">
+            <ActiveSection disabled={buttonStateDisabled} loading={buttonStateLoading} />
+          </motion.div>
         </Suspense>
       </ToastProvider>
     </LabFrame>

@@ -152,7 +152,7 @@ describe('UI Explorer — Integration & Engine Tests', () => {
       fireEvent.change(input, { target: { value: 'cyberpunk' } });
       expect(screen.getByRole('option', { name: /cyberpunk/i })).toBeInTheDocument();
       fireEvent.keyDown(input, { key: 'Enter' });
-      expect(screen.queryByRole('listbox')).toBeNull();
+      await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull());
       expect(localStorage.getItem('ui_explorer_style_id')).toBe('cyberpunk');
     });
   });

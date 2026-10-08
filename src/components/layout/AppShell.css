@@ -305,12 +305,33 @@
 
 .shell-nav__link--active,
 .shell-nav__link--active:hover {
-  background-color: var(--chrome-primary-soft);
   color: var(--chrome-primary-hover);
 }
 
-/* Active indicator: a short bar on the rail's edge. */
-.shell-nav__link--active::before {
+/* Items without a gliding indicator (favourites, Inspect) still show they are active. */
+.shell-nav__action.shell-nav__link--active:not(:has(.shell-nav__indicator)) {
+  background-color: var(--chrome-primary-soft);
+}
+
+.shell-nav__icon,
+.shell-nav__label,
+.shell-nav__kbd,
+.shell-nav__link .sp-dots,
+.shell-nav__action .sp-dots {
+  position: relative;
+  z-index: 1;
+}
+
+/* The active highlight: a soft pill with a short bar on the rail's edge. It glides between items. */
+.shell-nav__indicator {
+  position: absolute;
+  inset: 0;
+  border-radius: 9px;
+  background-color: var(--chrome-primary-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--chrome-primary) 22%, transparent);
+}
+
+.shell-nav__indicator::before {
   content: '';
   position: absolute;
   left: -0.625rem;

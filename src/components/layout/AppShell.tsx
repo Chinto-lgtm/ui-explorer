@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import { pageIn } from '../../motion/presets';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { AnatomyPanel } from '../../features/anatomy/AnatomyPanel';
@@ -140,6 +142,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   // Templates theme each frame themselves (three styles at once in compare). The canvas must not carry
   // the current style's treatment attributes there, or its descendant rules would leak into every frame.
   const themedCanvas = !location.pathname.startsWith('/templates');
+  const pageKey = location.pathname.split('/')[1] || 'home';
 
   const tools = { activeTool, openTool, closeTool, toggleTool, isInspecting, toggleCompare };
 
@@ -158,12 +161,17 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
           <main className="shell-content" id="main-content" tabIndex={-1}>
             <div className="style-preview-canvas" style={resolvedCssVars as React.CSSProperties} {...(themedCanvas ? getStyleDataAttributes(renderedStyle) : {})} data-experimental={settings.experimental ? '1' : undefined}>
-              {children}
+              {/* Each page arrives with a short rise; moving within a page (sections, tabs) does not replay it. */}
+              <motion.div key={pageKey} className="shell-page" variants={pageIn} initial="hidden" animate="show">
+                {children}
+              </motion.div>
             </div>
           </main>
 
-          {activeTool === 'anatomy' && <AnatomyPanel onClose={closeTool} />}
-          {activeTool === 'tweaks' && <TweaksPanel onClose={closeTool} />}
+          <AnimatePresence>
+            {activeTool === 'anatomy' && <AnatomyPanel key="anatomy" onClose={closeTool} />}
+            {activeTool === 'tweaks' && <TweaksPanel key="tweaks" onClose={closeTool} />}
+          </AnimatePresence>
         </div>
 
         {activeTool === 'mixer' && <StyleMixerModal onClose={closeTool} />}
@@ -172,7 +180,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         {activeTool === 'shortcuts' && <ShortcutsPanel onClose={closeTool} />}
         {activeTool === 'diff' && <StyleDiffModal onClose={closeTool} initialA={searchParams.get('a') ?? undefined} initialB={searchParams.get('b') ?? undefined} />}
         <TokenInspector active={isInspecting} onClose={() => setIsInspecting(false)} onOpenAnatomy={() => openTool('anatomy')} />
-        {isCmdPaletteOpen && <CommandPalette onClose={() => setIsCmdPaletteOpen(false)} />}
+        <AnimatePresence>
+          {isCmdPaletteOpen && <CommandPalette key="palette" onClose={() => setIsCmdPaletteOpen(false)} />}
+        </AnimatePresence>
       </div>
     </ToolsContext.Provider>
   );

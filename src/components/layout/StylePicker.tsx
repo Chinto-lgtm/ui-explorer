@@ -1,5 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import { popover } from '../../motion/presets';
 import { ChevronsUpDown, Check, Search, Star, ArrowRight } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import type { StyleDefinition } from '../../engine/types';
@@ -114,8 +116,9 @@ export const StylePicker: React.FC = () => {
         <Star size={15} fill={isFav ? 'currentColor' : 'none'} />
       </button>
 
+      <AnimatePresence>
       {open && (
-        <div className="sp-pop" onKeyDown={onKeyDown}>
+        <motion.div className="sp-pop" onKeyDown={onKeyDown} variants={popover} initial="hidden" animate="show" exit="exit">
           <div className="sp-pop__search">
             <Search size={14} aria-hidden="true" />
             <input
@@ -166,8 +169,9 @@ export const StylePicker: React.FC = () => {
           <Link to="/styles" className="sp-pop__foot" onClick={() => setOpen(false)}>
             Browse the gallery <ArrowRight size={13} />
           </Link>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 };

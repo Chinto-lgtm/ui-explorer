@@ -1,6 +1,8 @@
 import React, { useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { ChevronDown, PanelLeftClose, PanelLeftOpen, Search, X } from 'lucide-react';
+import { motion } from 'motion/react';
+import { SPRING_SNAPPY } from '../../motion/presets';
 import { SectionRouteContext, sectionSlug } from './sectionRoute';
 import { NARROW_QUERY, PANEL_STORAGE_KEY, WorkspaceLayoutContext, useMediaQuery, useWorkspaceLayout } from './layout';
 import '../layout/Workspace.css';
@@ -170,6 +172,7 @@ export function WorkspaceSegmented<T extends string>({ value, options, onChange,
   label: string;
   columns?: number;
 }) {
+  const pillId = useId();
   return (
     <div className="ws-segmented" role="group" aria-label={label} style={columns ? { gridTemplateColumns: `repeat(${columns}, 1fr)` } : undefined}>
       {options.map((o) => (
@@ -181,6 +184,7 @@ export function WorkspaceSegmented<T extends string>({ value, options, onChange,
           title={o.title}
           onClick={() => onChange(o.value)}
         >
+          {value === o.value && <motion.span layoutId={pillId} className="ws-segmented__pill" transition={SPRING_SNAPPY} aria-hidden="true" />}
           {o.label}
         </button>
       ))}

@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import type { TargetAndTransition } from 'motion/react';
+import { SPRING_SOFT, rise, stagger } from '../../motion/presets';
+import { CountUp, Magnetic, Reveal, RevealItem, RevealList, ScrollProgress, SplitHeadline, Spotlight, Tilt } from './landingMotion';
+import { trackPointer, useScrolledPast } from './landingHooks';
 import {
   ArrowRight, BookOpen, Code2, LayoutTemplate, Wand2,
   Copy, Check, MousePointerClick, Microscope, PackageOpen, Star
@@ -62,6 +67,17 @@ const appEntry = () => {
 /** The tokens shown in the live code sample, in reading order. */
 const SAMPLE_TOKENS = ['--color-bg', '--color-surface', '--color-accent', '--color-text-primary', '--radius-md', '--border-width', '--duration-normal', '--font-family-sans'];
 
+/** Where each card of the hero deck sits. Cards keep their identity as they move, so the deck deals. */
+type DeckSlot = 'left' | 'front' | 'right';
+const deckPose = (slot: DeckSlot, spread: boolean): TargetAndTransition => {
+  const side = spread ? { x: 21, r: 13 } : { x: 15, r: 9 };
+  if (slot === 'front') return { x: '0%', rotate: 0, scale: 1, opacity: 1, z: 40 };
+  const dir = slot === 'left' ? -1 : 1;
+  return { x: `${dir * side.x}%`, rotate: dir * side.r, scale: 0.9, opacity: 0.72, z: 0 };
+};
+const DECK_ENTER: TargetAndTransition = { x: '34%', rotate: 18, scale: 0.84, opacity: 0, z: 0 };
+const DECK_EXIT: TargetAndTransition = { x: '-34%', rotate: -18, scale: 0.84, opacity: 0, z: 0 };
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -82,7 +98,7 @@ export const LandingPage: React.FC = () => {
   const left = heroStyles[(heroIndex + count - 1) % count];
   const right = heroStyles[(heroIndex + 1) % count];
 
-  // The one deliberate motion on this page: the deck deals the next design language to the front.
+  // The deck deals the next design language to the front on a timer; hovering it pauses.
   useEffect(() => {
     if (isPaused || heroStyles.length < 2 || prefersReducedMotion()) return;
     const id = window.setInterval(() => setHeroIndex((i) => (i + 1) % heroStyles.length), HERO_INTERVAL_MS);
@@ -111,10 +127,14 @@ export const LandingPage: React.FC = () => {
   };
 
   const styleCount = availableStyles.filter((s) => !s.metadata.isCustom).length;
+  const scrolled = useScrolledPast();
+
+  const deck = left && right && front ? ([['left', left], ['front', front], ['right', right]] as const) : [];
 
   return (
     <div className="lp">
-      <header className="lp-nav">
+      <ScrollProgress />
+      <header className={`lp-nav ${scrolled ? 'lp-nav--scrolled' : ''}`}>
         <button type="button" className="lp-nav__brand" onClick={() => window.scrollTo?.({ top: 0, behavior: 'smooth' })} aria-label="UI Explorer, back to top">
           <BrandLockup size={30} />
         </button>
@@ -130,68 +150,97 @@ export const LandingPage: React.FC = () => {
 
       <main>
         {/* ---------- Hero ---------- */}
-        <section className="lp-hero">
+        <Spotlight className="lp-hero">
           <div className="lp-glow lp-glow--a" aria-hidden="true" />
           <div className="lp-glow lp-glow--b" aria-hidden="true" />
+          <div className="lp-glow lp-glow--c" aria-hidden="true" />
           <div className="lp-container lp-hero__grid">
             <div className="lp-hero__copy">
-              <span className="lp-pill"><span className="lp-pill__dot" /> Open source · runs in your browser · v{APP_VERSION}</span>
-              <h1 className="lp-h1">
-                One interface.
-                <span className="lp-gradient-text">Thirty design languages.</span>
-              </h1>
-              <p className="lp-lede">
-                UI Explorer is a laboratory for interface design systems. Switch a style and every button, card, chart
-                and template rebuilds — then see why it looks that way, remix it, and take the tokens home.
-              </p>
-              <div className="lp-actions">
-                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
-                <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/templates')}><LayoutTemplate size={18} /> See the templates</button>
-              </div>
-              <ul className="lp-proof">
-                <li>No account</li>
-                <li>No server</li>
-                <li>MIT licensed</li>
-              </ul>
+              <motion.span className="lp-pill" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <span className="lp-pill__dot" /> Free &amp; open source · runs in your browser · v{APP_VERSION}
+              </motion.span>
+              <SplitHeadline
+                className="lp-h1"
+                lines={[{ text: 'One interface.' }, { text: 'Thirty design languages.', className: 'lp-gradient-text', whole: true }]}
+              />
+              <motion.div className="lp-hero__rest" variants={stagger(0.09, 0.45)} initial="hidden" animate="show">
+                <motion.p className="lp-lede" variants={rise}>
+                  UI Explorer is a laboratory for interface design systems. Switch a style and every button, card, chart
+                  and template rebuilds — then see why it looks that way, remix it, and take the tokens home.
+                </motion.p>
+                <motion.div className="lp-actions" variants={rise}>
+                  <Magnetic>
+                    <button type="button" className="lp-btn lp-btn--primary lp-btn--lg lp-btn--shine" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
+                  </Magnetic>
+                  <Magnetic strength={0.18}>
+                    <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/templates')}><LayoutTemplate size={18} /> See the templates</button>
+                  </Magnetic>
+                </motion.div>
+                <motion.ul className="lp-proof" variants={rise}>
+                  <li>No account</li>
+                  <li>No server</li>
+                  <li>MIT licensed</li>
+                </motion.ul>
+              </motion.div>
             </div>
 
-            <div className="lp-deck" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-              {left && right && front && (
-                <>
-                  <div className="lp-deck__card lp-deck__card--left" aria-hidden="true"><StylePreviewCard key={`l-${left.metadata.id}`} style={left} size="hero" /></div>
-                  <div className="lp-deck__card lp-deck__card--right" aria-hidden="true"><StylePreviewCard key={`r-${right.metadata.id}`} style={right} size="hero" /></div>
-                  <div className="lp-deck__card lp-deck__card--front"><StylePreviewCard key={`f-${front.metadata.id}`} style={front} size="hero" /></div>
-                  <div className="lp-deck__caption" aria-live="polite">
-                    <span className="lp-deck__name">{front.metadata.name}</span>
-                    <span className="lp-deck__personality">{front.metadata.personality}</span>
-                  </div>
-                  <ol className="lp-deck__dots" aria-label="Featured styles">
-                    {heroStyles.map((s, i) => (
-                      <li key={s.metadata.id}>
-                        <button
-                          type="button"
-                          className={`lp-dot ${i === heroIndex % count ? 'lp-dot--active' : ''}`}
-                          aria-label={s.metadata.name}
-                          aria-current={i === heroIndex % count ? 'true' : undefined}
-                          onClick={() => { setHeroIndex(i); setIsPaused(true); }}
-                        />
-                      </li>
+            <motion.div className="lp-deck-wrap" initial={{ opacity: 0, y: 30, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...SPRING_SOFT, delay: 0.25 }}>
+              <Tilt className="lp-deck" onHover={setIsPaused}>
+                <div className="lp-deck__stack">
+                  <AnimatePresence initial={false}>
+                    {deck.map(([slot, s]) => (
+                      <motion.div
+                        key={s.metadata.id}
+                        className={`lp-deck__card lp-deck__card--${slot}`}
+                        aria-hidden={slot === 'front' ? undefined : true}
+                        initial={DECK_ENTER}
+                        animate={deckPose(slot, isPaused)}
+                        exit={DECK_EXIT}
+                        transition={SPRING_SOFT}
+                      >
+                        <StylePreviewCard style={s} size="hero" />
+                      </motion.div>
                     ))}
-                  </ol>
-                </>
-              )}
-            </div>
+                  </AnimatePresence>
+                </div>
+                {front && (
+                  <div className="lp-deck__caption" aria-live="polite">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span key={front.metadata.id} className="lp-deck__caption-inner" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
+                        <span className="lp-deck__name">{front.metadata.name}</span>
+                        <span className="lp-deck__personality">{front.metadata.personality}</span>
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
+                )}
+                <ol className="lp-deck__dots" aria-label="Featured styles">
+                  {heroStyles.map((s, i) => (
+                    <li key={s.metadata.id}>
+                      <button
+                        type="button"
+                        className={`lp-dot ${i === heroIndex % count ? 'lp-dot--active' : ''}`}
+                        aria-label={s.metadata.name}
+                        aria-current={i === heroIndex % count ? 'true' : undefined}
+                        onClick={() => { setHeroIndex(i); setIsPaused(true); }}
+                      >
+                        {i === heroIndex % count && !isPaused && <span key={heroIndex} className="lp-dot__timer" style={{ animationDuration: `${HERO_INTERVAL_MS}ms` }} />}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </Tilt>
+            </motion.div>
           </div>
 
           <div className="lp-container">
-            <dl className="lp-stats">
-              <div><dt>Design styles</dt><dd>{styleCount}</dd></div>
-              <div><dt>Library components</dt><dd>{COMPONENT_CATALOG.length}</dd></div>
-              <div><dt>Template screens</dt><dd>{TEMPLATE_SCREEN_COUNT}</dd></div>
-              <div><dt>Generated styles</dt><dd>∞</dd></div>
-            </dl>
+            <RevealList as="dl" className="lp-stats" step={0.1}>
+              <RevealItem as="div"><dt>Design styles</dt><dd><CountUp value={styleCount} /></dd></RevealItem>
+              <RevealItem as="div"><dt>Library components</dt><dd><CountUp value={COMPONENT_CATALOG.length} /></dd></RevealItem>
+              <RevealItem as="div"><dt>Template screens</dt><dd><CountUp value={TEMPLATE_SCREEN_COUNT} /></dd></RevealItem>
+              <RevealItem as="div"><dt>Generated styles</dt><dd>∞</dd></RevealItem>
+            </RevealList>
           </div>
-        </section>
+        </Spotlight>
 
         {/* ---------- Style marquee ---------- */}
         <div className="lp-marquee" aria-hidden="true">
@@ -207,34 +256,34 @@ export const LandingPage: React.FC = () => {
         {/* ---------- How it works ---------- */}
         <section className="lp-section" aria-labelledby="lp-steps-title">
           <div className="lp-container">
-            <div className="lp-head">
+            <Reveal className="lp-head">
               <span className="lp-eyebrow">How it works</span>
               <h2 id="lp-steps-title" className="lp-h2">From curious to shipped in three steps</h2>
-            </div>
-            <ol className="lp-steps">
+            </Reveal>
+            <RevealList as="ol" className="lp-steps" step={0.12}>
               {STEPS.map((s, i) => (
-                <li key={s.title} className="lp-step">
+                <RevealItem key={s.title} className="lp-step">
                   <span className="lp-step__num">{String(i + 1).padStart(2, '0')}</span>
                   <span className="lp-step__icon">{s.icon}</span>
                   <h3>{s.title}</h3>
                   <p>{s.text}</p>
-                </li>
+                </RevealItem>
               ))}
-            </ol>
+            </RevealList>
           </div>
         </section>
 
         {/* ---------- Features (bento) ---------- */}
         <section className="lp-section" aria-labelledby="lp-features-title">
           <div className="lp-container">
-            <div className="lp-head">
+            <Reveal className="lp-head">
               <span className="lp-eyebrow">Everything in the lab</span>
               <h2 id="lp-features-title" className="lp-h2">Tools for looking closer</h2>
-            </div>
-            <ul className="lp-bento">
+            </Reveal>
+            <RevealList className="lp-bento" step={0.06}>
               {FEATURES.map((f) => (
-                <li key={f.id} className={`lp-tile ${f.span ? `lp-tile--${f.span}` : ''} lp-tile--${f.id}`}>
-                  <button type="button" className="lp-tile__btn" onClick={() => finish(f.to)}>
+                <RevealItem key={f.id} className={`lp-tile ${f.span ? `lp-tile--${f.span}` : ''} lp-tile--${f.id}`}>
+                  <button type="button" className="lp-tile__btn" onClick={() => finish(f.to)} onPointerMove={trackPointer}>
                     <span className="lp-tile__icon"><f.Icon size={20} /></span>
                     <span className="lp-tile__name">{f.name}</span>
                     <span className="lp-tile__text">{f.text}</span>
@@ -258,40 +307,40 @@ export const LandingPage: React.FC = () => {
                     )}
                     <ArrowRight size={16} className="lp-tile__arrow" aria-hidden="true" />
                   </button>
-                </li>
+                </RevealItem>
               ))}
-            </ul>
+            </RevealList>
           </div>
         </section>
 
         {/* ---------- Style wall ---------- */}
         <section className="lp-section" aria-labelledby="lp-wall-title">
           <div className="lp-container">
-            <div className="lp-head lp-head--split">
+            <Reveal className="lp-head lp-head--split">
               <div>
                 <span className="lp-eyebrow">Live, not screenshots</span>
                 <h2 id="lp-wall-title" className="lp-h2">Same structure, same data, different experience</h2>
               </div>
               <p className="lp-muted">Every tile is the real component system under that style. Open one to start there.</p>
-            </div>
-            <div className="lp-wall">
+            </Reveal>
+            <RevealList as="div" className="lp-wall" step={0.05}>
               {wallStyles.map((s) => (
-                <div key={s.metadata.id} className="lp-wall__tile">
-                  <StylePreviewCard style={s} size="thumb" onClick={() => finish('/', s.metadata.id)} />
+                <RevealItem as="div" key={s.metadata.id} className="lp-wall__tile">
+                  <StylePreviewCard style={s} size="thumb" onClick={() => finish(`/styles/${encodeURIComponent(s.metadata.id)}`, s.metadata.id)} />
                   <div className="lp-wall__meta">
                     <span className="lp-wall__name">{s.metadata.name}</span>
                     <span className="lp-wall__cat">{s.metadata.category}</span>
                   </div>
-                </div>
+                </RevealItem>
               ))}
-            </div>
+            </RevealList>
           </div>
         </section>
 
         {/* ---------- Tokens ---------- */}
         <section className="lp-section" aria-labelledby="lp-tokens-title">
           <div className="lp-container lp-split">
-            <div className="lp-split__copy">
+            <Reveal className="lp-split__copy">
               <span className="lp-eyebrow">Take it with you</span>
               <h2 id="lp-tokens-title" className="lp-h2">Every style is just tokens</h2>
               <p className="lp-muted">
@@ -307,8 +356,8 @@ export const LandingPage: React.FC = () => {
                 <a className="lp-btn lp-btn--ghost" href={GITHUB_REPO_URL} target="_blank" rel="noreferrer"><Star size={16} /> Star on GitHub</a>
                 <a className="lp-btn lp-btn--ghost" href={DOCS_URL} target="_blank" rel="noreferrer"><BookOpen size={16} /> Read the docs</a>
               </div>
-            </div>
-            <figure className="lp-code">
+            </Reveal>
+            <Reveal as="figure" className="lp-code" delay={0.12}>
               <figcaption className="lp-code__bar">
                 <span className="lp-code__dots" aria-hidden="true"><span /><span /><span /></span>
                 <span className="lp-code__file">{front ? `${front.metadata.id}.css` : 'style.css'}</span>
@@ -316,29 +365,34 @@ export const LandingPage: React.FC = () => {
               </figcaption>
               <pre className="lp-code__body"><code>
                 <span className="lp-code__sel">:root</span> {'{'}{'\n'}
-                {tokens.map((t) => (
+                {tokens.map((t, i) => (
                   <span key={t.name} className="lp-code__line">
-                    {'  '}<span className="lp-code__prop">{t.name}</span>: {isColour(t.value) && <span className="lp-code__swatch" style={{ background: t.value }} />}<span className="lp-code__val">{t.value}</span>;{'\n'}
+                    {'  '}<span className="lp-code__prop">{t.name}</span>: {isColour(t.value) && <motion.span key={`sw-${t.value}`} className="lp-code__swatch" style={{ background: t.value }} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ ...SPRING_SOFT, delay: i * 0.03 }} />}
+                    <motion.span key={t.value} className="lp-code__val" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: i * 0.03 }}>{t.value}</motion.span>;{'\n'}
                   </span>
                 ))}
                 {'}'}
               </code></pre>
-            </figure>
+            </Reveal>
           </div>
         </section>
 
         {/* ---------- Call to action ---------- */}
         <section className="lp-section">
           <div className="lp-container">
-            <div className="lp-cta">
+            <Reveal className="lp-cta">
               <BrandMark size={64} className="lp-cta__mark" />
               <h2 className="lp-h2">Pick a style. Break it. Make it yours.</h2>
               <p className="lp-muted">Free, open source, and nothing to install.</p>
               <div className="lp-actions lp-actions--center">
-                <button type="button" className="lp-btn lp-btn--primary lp-btn--lg" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
-                <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/generator')}><Wand2 size={18} /> Generate a style</button>
+                <Magnetic>
+                  <button type="button" className="lp-btn lp-btn--primary lp-btn--lg lp-btn--shine" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
+                </Magnetic>
+                <Magnetic strength={0.18}>
+                  <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/generator')}><Wand2 size={18} /> Generate a style</button>
+                </Magnetic>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
       </main>
