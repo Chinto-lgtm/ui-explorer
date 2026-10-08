@@ -13,23 +13,43 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     window.history.replaceState({}, '', '/');
   });
 
-  it('shows the welcome view on first launch', () => {
+  it('shows the landing page on first launch', () => {
     render(<App />);
-    expect(screen.getByText('The same interface, in thirty design languages.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /explore styles/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /one interface\.\s*thirty design languages\./i })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /start exploring/i }).length).toBeGreaterThan(0);
   });
 
-  it('skips the welcome view once onboarding is complete', () => {
+  it('starting from the landing page finishes onboarding and opens the lab', () => {
+    render(<App />);
+    fireEvent.click(screen.getAllByRole('button', { name: /start exploring/i })[0]);
+    expect(localStorage.getItem('ui_explorer_onboarded')).toBe('1');
+    expect(window.location.pathname).toBe('/');
+    expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+  });
+
+  it('skips the landing page once onboarding is complete', () => {
     localStorage.setItem('ui_explorer_onboarded', '1');
     render(<App />);
-    expect(screen.queryByText('The same interface, in thirty design languages.')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1, name: /one interface/i })).not.toBeInTheDocument();
     expect(screen.getByText('Neumorphism')).toBeInTheDocument();
+  });
+
+  it('the header logo and wordmark open the landing page', () => {
+    localStorage.setItem('ui_explorer_onboarded', '1');
+    render(<App />);
+    const home = screen.getByRole('link', { name: 'UI Explorer home' });
+    expect(home).toHaveAttribute('href', '/welcome');
+    expect(home.querySelector('svg.brand-mark')).not.toBeNull();
+    fireEvent.click(home);
+    expect(window.location.pathname).toBe('/welcome');
+    expect(screen.getByRole('heading', { level: 1, name: /one interface/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /back to the lab/i })).toBeInTheDocument();
   });
 
   it('renders the brand title in header', () => {
     localStorage.setItem('ui_explorer_onboarded', '1');
     render(<App />);
-    expect(screen.getByText('UI Explorer')).toBeInTheDocument();
+    expect(screen.getByText('Explorer', { exact: false, selector: '.brand-lockup__word' })).toBeInTheDocument();
   });
 
   it('renders active style hero on dashboard', () => {

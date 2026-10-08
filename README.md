@@ -1,3 +1,5 @@
+<p align="center"><img src="public/favicon.svg" width="96" height="96" alt="UI Explorer logo: three style cards fanned from one point"></p>
+
 # UI Explorer
 
 > An open-source laboratory for exploring, understanding and experimenting with interface design systems.

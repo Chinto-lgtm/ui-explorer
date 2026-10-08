@@ -1,4 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="6" fill="#06b6d4"/>
-  <text x="16" y="22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#09090b">UI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>UI Explorer</title>
+  <defs>
+    <linearGradient id="uix-bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1f1f25"/>
+      <stop offset="1" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="uix-front" x1="20" y1="15" x2="44" y2="51" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="uix-left" x1="20" y1="15" x2="44" y2="51" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="uix-right" x1="20" y1="15" x2="44" y2="51" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9a8d4"/>
+      <stop offset="1" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#uix-bg)"/>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="14.5" stroke="#ffffff" stroke-opacity="0.1"/>
+  <rect x="20" y="15" width="24" height="33" rx="6" fill="url(#uix-left)" transform="rotate(-22 32 56)"/>
+  <rect x="20" y="15" width="24" height="33" rx="6" fill="url(#uix-right)" transform="rotate(22 32 56)"/>
+  <rect x="20" y="15" width="24" height="33" rx="6" fill="url(#uix-front)"/>
+  <rect x="24" y="20.5" width="9" height="3.4" rx="1.7" fill="#083344"/>
+  <rect x="24" y="26.5" width="16" height="3.4" rx="1.7" fill="#083344" fill-opacity="0.45"/>
+  <circle cx="35.5" cy="39.5" r="4.6" fill="#083344"/>
 </svg>

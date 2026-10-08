@@ -1,5 +1,7 @@
 import React from 'react';
-import { Columns, Sparkles, Search, Sliders, Menu, X, Star, Crosshair, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Columns, Search, Sliders, Menu, X, Star, Crosshair, AlertTriangle } from 'lucide-react';
+import { BrandLockup } from './BrandMark';
 import { contrastRatio } from '../../engine/color';
 import { useStyle } from '../../hooks/useStyle';
 import { APP_VERSION } from '../../config/app';
@@ -38,10 +40,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCommandPalette, onToggleAn
         >
           {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
-        <div className="shell-header__logo">
-          <Sparkles className="shell-header__logo-icon" size={20} />
-          <span className="shell-header__title">UI Explorer</span>
-        </div>
+        <Link to="/welcome" className="shell-header__logo" aria-label="UI Explorer home">
+          <BrandLockup size={28} className="shell-header__lockup" />
+        </Link>
         <span className="shell-header__badge">v{APP_VERSION}</span>
       </div>
 

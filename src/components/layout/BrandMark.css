@@ -1,0 +1,56 @@
+/* The UI Explorer mark and wordmark (chrome tokens only). */
+
+.brand-mark {
+  display: block;
+  flex-shrink: 0;
+}
+
+.brand-mark__edge {
+  stroke: var(--chrome-text-strong);
+  stroke-opacity: 0.1;
+}
+
+/* The side cards fan out from the bottom centre. Hovering a link that holds the mark opens the fan a little wider. */
+.brand-mark__card {
+  transform-box: view-box;
+  transform-origin: 32px 56px;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.brand-mark__card--left { transform: rotate(-22deg); }
+.brand-mark__card--right { transform: rotate(22deg); }
+
+a:hover > .brand-mark .brand-mark__card--left,
+a:hover > .brand-lockup .brand-mark__card--left,
+button:hover > .brand-lockup .brand-mark__card--left { transform: rotate(-30deg); }
+
+a:hover > .brand-mark .brand-mark__card--right,
+a:hover > .brand-lockup .brand-mark__card--right,
+button:hover > .brand-lockup .brand-mark__card--right { transform: rotate(30deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-mark__card {
+    transition: none;
+  }
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--brand-size, 28px) * 0.36);
+  color: var(--chrome-text-strong);
+  font-family: var(--chrome-font);
+  font-size: calc(var(--brand-size, 28px) * 0.64);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brand-lockup__ui {
+  font-weight: 800;
+  background-image: var(--chrome-brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

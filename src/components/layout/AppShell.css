@@ -36,15 +36,13 @@
 .shell-header__logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--chrome-primary);
+  border-radius: 9px;
+  text-decoration: none;
 }
 
-.shell-header__title {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--chrome-text-strong);
-  letter-spacing: -0.02em;
+.shell-header__logo:focus-visible {
+  outline: 2px solid var(--chrome-primary);
+  outline-offset: 3px;
 }
 
 .shell-header__badge {
@@ -380,7 +378,7 @@
 }
 
 @media (max-width: 640px) {
-  .shell-header__title {
+  .shell-header__lockup .brand-lockup__word {
     display: none;
   }
 

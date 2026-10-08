@@ -12,6 +12,7 @@ export default defineConfig({
   lastUpdated: false,
   head: [['link', { rel: 'icon', type: 'image/svg+xml', href: (process.env.DOCS_BASE_PATH || '/docs/') + 'favicon.svg' }]],
   themeConfig: {
+    logo: '/logo.svg',
     nav: [
       { text: 'App', link: process.env.APP_URL || 'https://chinto-lgtm.github.io/ui-explorer/' },
       { text: 'GitHub', link: 'https://github.com/Chinto-lgtm/ui-explorer' }

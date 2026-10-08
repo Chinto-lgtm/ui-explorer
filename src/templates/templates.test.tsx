@@ -49,6 +49,11 @@ describe('template registry', () => {
     expect(getFamily('landing-desktop').screens.length).toBe(7);
   });
 
+  it('the landing page counts the template screens correctly', async () => {
+    const { TEMPLATE_SCREEN_COUNT } = await import('../pages/Welcome/WelcomePage');
+    expect(TEMPLATE_SCREEN_COUNT).toBe(getFamily('landing-desktop').screens.length + getFamily('app').screens.length);
+  });
+
   it('falls back to the first family for unknown ids', () => {
     expect(getFamily('nope').id).toBe('landing-desktop');
   });
