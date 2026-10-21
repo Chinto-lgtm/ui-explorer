@@ -36,7 +36,6 @@ describe('exports', () => {
 
   it('package export round-trips through the validator', () => {
     const pkg = JSON.parse(exportStyle(style, 'package'));
-    expect(pkg.generation).toBeUndefined();
     expect(validateStyleDefinition(pkg).ok).toBe(true);
   });
 });

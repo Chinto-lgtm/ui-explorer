@@ -9,11 +9,10 @@
 import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Palette, LayoutTemplate, Component, Wand2, Sliders, Shuffle, GitCompareArrows, Download, GitPullRequest,
-  Eye, Crosshair, Keyboard, SlidersHorizontal, Search
+  LayoutTemplate, Component, Sliders, Download, Crosshair, Keyboard, SlidersHorizontal, Search
 } from 'lucide-react';
 
-export type PageId = 'styles' | 'templates' | 'components' | 'generator' | 'customizer';
+export type PageId = 'templates' | 'components' | 'customizer';
 
 export interface PageRoute {
   id: PageId;
@@ -32,17 +31,6 @@ export interface PageRoute {
 }
 
 export const PAGES: PageRoute[] = [
-  {
-    id: 'styles',
-    path: '/styles',
-    pattern: '/styles/:styleId?/:tab?',
-    label: 'Styles',
-    icon: Palette,
-    group: 'Explore',
-    description: 'Every design style as a live preview, with filters, a relationship map and full docs.',
-    keywords: 'gallery browse styles community official map relationships docs',
-    load: () => import('../pages/Styles/StylesPage').then((m) => ({ default: m.StylesPage }))
-  },
   {
     id: 'templates',
     path: '/templates',
@@ -66,17 +54,6 @@ export const PAGES: PageRoute[] = [
     load: () => import('../pages/ComponentsLab/ComponentsLabPage').then((m) => ({ default: m.ComponentsLabPage }))
   },
   {
-    id: 'generator',
-    path: '/generator',
-    pattern: '/generator',
-    label: 'Generator',
-    icon: Wand2,
-    group: 'Create',
-    description: 'Seed in, coherent style out. Lock axes, remix and share the exact result.',
-    keywords: 'generate create new style seed random procedural remix',
-    load: () => import('../pages/Generator/GeneratorPage').then((m) => ({ default: m.GeneratorPage }))
-  },
-  {
     id: 'customizer',
     path: '/customizer',
     pattern: '/customizer/:section?',
@@ -90,7 +67,7 @@ export const PAGES: PageRoute[] = [
 ];
 
 /** Where the app starts when someone leaves the landing page for the first time. */
-export const APP_HOME = '/styles';
+export const APP_HOME = '/templates';
 
 export const pageById = (id: PageId): PageRoute => PAGES.find((p) => p.id === id)!;
 
@@ -98,7 +75,7 @@ export const pageById = (id: PageId): PageRoute => PAGES.find((p) => p.id === id
 /* Tools: panels and modes that work on top of any page              */
 /* ---------------------------------------------------------------- */
 
-export type ToolId = 'tweaks' | 'anatomy' | 'inspect' | 'mixer' | 'diff' | 'export' | 'contribute' | 'shortcuts' | 'search';
+export type ToolId = 'tweaks' | 'inspect' | 'export' | 'shortcuts' | 'search';
 
 export interface ToolDef {
   id: ToolId;
@@ -114,12 +91,8 @@ export interface ToolDef {
 
 export const TOOLS: ToolDef[] = [
   { id: 'tweaks', label: 'Tweaks', icon: SlidersHorizontal, description: 'Sliders for radius, spacing, depth, borders, type and speed on any page.', shortcut: 'Ctrl+.', keywords: 'tweak sliders radius spacing shadow density accent quick edit', linkable: true },
-  { id: 'anatomy', label: 'Anatomy', icon: Eye, description: 'Read every value that makes the current style look the way it does.', shortcut: 'Ctrl+Shift+A', keywords: 'anatomy tokens why explain', linkable: true },
   { id: 'inspect', label: 'Inspect', icon: Crosshair, description: 'Click any element to see the tokens behind it.', shortcut: 'Ctrl+Shift+X', keywords: 'inspect inspector click element tokens', linkable: false },
-  { id: 'mixer', label: 'Mixer', icon: Shuffle, description: 'Typography from one style, surfaces from another.', keywords: 'mixer remix hybrid combine', linkable: true },
-  { id: 'diff', label: 'Diff', icon: GitCompareArrows, description: 'Every token that differs between two styles.', shortcut: 'Ctrl+Shift+D', keywords: 'diff differences tokens two styles', linkable: true },
   { id: 'export', label: 'Export & import', icon: Download, description: 'CSS variables, JSON tokens, theme CSS, or import a style file.', shortcut: 'Ctrl+Shift+E', keywords: 'export import json css download tokens', linkable: true },
-  { id: 'contribute', label: 'Contribute', icon: GitPullRequest, description: 'Package a style for the community registry.', keywords: 'contribute package community github pull request', linkable: true },
   { id: 'shortcuts', label: 'Shortcuts', icon: Keyboard, description: 'Every keyboard shortcut.', shortcut: '?', keywords: 'keyboard shortcuts keys help', linkable: true },
   { id: 'search', label: 'Search', icon: Search, description: 'Jump to any page, style, tool or token.', shortcut: 'Ctrl+K', keywords: 'search command palette jump', linkable: false }
 ];

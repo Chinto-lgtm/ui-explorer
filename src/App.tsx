@@ -24,6 +24,15 @@ const LabsRedirect: React.FC = () => {
   return <Navigate to={`/components/${lab ?? params.get('lab') ?? 'table'}`} replace />;
 };
 
+/** The Styles gallery was removed: its links open Templates in that style (a shared ?style= wins). */
+const StylesRedirect: React.FC = () => {
+  const { styleId } = useParams();
+  const [params] = useSearchParams();
+  if (styleId && !params.has('style')) params.set('style', styleId);
+  const qs = params.toString();
+  return <Navigate to={`/templates${qs ? `?${qs}` : ''}`} replace />;
+};
+
 /** The old welcome address now points at the landing page, keeping any query. */
 const WelcomeRedirect: React.FC = () => {
   const { search } = useLocation();
@@ -39,6 +48,8 @@ const ShellRoutes: React.FC = () => (
           const Page = PAGE_COMPONENTS[p.id];
           return <Route key={p.id} path={p.pattern} element={<Page />} />;
         })}
+        <Route path="/styles/:styleId?/:tab?" element={<StylesRedirect />} />
+        <Route path="/generator" element={<Navigate to="/customizer" replace />} />
         <Route path="/data" element={<LabsRedirect />} />
         <Route path="/labs/:lab?" element={<LabsRedirect />} />
         <Route path="*" element={<NotFound />} />

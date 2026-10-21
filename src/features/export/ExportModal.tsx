@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useStyle } from '../../hooks/useStyle';
 import { validateStyleDefinition, formatValidationErrors, coerceStyleDefinition } from '../../engine/validate';
-import { resolveInheritance, type StyleFile } from '../../engine/inherit';
 import { exportStyle, exportFilename, EXPORT_FORMATS, type ExportFormat } from '../../engine/exporters';
 import type { StyleDefinition } from '../../engine/types';
 import { Button } from '../../components/ui/Button';
@@ -42,7 +41,7 @@ export const ExportModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     URL.revokeObjectURL(url);
   };
 
-  /** Parse → validate → resolve inheritance → preview. Nothing is repaired silently. */
+  /** Parse → validate → preview. Nothing is repaired silently. */
   const analyse = (text: string) => {
     setImportText(text);
     setImportCandidate(null);
@@ -57,10 +56,8 @@ export const ExportModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       return;
     }
     if (typeof parsed !== 'object' || parsed === null) { setImportError('Invalid style.\nExpected a JSON object.'); return; }
-    const file = parsed as StyleFile;
+    const resolved = parsed;
     const notes: string[] = [];
-    const resolved = resolveInheritance(file, (id) => availableStyles.find((s) => s.metadata.id === id));
-    if (file.extends) notes.push(resolved === file ? `Unknown parent "${file.extends}" — nothing inherited.` : `Inherits from "${file.extends}".`);
     const result = validateStyleDefinition(resolved);
     if (!result.ok) { setImportError(formatValidationErrors(result)); return; }
     const style = coerceStyleDefinition(resolved);
@@ -129,7 +126,7 @@ export const ExportModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               <div className="import-source">
                 <input ref={fileRef} type="file" accept=".json,application/json" hidden onChange={(e) => handleFile(e.target.files?.[0])} />
                 <Button variant="secondary" icon={<FileJson size={16} />} onClick={() => fileRef.current?.click()}>Choose a .json file</Button>
-                <span className="export-hint">or paste a style package below. Files may use <code>extends</code>; parents resolve against the registered styles.</span>
+                <span className="export-hint">or paste a theme file below.</span>
               </div>
               <Textarea
                 placeholder='{ "metadata": { ... }, "tokens": { ... } }'

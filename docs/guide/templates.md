@@ -115,7 +115,7 @@ inspector, then click any element in a frame to see the tokens behind it.
 ## Sharing and full screen
 
 - **Copy link** copies a URL that opens the same template, screen, view and
-  style. A custom or generated style travels inside the link, as everywhere
+  style. A custom or tweaked theme travels inside the link, as everywhere
   else in UI Explorer.
 - **Full screen** opens `/preview/<template>/<screen>`, which shows only the
   template. A small bar lets you change screen and style or go back. On a

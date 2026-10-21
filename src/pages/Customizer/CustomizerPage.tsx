@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Palette, Image as ImageIcon, Type, Square, Layers, Minus, Box, LayoutGrid, Shapes, Zap, MousePointerClick,
-  Undo2, Redo2, Save, RotateCcw, Trash2, Copy, Download, Link2, Check, Pencil, Sparkles
+  Undo2, Redo2, Save, RotateCcw, Trash2, Copy, Download, Link2, Check, Pencil
 } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
-import { useStyleEditor, getPath } from './useStyleEditor';
+import { useStyleEditor } from './useStyleEditor';
 import { WorkspaceSection, WorkspaceSegmented, Workspace, WorkspacePanel, WorkspaceStage } from '../../components/workspace/Workspace';
 import { SectionRouteContext } from '../../components/workspace/sectionRoute';
 import { ColorPicker } from '../../components/ui/ColorPicker';
@@ -23,11 +23,10 @@ import { StylePreviewCard } from '../../components/preview/StylePreviewCard';
 import { SAVE_EVENT } from '../../components/layout/AppShell';
 import { buildShareUrl } from '../../engine/share';
 import { resolveStyleToCssVars } from '../../engine/resolver';
-import { generateProceduralStyle } from '../../engine/generator/generator';
 import {
   materializeGeometry, materializeDepth, materializeBorder, materializeSurface, materializeMotion, materializeIcons, materializeTypography
-} from '../../engine/generator/vocab';
-import type { GeometryType, DepthType, BorderType, SurfaceType, MotionType, IconType } from '../../engine/generator/vocab';
+} from '../../engine/vocab';
+import type { GeometryType, DepthType, BorderType, SurfaceType, MotionType, IconType } from '../../engine/vocab';
 import type { StyleDefinition, ComponentBehavior } from '../../engine/types';
 import { makeSeries } from '../../components/charts/chartUtils';
 import { STORAGE_KEYS, removeKey } from '../../engine/storage';
@@ -88,7 +87,6 @@ export const CustomizerPage: React.FC = () => {
   const [previewTab, setPreviewTab] = useState('overview');
 
   const isCustom = Boolean(draft.metadata.isCustom);
-  const generated = draft.generation?.seed !== undefined ? generateProceduralStyle({ seed: draft.generation.seed, mode: draft.generation.mode as 'Coherent', personalityType: draft.generation.personality as never }).style : null;
 
   // The whole app canvas previews the draft while editing.
   useEffect(() => { setPreviewStyle(dirty ? draft : undefined); }, [draft, dirty, setPreviewStyle]);
@@ -171,7 +169,7 @@ export const CustomizerPage: React.FC = () => {
     removeKey(STORAGE_KEYS.styleId);
     removeKey(STORAGE_KEYS.tweaks);
     removeKey(STORAGE_KEYS.templateEdits);
-    window.location.href = absoluteUrl('/styles');
+    window.location.href = absoluteUrl('/templates');
   };
 
   const applyBackground = (mode: BackgroundMode, custom = customBg) => {
@@ -186,11 +184,6 @@ export const CustomizerPage: React.FC = () => {
 
   const ResetBtn: React.FC<{ path: string; label?: string }> = ({ path, label }) => (
     isChanged(path) ? <button type="button" className="cz-reset" onClick={() => resetPath(path)} title={`Reset ${label ?? path}`}><RotateCcw size={11} /> Reset</button> : null
-  );
-  const GenBtn: React.FC<{ path: string }> = ({ path }) => (
-    generated && JSON.stringify(getPath(generated, path)) !== JSON.stringify(getPath(draft, path))
-      ? <button type="button" className="cz-reset cz-reset--gen" onClick={() => set(path, getPath(generated, path))} title="Reset to the generated value"><Sparkles size={11} /> Generated</button>
-      : null
   );
   const SectionHead: React.FC<{ path: string }> = ({ path }) => (
     isChanged(path) ? <button type="button" className="cz-reset cz-reset--section" onClick={() => resetSection(path)}><RotateCcw size={11} /> Reset section</button> : null
@@ -234,7 +227,7 @@ export const CustomizerPage: React.FC = () => {
                   onChange={(v) => set(`tokens.colors.${f.key}`, v)}
                   contrastWith={f.contrast === 'bg' ? colors.bg : f.contrast === 'surface' ? colors.surface : undefined}
                 />
-                <div className="cz-field__resets"><ResetBtn path={`tokens.colors.${f.key}`} label={f.label} /><GenBtn path={`tokens.colors.${f.key}`} /></div>
+                <div className="cz-field__resets"><ResetBtn path={`tokens.colors.${f.key}`} label={f.label} /></div>
               </div>
             ))}
           </WorkspaceSection>
@@ -274,7 +267,7 @@ export const CustomizerPage: React.FC = () => {
             <div className="labs-slider"><Slider label="Body weight" value={Number(typo.fontWeightNormal) || 400} min={300} max={600} step={100} onChange={(v) => set('tokens.typography.fontWeightNormal', v)} /></div>
             <div className="labs-slider"><Slider label="Line height" value={parseFloat(typo.lineHeight) || 1.5} min={1.1} max={2} step={0.05} format={(v) => v.toFixed(2)} onChange={(v) => set('tokens.typography.lineHeight', String(v))} /></div>
             <div className="labs-slider"><Slider label="Letter spacing" value={parseFloat(typo.letterSpacing) || 0} min={-0.05} max={0.15} step={0.005} format={(v) => `${v.toFixed(3)}em`} onChange={(v) => set('tokens.typography.letterSpacing', `${v}em`)} /></div>
-            <div className="cz-field__resets"><GenBtn path="tokens.typography" /></div>
+            <div className="cz-field__resets"></div>
           </WorkspaceSection>
 
           <WorkspaceSection title="Radius" icon={<Square size={14} />} defaultOpen={false}>
@@ -283,7 +276,7 @@ export const CustomizerPage: React.FC = () => {
               options={[{ value: 'sharp', label: 'Sharp' }, { value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }, { value: 'pill', label: 'Pill' }]} />
             <div className="labs-slider"><Slider label="Radius md" value={parseInt(draft.tokens.radii.md) || 0} min={0} max={40} format={(v) => `${v}px`} onChange={(v) => set('tokens.radii.md', `${v}px`)} /></div>
             <div className="labs-slider"><Slider label="Radius lg (cards)" value={parseInt(draft.tokens.radii.lg) || 0} min={0} max={48} format={(v) => `${v}px`} onChange={(v) => set('tokens.radii.lg', `${v}px`)} /></div>
-            <div className="cz-field__resets"><GenBtn path="tokens.radii" /></div>
+            <div className="cz-field__resets"></div>
           </WorkspaceSection>
 
           <WorkspaceSection title="Shadow" icon={<Layers size={14} />} defaultOpen={false}>
@@ -294,7 +287,7 @@ export const CustomizerPage: React.FC = () => {
               ))}
             </div>
             <input className="ws-input" value={draft.tokens.shadows.md} onChange={(e) => set('tokens.shadows.md', e.target.value)} aria-label="Shadow md" />
-            <div className="cz-field__resets"><GenBtn path="tokens.shadows" /></div>
+            <div className="cz-field__resets"></div>
           </WorkspaceSection>
 
           <WorkspaceSection title="Border" icon={<Minus size={14} />} defaultOpen={false}>
@@ -307,7 +300,7 @@ export const CustomizerPage: React.FC = () => {
             <div className="labs-slider"><Slider label="Width" value={parseFloat(draft.tokens.borders.width) || 0} min={0} max={6} step={0.5} format={(v) => `${v}px`} onChange={(v) => set('tokens.borders.width', `${v}px`)} /></div>
             <div className="labs-slider"><Slider label="Opacity" value={Math.round((draft.tokens.borders.opacity ?? 1) * 100)} min={0} max={100} format={(v) => `${v}%`} onChange={(v) => set('tokens.borders.opacity', v / 100)} /></div>
             <div className="cz-field"><ColorPicker label="Border colour" value={draft.tokens.borders.color.startsWith('#') || draft.tokens.borders.color.startsWith('rgb') ? draft.tokens.borders.color : colors.border} onChange={(v) => set('tokens.borders.color', v)} /></div>
-            <div className="cz-field__resets"><GenBtn path="tokens.borders" /></div>
+            <div className="cz-field__resets"></div>
           </WorkspaceSection>
 
           <WorkspaceSection title="Surface" icon={<Box size={14} />} defaultOpen={false}>
@@ -345,7 +338,7 @@ export const CustomizerPage: React.FC = () => {
             <WorkspaceSegmented label="Motion preset" columns={2} value={'' as string} onChange={(m) => set('tokens.motion', materializeMotion(m as MotionType))} options={[{ value: 'static', label: 'None' }, { value: 'subtle', label: 'Subtle' }, { value: 'smooth', label: 'Normal' }, { value: 'expressive', label: 'Expressive' }]} />
             <div className="labs-slider"><Slider label="Duration" value={parseInt(draft.tokens.motion.durationNormal) || 0} min={0} max={800} step={10} format={(v) => `${v}ms`} onChange={(v) => setMany({ 'tokens.motion.durationFast': `${Math.round(v * 0.6)}ms`, 'tokens.motion.durationNormal': `${v}ms`, 'tokens.motion.durationSlow': `${Math.round(v * 1.6)}ms` })} /></div>
             <input className="ws-input" value={draft.tokens.motion.easing} onChange={(e) => set('tokens.motion.easing', e.target.value)} aria-label="Easing" />
-            <div className="cz-field__resets"><GenBtn path="tokens.motion" /></div>
+            <div className="cz-field__resets"></div>
           </WorkspaceSection>
 
           <WorkspaceSection title="Behaviour" icon={<MousePointerClick size={14} />} defaultOpen={false}>

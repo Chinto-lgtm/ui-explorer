@@ -145,29 +145,10 @@ export interface StyleMetadata {
   principles?: string[];
 }
 
-/** Provenance of a procedurally generated style (see engine/generator). */
-export interface GenerationInfo {
-  seed: number;
-  mode: string;
-  personality: string;
-  visualFamily: string;
-  generatorVersion: string;
-  createdAt: string;
-  /** Semantic decisions; kept so the style can be remixed with locks. */
-  recipe: import('./generator/vocab').SemanticRecipe;
-  /** Seed of the style this one was remixed from, if any. */
-  parentSeed?: number;
-  parentId?: string;
-  /** Axes kept from the parent when this style was generated with locks. */
-  keptAxes?: string[];
-  dnaHash: string;
-}
-
 export interface StyleDefinition {
   metadata: StyleMetadata;
   tokens: DesignTokens;
   svgLanguage?: SVGLanguage;
   behavior?: ComponentBehavior;
   customCssVars?: Record<string, string>;
-  generation?: GenerationInfo;
 }

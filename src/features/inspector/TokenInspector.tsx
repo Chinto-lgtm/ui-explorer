@@ -49,7 +49,7 @@ const norm = (v: string): string => {
  * Inspect mode: hover outlines any component inside a themed container,
  * click reveals its computed values and the design tokens behind them.
  */
-export const TokenInspector: React.FC<{ active: boolean; onClose: () => void; onOpenAnatomy: () => void }> = ({ active, onClose, onOpenAnatomy }) => {
+export const TokenInspector: React.FC<{ active: boolean; onClose: () => void; onEditColors: () => void }> = ({ active, onClose, onEditColors }) => {
   const { resolvedCssVars } = useStyle();
   const [hover, setHover] = useState<Target | null>(null);
   const [picked, setPicked] = useState<Target | null>(null);
@@ -145,7 +145,7 @@ export const TokenInspector: React.FC<{ active: boolean; onClose: () => void; on
               </div>
             ))}
           </div>
-          <button type="button" className="inspector-panel__anatomy" onClick={() => { onOpenAnatomy(); setPicked(null); }}><Sliders size={12} /> Open in Style Anatomy</button>
+          <button type="button" className="inspector-panel__anatomy" onClick={() => { onEditColors(); setPicked(null); onClose(); }}><Sliders size={12} /> Edit these colors</button>
         </div>
       )}
     </>

@@ -22,8 +22,7 @@ export function encodeStyleParam(style: StyleDefinition, isBuiltIn: boolean): st
     tokens: style.tokens,
     svgLanguage: style.svgLanguage,
     behavior: style.behavior,
-    customCssVars: style.customCssVars,
-    generation: style.generation ? { seed: style.generation.seed, mode: style.generation.mode, personality: style.generation.personality, generatorVersion: style.generation.generatorVersion } : undefined
+    customCssVars: style.customCssVars
   };
   return `j.${toBase64Url(JSON.stringify(payload))}`;
 }

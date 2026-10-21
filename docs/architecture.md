@@ -1,16 +1,15 @@
 # Architecture
 
 UI Explorer is a single-page React application. There is no server: styles,
-generation, validation and sharing all run in the browser, and state lives in
-`localStorage`. A Python package mirrors the generator for tooling and CI.
+validation, editing and sharing all run in the browser, and state lives in
+`localStorage`.
 
 ```text
                  ┌──────────────────────────────────────────────┐
                  │ StyleDefinition (JSON)                        │
                  │  metadata · tokens · svgLanguage · behavior   │
                  └───────────────┬──────────────────────────────┘
-   built-ins ──► registry ◄── community loader ◄── styles/community/*/style.json
-   generator ──►    │                                (validated, `extends` resolved)
+   themes (src/styles) ──► registry
    customizer ──►   │
                     ▼
             StyleProvider (context)
@@ -23,31 +22,30 @@ generation, validation and sharing all run in the browser, and state lives in
      component library + treatments.css (bespoke construction per family)
                     │
    app shell (header · rail · Workspace layout · tools) from src/config/routes.ts
-   pages: Styles · Templates · Components · Generator · Customizer   (landing page at /)
+   pages: Templates · Components · Customizer   (landing page at /)
 ```
 
 ## Layers
 
 | Layer | Where | Responsibility |
 | --- | --- | --- |
-| Types & schema | `src/engine/types.ts`, `schemas/style.schema.json` | The `StyleDefinition` contract shared by TypeScript, JSON packages and Python |
-| Registry | `src/engine/registry.ts`, `src/styles/index.ts` | Registers built-ins (with treatment defaults and docs) and community packages |
+| Types | `src/engine/types.ts` | The `StyleDefinition` (theme) contract |
+| Registry | `src/engine/registry.ts`, `src/styles/index.ts` | Registers the built-in and community themes (with treatment defaults and docs) |
 | Resolver | `src/engine/resolver.ts` | Tokens → CSS custom properties |
 | Treatments | `src/engine/styleAttributes.ts`, `src/styles/treatments.css` | Tokens → data attributes → per-family construction rules |
 | Context | `src/engine/context.tsx` | Current style, app-wide preview override, tweaks, custom styles, favorites, settings; `renderStyle()` paints any style (a compare frame) exactly like the canvas |
 | Tweaks | `src/engine/tweaks.ts` | Global dials (radius, borders, shadows, density, type, accent) layered over any style; see [Tweaks](guide/tweaks.md) |
-| Validation | `src/engine/validate.ts`, `validator.ts`, `inherit.ts` | Required fields, ranges, CSS safety, completeness, `extends` |
-| Generator | `src/engine/generator/` | Seeded procedural engine (see [procedural-generation.md](procedural-generation.md)) |
-| Sharing | `src/engine/share.ts` | `?style=<id>` / `?style=j.<payload>` links; generated styles carry seed + lineage |
+| Validation | `src/engine/validate.ts` | Required fields, ranges and CSS safety for imported and shared themes |
+| Vocabulary | `src/engine/vocab.ts` | Named choices per axis (surface, depth, borders, motion, icons, SVG art) and the materialisers the Customizer presets use |
+| Sharing | `src/engine/share.ts` | `?style=<id>` / `?style=j.<payload>` links; custom themes travel inside the link |
 | Components | `src/components/ui`, `charts`, `svg`, `preview` | Everything reads tokens; nothing hard-codes a style |
 | Templates | `src/templates/`, `src/pages/Templates/` | Product screens (landing site, mobile app) built from the components, plus visitor edits (`src/templates/edit/`); see [Templates](guide/templates.md) |
 | Routes & tools | `src/config/routes.ts` | The single list of pages and tools: router, rail, search, landing page and 404 page all read it; compare and tool URL conventions |
 | Layout | `src/components/layout`, `src/components/workspace` | App shell, style picker, the shared `Workspace` (panel + stage) and `DeviceFrame` every page uses |
 | URL state | `src/hooks/useUrlState.ts`, `src/hooks/useCompare.ts` | Page state in the address (`?device=`, `?compare=`, `?tool=`, `?edit`) so everything can be linked |
 | Motion | `src/motion/` | One set of motion presets and the policy (reduce motion) for every animation of the tool |
-| Features | `src/features/*` | Tweaks, anatomy, diff, inspector, mixer, export, search, shortcuts |
+| Features | `src/features/*` | Tweaks, inspector, export, search, shortcuts |
 | Pages | `src/pages/*` | Routed views; every page is code-split except the landing page |
-| Python engine | `tools/style-engine/` | Same algorithm for batch generation, CI validation and determinism tests |
 
 ## Principles
 
@@ -55,18 +53,14 @@ generation, validation and sharing all run in the browser, and state lives in
   radius, depth, borders, motion, icons, SVG language and component behaviour,
   not only colours.
 - **One source of truth.** The same `StyleDefinition` feeds the canvas,
-  thumbnails, exports, previews and the Python engine.
-- **Packages are data.** Community contributions are JSON; nothing from a
-  package is executed. Values are range-checked and CSS-sanitised at load.
-- **Determinism.** Generation depends only on (seed, mode, locks, base,
-  version). Same input, same style, in the browser and in Python.
+  thumbnails, exports and previews.
 - **No accounts, no server.** Everything works offline once loaded; sharing is
   by URL.
 
 ## Data flow for a page render
 
-1. `StyleProvider` picks the base style (a preview override if the Generator,
-   Customizer or Mixer is previewing; otherwise the current style) and lays the
+1. `StyleProvider` picks the base style (a preview override while the Customizer
+   is editing; otherwise the current style) and lays the
    tweaks over it: that is `renderedStyle`.
 2. `resolveStyleToCssVars(renderedStyle)`, adjusted for the motion settings, produces `--color-*`, `--radius-*`,
    `--shadow-*`, `--duration-*`, `--font-*`, `--density-scale` … applied to
@@ -82,7 +76,7 @@ generation, validation and sharing all run in the browser, and state lives in
 | | Source of truth | Consumers | Changed by |
 | --- | --- | --- | --- |
 | **Application chrome** | `src/theme.css` (`--chrome-*` tokens) | header, sidebar, workspaces, gallery, modals, panels, docs site | editing that one file |
-| **Design styles** | each `StyleDefinition` (30 built-ins in `src/styles/*.ts`, packages in `styles/community/`) | the preview canvas and every component inside it, via `resolveStyleToCssVars` | switching / generating / editing a style |
+| **Design styles** | each `StyleDefinition` (30 built-ins in `src/styles/*.ts`, 3 community themes in `src/styles/community.ts`) | the preview canvas and every component inside it, via `resolveStyleToCssVars` | switching / tweaking / editing a theme |
 
 Components in `src/components/ui` read only style tokens (`--color-*`,
 `--radius-*` …) and data attributes; they never reference `--chrome-*`. When
@@ -94,8 +88,8 @@ colour, so the single-file guarantee holds as the code grows.
 ## Persistence
 
 `src/engine/storage.ts` owns every `localStorage` key (`STORAGE_KEYS`):
-current style, custom styles, favorites, recents, settings, generator history,
-recent colours, onboarding flag. Corrupt values fall back to defaults.
+current style, custom styles, favorites, recents, settings, tweaks, template
+edits, recent colours, onboarding flag. Corrupt values fall back to defaults.
 
 ## Repository layout
 
@@ -104,8 +98,8 @@ The source is a single Vite app with an `src/engine`, `src/components`,
 one deployable and no published npm packages, workspaces would add tooling
 without a consumer. The boundaries a monorepo would enforce are kept by
 convention (engine has no React imports; components read only tokens;
-pages compose features) and by the folder names above. Styles live outside
-`src` in `styles/community` so contributors never touch application code.
+pages compose features) and by the folder names above. Themes are plain
+definitions in `src/styles`, so adding one never touches application code.
 
 ## Hosting
 

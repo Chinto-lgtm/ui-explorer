@@ -1,8 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { popover } from '../../motion/presets';
-import { ChevronsUpDown, Check, Search, Star, ArrowRight } from 'lucide-react';
+import { ChevronsUpDown, Check, Search, Star } from 'lucide-react';
 import { useStyle } from '../../hooks/useStyle';
 import type { StyleDefinition } from '../../engine/types';
 import './StylePicker.css';
@@ -166,9 +165,6 @@ export const StylePicker: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link to="/styles" className="sp-pop__foot" onClick={() => setOpen(false)}>
-            Browse the gallery <ArrowRight size={13} />
-          </Link>
         </motion.div>
       )}
       </AnimatePresence>

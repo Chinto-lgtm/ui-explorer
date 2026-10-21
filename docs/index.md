@@ -2,36 +2,32 @@
 layout: home
 hero:
   name: UI Explorer
-  text: Thirty design languages, one real interface.
-  tagline: An open-source laboratory for exploring, understanding and experimenting with interface design systems — in the browser, with no account and no server.
+  text: Thirty-plus themes, one real interface.
+  tagline: Pick a theme, see it on a real website, app and component library, edit its colors and text, and take the CSS home. In the browser, with no account and no server.
   image:
-    src: /screenshots/styles-gallery.png
-    alt: The Styles gallery
+    src: /screenshots/templates.png
+    alt: A landing page template in the Neumorphism theme
   actions:
     - theme: brand
       text: Open the app
       link: https://chinto-lgtm.github.io/ui-explorer/
     - theme: alt
-      text: Create a style
-      link: /creating-a-style
+      text: Getting around
+      link: /guide/getting-around
     - theme: alt
-      text: How generation works
-      link: /procedural-generation
+      text: Add a theme
+      link: /contributing
 features:
-  - title: Styles are token systems
-    details: Switching a style changes radius, depth, borders, motion, icons, SVG language and component behaviour — not just colours. Every one of the 30 built-ins is documented.
-  - title: A real component library
-    details: Buttons, inputs, selection, navigation, feedback, overlays, tables, notifications and SVG charts all read the active style, with desktop, tablet and mobile framing.
+  - title: Themes are token systems
+    details: Switching a theme changes radius, depth, borders, motion, icons, SVG art and component behaviour — not just colours.
   - title: Real product templates you can edit
-    details: A landing site for desktop and mobile and a 17-screen mobile app, built only from the library and fully clickable. Rewrite any text, hide and reorder sections, and export your edits.
-  - title: A procedural engine you can read
-    details: Seed → personality → recipe → compatibility → repair → tokens. Every decision is recorded and explained; the same seed reproduces the same style in the browser and in Python.
-  - title: Tools on every page
-    details: Tweaks (live sliders for radius, borders, depth, spacing, type, accent and speed), Style Anatomy, a click-to-inspect token inspector, diffs, A / B / C compare and a mixer for cross-style hybrids.
-  - title: Yours to change and export
-    details: A full customizer with a real colour picker, undo and resets; export as design tokens, CSS variables, theme CSS, SVG or a style package.
-  - title: Community by pull request
-    details: Styles are plain JSON packages on GitHub, validated in CI, shown with author and licence. A package can extend a built-in and override only what differs.
+    details: A landing site for desktop and phone and a 17-screen mobile app, built only from the library and fully clickable. Rewrite any text, hide and reorder sections.
+  - title: A real component library
+    details: Buttons, inputs, selection, navigation, feedback, overlays, tables, notifications and SVG charts, on desktop, tablet and phone, in three themes side by side.
+  - title: Yours to change and take home
+    details: Tweak sliders and a full customizer with a real colour picker and undo; export CSS variables, JSON tokens or a theme file.
+  - title: Free and open source
+    details: MIT licensed. Add your own theme with one definition and a pull request.
 ---
 
 ## Where to start
@@ -39,12 +35,10 @@ features:
 | I want to… | Read |
 | --- | --- |
 | Find my way around the app | [Getting around](/guide/getting-around) |
-| Browse and compare the styles | [Styles](/guide/styles) |
-| See how components change per style | [Components](/guide/components) |
-| See a style on a whole product (site and app) | [Templates](/guide/templates) |
-| Understand *why* a style looks the way it does | [Style Anatomy](/guide/style-anatomy) |
-| Adjust a style with a few sliders | [Tweaks](/guide/tweaks) |
-| Make my own style | [Creating a style](/creating-a-style) |
-| Submit a style to the registry | [Community styles](/community-styles) · [Contributing](/contributing) |
-| Read the generator algorithm | [Procedural generation](/procedural-generation) |
-| Work on the code | [Architecture](/architecture) · [Style engine](/style-engine) · [Style schema](/style-schema) |
+| See a theme on a whole product (site and app) | [Templates](/guide/templates) |
+| See how components change per theme | [Components](/guide/components) |
+| Adjust a theme with a few sliders | [Tweaks](/guide/tweaks) |
+| Edit every token of a theme | [Customizer](/guide/customizer) |
+| Take a theme into my project | [Design tokens](/guide/design-tokens) |
+| Add my own theme | [Contributing](/contributing) |
+| Work on the code | [Architecture](/architecture) |

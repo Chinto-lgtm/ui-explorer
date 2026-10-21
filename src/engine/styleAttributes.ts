@@ -48,24 +48,8 @@ const FAMILY_BY_ID: Record<string, TreatmentFamily> = {
   'minimal-warm': 'warm'
 };
 
-/** Generated and custom styles get a family from their construction. */
+/** Custom themes get a family from their construction. */
 function inferFamily(style: StyleDefinition): TreatmentFamily {
-  const recipe = style.generation?.recipe;
-  if (recipe) {
-    switch (recipe.surface) {
-      case 'glass': case 'frosted': case 'acrylic': case 'crystal': return 'glass';
-      case 'clay': return 'clay';
-      case 'metallic': return 'chrome';
-      case 'liquid': return 'aurora';
-      case 'paper': return 'paper';
-      case 'inset': return 'neumorphic';
-      default: break;
-    }
-    if (recipe.depth === 'physical') return 'brutal';
-    if (recipe.depth === 'glowing') return 'neon';
-    if (recipe.icons === 'pixel') return 'pixel';
-    return 'generic';
-  }
   const t = style.tokens;
   const blur = parseFloat(t.materials?.backdropBlur ?? '0') || 0;
   if (blur >= 12) return 'glass';

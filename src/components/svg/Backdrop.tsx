@@ -1,6 +1,6 @@
 import React, { useId, useMemo } from 'react';
 import { mulberry } from '../charts/chartUtils';
-import type { GeneratedSvgLanguage, SvgShapeLanguage } from '../../engine/generator/vocab';
+import type { GeneratedSvgLanguage, SvgShapeLanguage } from '../../engine/vocab';
 import './Backdrop.css';
 
 export type BackdropPreset = 'mesh' | 'aurora' | 'grid' | 'blob' | 'wave' | 'ring' | 'glow' | 'noise' | 'liquid' | 'chrome' | 'geometric' | 'confetti' | 'reticle';

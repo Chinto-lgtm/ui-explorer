@@ -24,8 +24,8 @@ are working on. For quick, broad changes (rounder, flatter, denser) try
 | Motion | Durations, easing, hover and press scale |
 | Behaviour | Button hover action, card elevation type, focus ring style |
 
-Presets use the same materialisers as the procedural engine, so a "glass"
-surface here is the same glass the generator produces.
+Presets use the shared token vocabulary (`src/engine/vocab.ts`), so a "glass"
+surface here is the same glass the built-in glass themes use.
 
 ## Editing safely
 

@@ -14,8 +14,8 @@ import { Input } from '../../../components/ui/Input';
 import { SideNav } from '../../../components/ui/Navigation';
 import { Alert } from '../../../components/ui/Feedback';
 import { useStyle } from '../../../hooks/useStyle';
-import type { IconType } from '../../../engine/generator/vocab';
-import { ICON_TYPES } from '../../../engine/generator/vocab';
+import type { IconType } from '../../../engine/vocab';
+import { ICON_TYPES } from '../../../engine/vocab';
 import './IconLab.css';
 
 // Named imports keep the lab to the glyphs it shows instead of bundling the whole icon set.

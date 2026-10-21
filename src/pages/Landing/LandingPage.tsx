@@ -16,6 +16,7 @@ import { BrandLockup, BrandMark } from '../../components/layout/BrandMark';
 import { COMPONENT_CATALOG } from '../../templates/catalog';
 import { ONBOARDING_STORAGE_KEY, GITHUB_REPO_URL, DOCS_URL, APP_VERSION } from '../../config/app';
 import { PAGES, TOOLS, APP_HOME, LAST_ROUTE_KEY } from '../../config/routes';
+import type { PageId, ToolId } from '../../config/routes';
 import './LandingPage.css';
 
 /** Styles that read as clearly different universes when dealt into the hero deck. */
@@ -36,20 +37,18 @@ export const TEMPLATE_SCREEN_COUNT = 24;
 const HERO_INTERVAL_MS = 3200;
 
 const STEPS = [
-  { icon: <MousePointerClick size={20} />, title: 'Pick a style', text: 'Browse thirty design languages and switch the whole interface in one click.' },
-  { icon: <Microscope size={20} />, title: 'See why it works', text: 'Inspect any element, read the anatomy of a style and diff two styles token by token.' },
-  { icon: <PackageOpen size={20} />, title: 'Make it yours', text: 'Generate from a seed, tune every token, mix styles, then export CSS variables or JSON.' }
+  { icon: <MousePointerClick size={20} />, title: 'Pick a theme', text: 'Thirty-plus design languages. Switch and the whole interface rebuilds in one click.' },
+  { icon: <Microscope size={20} />, title: 'See it on a real product', text: 'A landing site and a mobile app, every component and state, side by side in three themes.' },
+  { icon: <PackageOpen size={20} />, title: 'Make it yours', text: 'Edit colors, shape and text, then take the theme home as CSS variables or JSON.' }
 ];
 
 /** The feature grid is drawn from the page and tool registry, so its names and descriptions never drift. */
-const FEATURE_TILES: { kind: 'page' | 'tool'; id: string; span?: 'wide' | 'tall' }[] = [
-  { kind: 'page', id: 'styles', span: 'wide' },
-  { kind: 'page', id: 'templates', span: 'tall' },
-  { kind: 'page', id: 'generator', span: 'tall' },
-  { kind: 'page', id: 'components' },
-  { kind: 'page', id: 'customizer' },
-  { kind: 'tool', id: 'anatomy' },
-  { kind: 'tool', id: 'mixer' },
+const FEATURE_TILES: ({ kind: 'page'; id: PageId; span?: 'wide' | 'tall' } | { kind: 'tool'; id: ToolId; span?: 'wide' | 'tall' })[] = [
+  { kind: 'page', id: 'templates', span: 'wide' },
+  { kind: 'page', id: 'components', span: 'tall' },
+  { kind: 'page', id: 'customizer', span: 'tall' },
+  { kind: 'tool', id: 'tweaks' },
+  { kind: 'tool', id: 'inspect' },
   { kind: 'tool', id: 'export', span: 'wide' }
 ];
 
@@ -59,7 +58,7 @@ const FEATURES = FEATURE_TILES.map((t) => {
   return { id: t.id, span: t.span, Icon: def.icon, name: def.label, text: def.description, to };
 });
 
-/** Where "Open the lab" goes: the last page the visitor used, or the styles gallery the first time. */
+/** Where "Open the lab" goes: the last page the visitor used, or Templates the first time. */
 const appEntry = () => {
   try { return localStorage.getItem(LAST_ROUTE_KEY) || APP_HOME; } catch { return APP_HOME; }
 };
@@ -165,8 +164,8 @@ export const LandingPage: React.FC = () => {
               />
               <motion.div className="lp-hero__rest" variants={stagger(0.09, 0.45)} initial="hidden" animate="show">
                 <motion.p className="lp-lede" variants={rise}>
-                  UI Explorer is a laboratory for interface design systems. Switch a style and every button, card, chart
-                  and template rebuilds — then see why it looks that way, remix it, and take the tokens home.
+                  Pick a theme and every button, card, chart and template rebuilds on a real website and app — then
+                  edit its colors and text, and take the CSS home.
                 </motion.p>
                 <motion.div className="lp-actions" variants={rise}>
                   <Magnetic>
@@ -234,10 +233,10 @@ export const LandingPage: React.FC = () => {
 
           <div className="lp-container">
             <RevealList as="dl" className="lp-stats" step={0.1}>
-              <RevealItem as="div"><dt>Design styles</dt><dd><CountUp value={styleCount} /></dd></RevealItem>
+              <RevealItem as="div"><dt>Themes</dt><dd><CountUp value={styleCount} /></dd></RevealItem>
               <RevealItem as="div"><dt>Library components</dt><dd><CountUp value={COMPONENT_CATALOG.length} /></dd></RevealItem>
               <RevealItem as="div"><dt>Template screens</dt><dd><CountUp value={TEMPLATE_SCREEN_COUNT} /></dd></RevealItem>
-              <RevealItem as="div"><dt>Generated styles</dt><dd>∞</dd></RevealItem>
+              <RevealItem as="div"><dt>Ways to make it yours</dt><dd>∞</dd></RevealItem>
             </RevealList>
           </div>
         </Spotlight>
@@ -293,14 +292,12 @@ export const LandingPage: React.FC = () => {
                         <span className="lp-mini lp-mini--phone"><span /><span /></span>
                       </span>
                     )}
-                    {f.id === 'generator' && (
+                    {f.id === 'customizer' && (
                       <span className="lp-tile__seed" aria-hidden="true">
-                        <span className="lp-tile__seed-code">seed 847291</span>
-                        <ArrowRight size={14} />
                         <span className="lp-tile__swatches"><span /><span /><span /><span /></span>
                       </span>
                     )}
-                    {f.id === 'styles' && (
+                    {f.id === 'components' && (
                       <span className="lp-tile__chips" aria-hidden="true">
                         {heroStyles.slice(0, 6).map((s) => <span key={s.metadata.id}>{s.metadata.name}</span>)}
                       </span>
@@ -349,8 +346,8 @@ export const LandingPage: React.FC = () => {
               </p>
               <ul className="lp-checks">
                 <li><Check size={16} /> CSS variables, JSON tokens or a full package</li>
-                <li><Check size={16} /> Share any style, even a generated one, as a link</li>
-                <li><Check size={16} /> Contribute styles to the community registry</li>
+                <li><Check size={16} /> Share any theme, with your edits, as a link</li>
+                <li><Check size={16} /> Free and open source: add your own theme</li>
               </ul>
               <div className="lp-actions">
                 <a className="lp-btn lp-btn--ghost" href={GITHUB_REPO_URL} target="_blank" rel="noreferrer"><Star size={16} /> Star on GitHub</a>
@@ -389,7 +386,7 @@ export const LandingPage: React.FC = () => {
                   <button type="button" className="lp-btn lp-btn--primary lp-btn--lg lp-btn--shine" onClick={() => finish(appEntry())}>Start exploring <ArrowRight size={18} /></button>
                 </Magnetic>
                 <Magnetic strength={0.18}>
-                  <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/generator')}><Wand2 size={18} /> Generate a style</button>
+                  <button type="button" className="lp-btn lp-btn--ghost lp-btn--lg" onClick={() => finish('/customizer/colors')}><Wand2 size={18} /> Edit a theme</button>
                 </Magnetic>
               </div>
             </Reveal>
@@ -401,7 +398,6 @@ export const LandingPage: React.FC = () => {
         <div className="lp-container lp-footer__inner">
           <BrandLockup size={24} />
           <nav className="lp-footer__links" aria-label="Footer">
-            <button type="button" onClick={() => finish('/styles')}>Styles</button>
             <button type="button" onClick={() => finish('/templates')}>Templates</button>
             <button type="button" onClick={() => finish('/components')}>Components</button>
             <a href={DOCS_URL} target="_blank" rel="noreferrer">Docs</a>

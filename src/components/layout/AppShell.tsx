@@ -5,13 +5,9 @@ import { AnimatePresence, motion } from 'motion/react';
 import { pageIn } from '../../motion/presets';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { AnatomyPanel } from '../../features/anatomy/AnatomyPanel';
-import { StyleMixerModal } from '../../features/mixer/StyleMixerModal';
 import { ExportModal } from '../../features/export/ExportModal';
-import { ContributionPackageModal } from '../../features/export/ContributionPackageModal';
 import { CommandPalette } from '../../features/search/CommandPalette';
 import { ShortcutsPanel } from '../../features/shortcuts/ShortcutsPanel';
-import { StyleDiffModal } from '../../features/diff/StyleDiffModal';
 import { TokenInspector } from '../../features/inspector/TokenInspector';
 import { TweaksPanel } from '../../features/tweaks/TweaksPanel';
 import { useStyle } from '../../hooks/useStyle';
@@ -48,7 +44,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     return !v;
   });
 
-  // The open tool lives in the URL (?tool=mixer), so tools can be linked to and Back closes them.
+  // The open tool lives in the URL (?tool=export), so tools can be linked to and Back closes them.
   const toolParam = searchParams.get('tool');
   const activeTool: ToolId | null = isToolId(toolParam) ? toolParam : null;
 
@@ -86,16 +82,6 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // Other surfaces (the styles gallery) ask for a diff of a specific pair.
-  useEffect(() => {
-    const onOpenDiff = (e: Event) => {
-      const { a, b } = (e as CustomEvent<{ a?: string; b?: string }>).detail ?? {};
-      openTool('diff', Object.fromEntries(Object.entries({ a, b }).filter(([, v]) => v)) as Record<string, string>);
-    };
-    window.addEventListener('ui-explorer:open-diff', onOpenDiff);
-    return () => window.removeEventListener('ui-explorer:open-diff', onOpenDiff);
-  }, [openTool]);
-
   // Close the mobile drawer whenever the route changes, and remember the page for the landing page's "back" button.
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -107,11 +93,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   useKeyboardShortcut({ key: 'k', ctrlKey: true }, () => setIsCmdPaletteOpen(true));
   useKeyboardShortcut({ key: 'e', ctrlKey: true }, () => navigate('/customizer'));
   useKeyboardShortcut({ key: 'c', ctrlKey: true, shiftKey: true }, toggleCompare, [toggleCompare]);
-  useKeyboardShortcut({ key: 'a', ctrlKey: true, shiftKey: true }, () => toggleTool('anatomy'), [toggleTool]);
   useKeyboardShortcut({ key: 'e', ctrlKey: true, shiftKey: true }, () => openTool('export'), [openTool]);
   useKeyboardShortcut({ key: 's', ctrlKey: true }, () => window.dispatchEvent(new CustomEvent(SAVE_EVENT)));
   useKeyboardShortcut({ key: 'x', ctrlKey: true, shiftKey: true }, () => setIsInspecting((v) => !v));
-  useKeyboardShortcut({ key: 'd', ctrlKey: true, shiftKey: true }, () => openTool('diff'), [openTool]);
   useKeyboardShortcut({ key: '.', ctrlKey: true }, () => toggleTool('tweaks'), [toggleTool]);
 
   // "?" opens the shortcut reference unless the user is typing in a field.
@@ -169,17 +153,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </main>
 
           <AnimatePresence>
-            {activeTool === 'anatomy' && <AnatomyPanel key="anatomy" onClose={closeTool} />}
             {activeTool === 'tweaks' && <TweaksPanel key="tweaks" onClose={closeTool} />}
           </AnimatePresence>
         </div>
 
-        {activeTool === 'mixer' && <StyleMixerModal onClose={closeTool} />}
         {activeTool === 'export' && <ExportModal onClose={closeTool} />}
-        {activeTool === 'contribute' && <ContributionPackageModal onClose={closeTool} />}
         {activeTool === 'shortcuts' && <ShortcutsPanel onClose={closeTool} />}
-        {activeTool === 'diff' && <StyleDiffModal onClose={closeTool} initialA={searchParams.get('a') ?? undefined} initialB={searchParams.get('b') ?? undefined} />}
-        <TokenInspector active={isInspecting} onClose={() => setIsInspecting(false)} onOpenAnatomy={() => openTool('anatomy')} />
+        <TokenInspector active={isInspecting} onClose={() => setIsInspecting(false)} onEditColors={() => navigate('/customizer/colors')} />
         <AnimatePresence>
           {isCmdPaletteOpen && <CommandPalette key="palette" onClose={() => setIsCmdPaletteOpen(false)} />}
         </AnimatePresence>

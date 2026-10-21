@@ -23,31 +23,21 @@ export default defineConfig({
         text: 'Using UI Explorer',
         items: [
           { text: 'Getting around', link: '/guide/getting-around' },
-          { text: 'Styles', link: '/guide/styles' },
           { text: 'Components', link: '/guide/components' },
           { text: 'Templates', link: '/guide/templates' },
-          { text: 'Style Anatomy', link: '/guide/style-anatomy' },
           { text: 'Tweaks', link: '/guide/tweaks' },
           { text: 'Customizer', link: '/guide/customizer' },
-          { text: 'Style Mixer', link: '/guide/style-mixer' },
           { text: 'Design Tokens', link: '/guide/design-tokens' }
         ]
       },
       {
-        text: 'Building styles',
-        items: [
-          { text: 'Creating a style', link: '/creating-a-style' },
-          { text: 'Style schema', link: '/style-schema' },
-          { text: 'Community styles', link: '/community-styles' },
-          { text: 'Contributing', link: '/contributing' }
-        ]
+        text: 'Contributing',
+        items: [{ text: 'Adding a theme', link: '/contributing' }]
       },
       {
         text: 'Internals',
         items: [
-          { text: 'Architecture', link: '/architecture' },
-          { text: 'Style engine', link: '/style-engine' },
-          { text: 'Procedural generation', link: '/procedural-generation' }
+          { text: 'Architecture', link: '/architecture' }
         ]
       }
     ],

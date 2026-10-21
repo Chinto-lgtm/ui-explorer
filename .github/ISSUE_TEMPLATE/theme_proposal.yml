@@ -1,11 +1,11 @@
-name: Style proposal
-description: Propose a new community style before opening a pull request
-labels: [style contribution]
+name: Theme proposal
+description: Propose a new theme before opening a pull request
+labels: [theme]
 body:
   - type: input
     id: name
     attributes:
-      label: Style name
+      label: Theme name
     validations:
       required: true
   - type: dropdown
@@ -22,12 +22,6 @@ body:
       description: What makes it a distinct construction rather than a palette swap — surfaces, depth, borders, motion, SVG language.
     validations:
       required: true
-  - type: input
-    id: extends
-    attributes:
-      label: Extends a built-in?
-      description: Leave empty for a standalone package
-      placeholder: cyberpunk
   - type: textarea
     id: refs
     attributes:

@@ -47,8 +47,7 @@
 }
 
 .sp-trigger:focus-visible,
-.sp-fav:focus-visible,
-.sp-pop__foot:focus-visible {
+.sp-fav:focus-visible {
   outline: 2px solid var(--chrome-primary);
   outline-offset: 2px;
 }
@@ -219,23 +218,7 @@
   color: var(--chrome-primary);
 }
 
-.sp-pop__foot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  padding: 0.625rem;
-  border-top: 1px solid var(--chrome-border);
-  color: var(--chrome-text-secondary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-decoration: none;
-}
 
-.sp-pop__foot:hover {
-  background-color: var(--chrome-surface-2);
-  color: var(--chrome-text-strong);
-}
 
 @media (max-width: 640px) {
   .sp-trigger {

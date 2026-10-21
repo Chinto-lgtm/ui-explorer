@@ -4,7 +4,7 @@ UI Explorer opens on its landing page at `/`. **Start exploring** (or **Back
 to the lab** on later visits) takes you into the app, where every page shares
 one layout.
 
-![The app layout](/screenshots/styles-gallery.png)
+![The app layout](/screenshots/templates.png)
 
 ## The layout
 
@@ -19,19 +19,16 @@ one layout.
 
 | Page | Address | For |
 | --- | --- | --- |
-| Styles | `/styles`, `/styles/<style>/<tab>` | Browse, filter and read about every style |
-| Templates | `/templates/<template>/<screen>` | A landing site and a mobile app in any style; edit them in place |
+| Templates | `/templates/<template>/<screen>` | A landing site and a mobile app in any theme; edit them in place. The app opens here |
 | Components | `/components/<section>` | Every component and token, on any device |
-| Generator | `/generator` | New styles from a seed |
 | Customizer | `/customizer/<section>` | Edit every token of a style |
 
-Everything you choose on a page lives in its address: filters
-(`/styles?category=Retro&facets=mood:Dark`), the device and comparison
+Everything you choose on a page lives in its address: the device and comparison
 (`/components/charts?device=mobile&compare`), the template view
 (`?view=flow`, `?compare`, `?edit`) and the open tool (`?tool=tweaks`). Copy
 the address to share exactly what you see; **Back** closes a tool before it
-leaves the page. Old addresses (`/welcome`, `/labs/...`, `/data`) redirect to
-their new homes.
+leaves the page. Old addresses (`/welcome`, `/styles/...`, `/generator`,
+`/labs/...`, `/data`) redirect to their new homes.
 
 ## Tools
 
@@ -41,12 +38,8 @@ Tools work on top of any page. Open them from the rail, the search
 | Tool | Shortcut | What it does |
 | --- | --- | --- |
 | [Tweaks](/guide/tweaks) | <kbd>Ctrl</kbd>+<kbd>.</kbd> | Sliders for radius, borders, shadows, spacing, type, accent and motion speed |
-| [Anatomy](/guide/style-anatomy) | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> | Every value behind the current style, explained |
-| Inspect | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> | Click any element to see its tokens |
-| [Mixer](/guide/style-mixer) | | Typography from one style, surfaces from another |
-| Diff | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | Every token that differs between two styles |
+| Inspect | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> | Click any element to see its tokens, then edit its colors |
 | Export & import | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> | CSS variables, JSON tokens, theme CSS, or import a style |
-| Contribute | | Package a style for the community registry |
 | Shortcuts | <kbd>?</kbd> | Every keyboard shortcut |
 
 ## The style picker

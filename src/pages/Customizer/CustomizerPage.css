@@ -89,10 +89,6 @@
   background-color: var(--chrome-surface-2);
 }
 
-.cz-reset--gen {
-  color: var(--chrome-warning);
-}
-
 .cz-reset--section {
   align-self: flex-end;
   margin-bottom: 0.25rem;

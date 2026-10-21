@@ -4,8 +4,6 @@ import App from './App';
 import { registry } from './engine/registry';
 import { resolveStyleToCssVars } from './engine/resolver';
 import { allStyles } from './styles';
-import { createSeededRandom } from './engine/random/prng';
-import { generateProceduralStyle } from './engine/generator/generator';
 import { editStore } from './templates/edit/editStore';
 
 describe('UI Explorer — Integration & Engine Tests', () => {
@@ -20,24 +18,24 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     expect(screen.getAllByRole('button', { name: /start exploring/i }).length).toBeGreaterThan(0);
   });
 
-  it('starting from the landing page finishes onboarding and opens the styles gallery', async () => {
+  it('starting from the landing page finishes onboarding and opens Templates', async () => {
     render(<App />);
     fireEvent.click(screen.getAllByRole('button', { name: /start exploring/i })[0]);
     expect(localStorage.getItem('ui_explorer_onboarded')).toBe('1');
-    expect(window.location.pathname).toBe('/styles');
-    expect(await screen.findByLabelText(/search styles/i, {}, { timeout: 5000 })).toBeInTheDocument();
+    await waitFor(() => expect(window.location.pathname).toBe('/templates/landing-desktop/home'), { timeout: 5000 });
+    expect(await screen.findByRole('complementary', { name: 'Templates' }, { timeout: 5000 })).toBeInTheDocument();
   });
 
   it('the landing page sends returning visitors back to their last page', () => {
     localStorage.setItem('ui_explorer_onboarded', '1');
-    localStorage.setItem('ui_explorer_last_route', '/generator');
+    localStorage.setItem('ui_explorer_last_route', '/customizer');
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /back to the lab/i }));
-    expect(window.location.pathname).toBe('/generator');
+    expect(window.location.pathname).toBe('/customizer');
   });
 
   it('the header logo and wordmark open the landing page', async () => {
-    window.history.replaceState({}, '', '/styles');
+    window.history.replaceState({}, '', '/components/buttons');
     render(<App />);
     const home = await screen.findByRole('link', { name: 'UI Explorer home' });
     expect(home).toHaveAttribute('href', '/');
@@ -54,29 +52,31 @@ describe('UI Explorer — Integration & Engine Tests', () => {
       const { unmount } = render(<App />);
       expect(window.location.pathname).toBe('/');
       unmount();
-      window.history.replaceState({}, '', '/labs?lab=motion');
+      window.history.replaceState({}, '', '/labs?lab=charts');
       const second = render(<App />);
-      await waitFor(() => expect(window.location.pathname).toBe('/components/motion'));
+      await waitFor(() => expect(window.location.pathname).toBe('/components/charts'));
       second.unmount();
       window.history.replaceState({}, '', '/data');
-      render(<App />);
+      const third = render(<App />);
       await waitFor(() => expect(window.location.pathname).toBe('/components/table'));
+      third.unmount();
+      // The removed Styles gallery: its links open Templates in that style.
+      window.history.replaceState({}, '', '/styles/glassmorphism/relations');
+      const fourth = render(<App />);
+      await waitFor(() => expect(window.location.pathname).toBe('/templates/landing-desktop/home'), { timeout: 5000 });
+      expect(localStorage.getItem('ui_explorer_style_id')).toBe('glassmorphism');
+      fourth.unmount();
+      // The removed Generator sends people to the Customizer.
+      window.history.replaceState({}, '', '/generator');
+      render(<App />);
+      await waitFor(() => expect(window.location.pathname).toBe('/customizer'));
     });
 
     it('unknown pages say so and list every real page', async () => {
       window.history.replaceState({}, '', '/nowhere');
       render(<App />);
       expect(await screen.findByRole('heading', { name: /nothing lives at/i })).toBeInTheDocument();
-      expect(screen.getAllByRole('link', { name: /styles/i }).length).toBeGreaterThan(0);
-    });
-
-    it('a style detail is a real address', async () => {
-      window.history.replaceState({}, '', '/styles/glassmorphism/tokens');
-      render(<App />);
-      expect(await screen.findByRole('tab', { name: /docs/i }, { timeout: 5000 })).toBeInTheDocument();
-      expect(screen.getAllByText('Glassmorphism').length).toBeGreaterThan(0);
-      fireEvent.click(screen.getByRole('tab', { name: /relations/i }));
-      expect(window.location.pathname).toBe('/styles/glassmorphism/relations');
+      expect(screen.getAllByRole('link', { name: /templates/i }).length).toBeGreaterThan(0);
     });
 
     it('components sections, device and compare live in the URL', async () => {
@@ -95,7 +95,7 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     });
 
     it('tools open from the URL and close back to the page', async () => {
-      window.history.replaceState({}, '', '/styles?tool=shortcuts');
+      window.history.replaceState({}, '', '/components/buttons?tool=shortcuts');
       render(<App />);
       expect(await screen.findByRole('dialog', { name: /keyboard shortcuts/i }, { timeout: 5000 })).toBeInTheDocument();
       fireEvent.keyDown(window, { key: 'Escape' });
@@ -131,18 +131,18 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     });
 
     it('the left panel hides and comes back, and remembers the choice', async () => {
-      window.history.replaceState({}, '', '/generator');
+      window.history.replaceState({}, '', '/customizer');
       const { unmount } = render(<App />);
-      const panel = await screen.findByRole('complementary', { name: 'Generator controls' }, { timeout: 5000 });
+      const panel = await screen.findByRole('complementary', { name: 'Style customizer controls' }, { timeout: 5000 });
       fireEvent.click(within(panel).getByRole('button', { name: 'Hide panel' }));
-      expect(screen.queryByRole('complementary', { name: 'Generator controls' })).toBeNull();
+      expect(screen.queryByRole('complementary', { name: 'Style customizer controls' })).toBeNull();
       expect(localStorage.getItem('ui_explorer_panel_collapsed')).toBe('1');
       unmount();
 
-      window.history.replaceState({}, '', '/styles');
+      window.history.replaceState({}, '', '/components/buttons');
       render(<App />);
       fireEvent.click(await screen.findByRole('button', { name: 'Show panel' }, { timeout: 5000 }));
-      expect(screen.getByRole('complementary', { name: 'Style filters' })).toBeInTheDocument();
+      expect(screen.getByRole('complementary', { name: 'Components settings' })).toBeInTheDocument();
     });
 
     it('templates can be edited in place and the edits persist across devices', async () => {
@@ -178,20 +178,21 @@ describe('UI Explorer — Integration & Engine Tests', () => {
     }, 20000);
 
     it('the style picker filters and applies a style from the keyboard', async () => {
-      window.history.replaceState({}, '', '/styles');
+      window.history.replaceState({}, '', '/components/buttons');
       render(<App />);
       fireEvent.click(await screen.findByRole('button', { name: /active style:/i }, { timeout: 5000 }));
       const input = screen.getByRole('combobox', { name: /find a style/i });
-      fireEvent.change(input, { target: { value: 'cyberpunk' } });
-      expect(screen.getByRole('option', { name: /cyberpunk/i })).toBeInTheDocument();
+      fireEvent.change(input, { target: { value: 'vaporwave' } });
+      expect(within(screen.getByRole('listbox')).getByRole('option', { name: 'Retrofuturism / Vaporwave' })).toBeInTheDocument();
       fireEvent.keyDown(input, { key: 'Enter' });
       await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull());
-      expect(localStorage.getItem('ui_explorer_style_id')).toBe('cyberpunk');
+      expect(localStorage.getItem('ui_explorer_style_id')).toBe('vaporwave');
     });
   });
 
-  it('registers all 30 built-in design styles plus community styles', () => {
-    expect(allStyles.length).toBeGreaterThanOrEqual(30);
+  it('registers the 30 built-in themes and the 3 community themes', () => {
+    expect(allStyles.length).toBe(33);
+    expect(registry.get('community-aurora-glass')?.metadata.author).toBe('alex_designer');
     expect(registry.getAll().length).toBeGreaterThanOrEqual(30);
     expect(registry.get('neumorphism')).toBeDefined();
     expect(registry.get('glassmorphism')).toBeDefined();
@@ -249,35 +250,6 @@ describe('UI Explorer — Integration & Engine Tests', () => {
       expect(screen.queryByText('UI Explorer')).toBeNull();
       expect(document.querySelector('.tpl-screen')).toHaveAttribute('data-style', 'cyberpunk');
       expect(screen.getByRole('link', { name: /templates/i })).toHaveAttribute('href', '/templates/landing-desktop/pricing');
-    });
-  });
-
-  describe('Procedural Engine & PRNG Determinism', () => {
-    it('guarantees identical PRNG output for identical seeds', () => {
-      const rng1 = createSeededRandom(847291);
-      const rng2 = createSeededRandom(847291);
-
-      expect(rng1.next()).toBe(rng2.next());
-      expect(rng1.nextInt(1, 100)).toBe(rng2.nextInt(1, 100));
-      expect(rng1.choice(['a', 'b', 'c'])).toBe(rng2.choice(['a', 'b', 'c']));
-    });
-
-    it('generates reproducible styles from the same seed', () => {
-      const res1 = generateProceduralStyle({ seed: 847291, mode: 'Coherent' });
-      const res2 = generateProceduralStyle({ seed: 847291, mode: 'Coherent' });
-
-      expect(res1.seedNumber).toBe(res2.seedNumber);
-      expect(res1.style.metadata.name).toBe(res2.style.metadata.name);
-      expect(res1.style.tokens.colors.bg).toBe(res2.style.tokens.colors.bg);
-      expect(res1.style.tokens.typography.fontFamilySans).toBe(res2.style.tokens.typography.fontFamilySans);
-    });
-
-    it('generates different styles for different seeds', () => {
-      const resA = generateProceduralStyle({ seed: 111111 });
-      const resB = generateProceduralStyle({ seed: 999999 });
-
-      expect(resA.seedNumber).not.toBe(resB.seedNumber);
-      expect(resA.style.metadata.name).not.toBe(resB.style.metadata.name);
     });
   });
 });

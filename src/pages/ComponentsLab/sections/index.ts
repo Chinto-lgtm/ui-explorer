@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Palette, MousePointerClick, TextCursorInput, CheckSquare, Compass, BellRing, Layers, LayoutPanelTop, Tag, ListTree,
-  ChartColumn, Megaphone, Smartphone, Zap, Gem, Shapes, PenTool, Table2, Bell
+  ChartColumn, Megaphone, Smartphone, Shapes, Table2, Bell
 } from 'lucide-react';
 import type { SectionProps } from './types';
 import { FoundationsSection } from './FoundationsSection';
@@ -19,9 +19,6 @@ import { MobileSection } from './MobileSection';
 import { ChartsLab } from '../labs/ChartsLab';
 import { TableLab } from '../labs/TableLab';
 import { NotificationsLab } from '../labs/NotificationsLab';
-import { MotionLab } from '../labs/MotionLab';
-import { MaterialLab } from '../labs/MaterialLab';
-import { SvgLab } from '../labs/SvgLab';
 
 // The icon section pulls in the whole icon set; keep it out of the page chunk until it is opened.
 const IconLab = lazy(() => import('../labs/IconLab').then((m) => ({ default: m.IconLab })));
@@ -46,10 +43,7 @@ export interface LabSection {
 /** Every section of the Components page, in display order. The single list the page, its URLs and search read. */
 export const LAB_SECTIONS: LabSection[] = [
   { id: 'foundations', label: 'Tokens', group: 'Foundations', icon: Palette, blurb: 'Colours, type scale, spacing, radius, elevation, borders and motion values of the style.', keywords: ['colors', 'typography', 'spacing', 'radius', 'shadows', 'borders', 'surfaces', 'tokens', 'foundations'], Component: FoundationsSection },
-  { id: 'motion', label: 'Motion', group: 'Foundations', icon: Zap, blurb: 'Tune duration, easing, scale and translation across real interactions.', keywords: ['motion', 'animation', 'easing', 'duration', 'transition'], hasSettings: true, Component: MotionLab },
-  { id: 'material', label: 'Material', group: 'Foundations', icon: Gem, blurb: 'Fourteen surface materials with highlight, shadow, reflection, texture, blur and transparency.', keywords: ['material', 'surface', 'glass', 'blur', 'texture'], hasSettings: true, Component: MaterialLab },
   { id: 'icons', label: 'Icons', group: 'Foundations', icon: Shapes, blurb: 'Icon styles from outline to pixel, inside buttons, navigation, cards and inputs.', keywords: ['icons', 'icon style', 'stroke', 'pixel', 'duotone'], hasSettings: true, Component: IconLab },
-  { id: 'svg', label: 'SVG art', group: 'Foundations', icon: PenTool, blurb: 'Procedural decorative art: mesh, aurora, grid, blobs, waves, rings, glow, noise, liquid, chrome.', keywords: ['svg', 'backdrop', 'decoration', 'mesh', 'aurora', 'pattern'], hasSettings: true, Component: SvgLab },
 
   { id: 'buttons', label: 'Buttons', group: 'Components', icon: MousePointerClick, blurb: 'Every variant, size and state, including loading, success and error.', keywords: ['primary', 'secondary', 'outline', 'ghost', 'destructive', 'success', 'icon', 'floating', 'loading', 'dropdown button', 'states'], Component: ButtonsSection },
   { id: 'inputs', label: 'Inputs', group: 'Components', icon: TextCursorInput, blurb: 'Text fields with icons, validation and every state.', keywords: ['text', 'search', 'password', 'number', 'date', 'textarea', 'url', 'email', 'error', 'read-only', 'disabled'], Component: InputsSection },

@@ -3,7 +3,7 @@
   "private": false,
   "version": "0.1.0",
   "type": "module",
-  "description": "An open-source interactive laboratory for exploring and experimenting with interface design systems.",
+  "description": "Pick a theme, see it on a real website, app and component library, edit its colors and text, and take the CSS home.",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
@@ -12,11 +12,6 @@
     "lint": "oxlint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "engine:data": "vite-node scripts/export-engine-data.ts",
-    "engine:test": "python -m unittest discover -s tools/style-engine/tests -t tools/style-engine",
-    "registry:check": "cd tools/style-engine && python -m style_engine registry ../../styles/community/index.json",
-    "registry:previews": "vite-node scripts/build-community-previews.ts",
-    "style:package": "vite-node scripts/make-style-package.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

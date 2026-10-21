@@ -168,8 +168,7 @@ input::placeholder, textarea::placeholder { color: var(--color-text-tertiary); }
 }
 
 export function exportPackage(style: StyleDefinition): string {
-  const { generation: _generation, ...definition } = style;
-  return JSON.stringify(definition, null, 2) + '\n';
+  return JSON.stringify(style, null, 2) + '\n';
 }
 
 export function exportStyle(style: StyleDefinition, format: ExportFormat): string {

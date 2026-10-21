@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, matchPath, useLocation } from 'react-router-dom';
+import { Link, matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { Columns3, Search, Menu, X, Crosshair, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { BrandLockup } from './BrandMark';
 import { StylePicker } from './StylePicker';
@@ -18,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }
   const { currentStyle, isTweaked } = useStyle();
   const { activeTool, openTool, toggleTool, isInspecting, toggleCompare } = useTools();
   const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const page = PAGES.find((p) => matchPath({ path: p.path, end: false }, pathname));
   const isCompareActive = new URLSearchParams(search).has(COMPARE_PARAM);
   const isTweaksOpen = activeTool === 'tweaks';
@@ -70,9 +71,9 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }
           <button
             type="button"
             className="shell-contrast-warning"
-            onClick={() => toggleTool('anatomy')}
-            title={`Low text contrast: ${lowContrast.toFixed(1)}:1 (WCAG AA needs 4.5:1). Open Style Anatomy for details.`}
-            aria-label={`Accessibility warning: text contrast ${lowContrast.toFixed(1)} to 1. Open Style Anatomy.`}
+            onClick={() => navigate('/customizer/colors')}
+            title={`Low text contrast: ${lowContrast.toFixed(1)}:1 (WCAG AA needs 4.5:1). Open the Customizer to fix it.`}
+            aria-label={`Accessibility warning: text contrast ${lowContrast.toFixed(1)} to 1. Open the Customizer.`}
           >
             <AlertTriangle size={14} /> <span>{lowContrast.toFixed(1)}:1</span>
           </button>

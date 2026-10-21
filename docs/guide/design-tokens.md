@@ -14,7 +14,7 @@ deterministic (the same style always exports byte-for-byte the same):
 | **CSS variables** | `<id>.css` | `:root { --color-accent: …; --radius-md: …; }` exactly as the engine resolves them |
 | **Theme CSS** | `<id>.theme.css` | The variables plus base rules for body, headings, links, buttons, inputs and cards, derived from the style's `behavior` — drop it into a plain HTML page |
 | **Preview SVG** | `<id>.svg` | A miniature interface rendered from the tokens |
-| **Style package** | `<id>.json` | The full `StyleDefinition`, importable here and valid for `styles/community` |
+| **Theme file** | `<id>.json` | The full theme definition, importable here and the starting point for contributing a theme |
 
 ### The semantic token structure
 
@@ -29,17 +29,15 @@ icon.{strokeWidth,filled,variant}      behavior.*      svg.*
 
 ## Import
 
-Choose a `.json` file or paste a package. The importer parses, validates
-(required fields, safe ranges, CSS safety), resolves `extends` against the
-registered styles, and shows a **live preview card** before anything is
-added. Errors list the exact missing or invalid paths; nothing is repaired
+Choose a `.json` file or paste a theme file. The importer parses, validates
+(required fields, safe ranges, CSS safety) and shows a **live preview card**
+before anything is added. Errors list the exact missing or invalid paths; nothing is repaired
 silently.
 
-## Contribution package
+## Contributing a theme
 
-**Contribute Package** exports the four files a community package needs
-(`style.json`, `metadata.json`, `preview.svg`, `README.md`) with your author
-name and licence — see [Community styles](../community-styles).
+Export the theme file, add it to `src/styles/` and open a pull request — see
+[Contributing](../contributing).
 
 ## In code
 

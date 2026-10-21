@@ -22,10 +22,7 @@ which section holds what.
 | Section | What it shows |
 | --- | --- |
 | Tokens | Colour swatches, type scale, spacing, radius, elevation, borders and motion values |
-| Motion | Tune duration, easing, hover and press scale and translation across real interactions |
-| Material | Fourteen surface materials, flat to liquid, with highlight, shadow, reflection, texture, blur and transparency broken out |
 | Icons | Outline, filled, duotone, geometric, rounded, 3D, pixel and skeuomorphic treatments inside buttons, navigation, cards and inputs |
-| SVG art | Procedural decoration from the style's `svgLanguage`: mesh, aurora, grid, blobs, waves, rings, glow, noise, liquid and chrome |
 
 **Components**
 
@@ -49,8 +46,7 @@ which section holds what.
 | Table | Search, sort, filter, paginate, select, hide columns, row actions, loading, empty and error |
 | Notifications | A notification centre with read state, counters, actions and a bell popover |
 
-The deep-dive sections (Motion, Material, Icons, SVG art and the Data set)
-bring their own settings into the left panel. The other sections offer
+The deep-dive sections (Icons and the Data set) bring their own settings into the left panel. The other sections offer
 **Disabled** and **Loading** switches that apply to every interactive
 component in the preview.
 

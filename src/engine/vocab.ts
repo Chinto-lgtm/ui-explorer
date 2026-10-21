@@ -1,14 +1,15 @@
 /**
- * UI Explorer — Generation Vocabulary
- * Canonical semantic values for every generated axis, the mapping from the
- * free-form personality labels to those values, and the materializers that turn
- * a semantic choice into concrete design tokens.
+ * UI Explorer — Token vocabulary
+ * Named choices for each design axis (surface, depth, borders, motion, icons,
+ * geometry, type, SVG art) and the materializers that turn a choice into
+ * concrete design tokens. The Customizer presets, the icon section and the
+ * SVG backdrops use them.
  */
 
 import type {
-  BorderTokens, ColorTokens, IconTokens, MaterialTokens, MotionTokens, ShadowTokens, SVGLanguage,
-  ComponentBehavior, RadiusTokens, TypographyTokens
-} from '../types';
+  BorderTokens, ColorTokens, IconTokens, MaterialTokens, MotionTokens, ShadowTokens,
+  RadiusTokens, TypographyTokens
+} from './types';
 
 export type SurfaceType =
   | 'flat' | 'solid' | 'transparent' | 'frosted' | 'glass' | 'acrylic' | 'clay'
@@ -26,13 +27,11 @@ export type GeometryType = 'sharp' | 'small' | 'medium' | 'large' | 'pill';
 
 export type DensityType = 'compact' | 'comfortable' | 'spacious';
 
-export type BehaviorFamily = 'soft' | 'physical' | 'mechanical' | 'elastic' | 'glowing' | 'instant' | 'cinematic';
-
 export type SvgShapeLanguage = 'curves' | 'geometry' | 'grid' | 'blobs' | 'lines' | 'reticle' | 'confetti' | 'liquid';
 export type SvgGradientType = 'none' | 'linear' | 'radial' | 'mesh' | 'aurora' | 'metallic';
 export type SvgStrokeLanguage = 'thin' | 'neon' | 'bold' | 'minimal' | 'pixel';
 
-/** Generated SVG parameters. The generator chooses numbers, never raw markup. */
+/** Parameters for the decorative SVG art (backdrops): numbers only, never raw markup. */
 export interface GeneratedSvgLanguage {
   shapeLanguage: SvgShapeLanguage;
   gradientType: SvgGradientType;
@@ -57,108 +56,7 @@ export interface TypographyChoice {
   scale: 'tight' | 'regular' | 'generous';
 }
 
-/** All semantic decisions that fully describe a generated style. */
-export interface SemanticRecipe {
-  personality: string;
-  visualFamily: string;
-  harmony: string;
-  typography: TypographyChoice;
-  geometry: GeometryType;
-  density: DensityType;
-  surface: SurfaceType;
-  depth: DepthType;
-  border: BorderType;
-  motion: MotionType;
-  icons: IconType;
-  svg: GeneratedSvgLanguage;
-  behavior: BehaviorFamily;
-}
-
-export type RecipeAxis = 'colors' | 'typography' | 'geometry' | 'surface' | 'depth' | 'borders' | 'icons' | 'motion' | 'svg';
-
-export const RECIPE_AXES: RecipeAxis[] = ['colors', 'typography', 'geometry', 'surface', 'depth', 'borders', 'icons', 'motion', 'svg'];
-
-export const SURFACE_TYPES: SurfaceType[] = ['flat', 'solid', 'transparent', 'frosted', 'glass', 'acrylic', 'clay', 'elevated', 'inset', 'metallic', 'crystal', 'liquid', 'paper', 'experimental'];
-export const DEPTH_TYPES: DepthType[] = ['flat', 'soft', 'floating', 'deep', 'glowing', 'inset', 'physical'];
-export const BORDER_TYPES: BorderType[] = ['none', 'subtle', 'thin', 'strong', 'dashed', 'double', 'glow'];
-export const MOTION_TYPES: MotionType[] = ['static', 'subtle', 'smooth', 'physical', 'expressive', 'mechanical', 'snappy', 'elastic'];
 export const ICON_TYPES: IconType[] = ['outline', 'filled', 'duotone', 'geometric', 'rounded', '3d', 'pixel', 'skeuomorphic'];
-export const GEOMETRY_TYPES: GeometryType[] = ['sharp', 'small', 'medium', 'large', 'pill'];
-
-/* ------------------------------------------------------------------ */
-/* Personality label → canonical value                                  */
-/* ------------------------------------------------------------------ */
-
-export const SURFACE_LABELS: Record<string, SurfaceType> = {
-  'Aurora Gradient': 'liquid', 'Border Container': 'flat', 'Clay Pillow': 'clay', 'Crisp Solid': 'solid',
-  'Dark Metallic': 'metallic', 'Dark Slate': 'solid', 'Distorted Liquid': 'experimental', 'Earthy Matte': 'paper',
-  'Fine Border': 'flat', 'Flat': 'flat', 'Frosted Glass': 'frosted', 'Glass Translucent': 'glass',
-  'Glossy Acrylic': 'acrylic', 'Glow Box': 'transparent', 'Grid Surface': 'transparent', 'Hard Border': 'solid',
-  'Hard Solid': 'solid', 'Paper Stock': 'paper', 'Pitch Black Card': 'solid', 'Polished Obsidian': 'crystal',
-  'Pure White/Dark': 'flat', 'Soft Recessed': 'inset', 'Soft Solid': 'elevated', 'Solid Soft': 'elevated',
-  'Subtle Border': 'flat', 'Telemetry Panel': 'transparent', 'Vivid Solid': 'solid'
-};
-
-export const DEPTH_LABELS: Record<string, DepthType> = {
-  'Border Shadow': 'flat', 'Clay Inner Shadow': 'physical', 'Deep Shadow': 'deep', 'Extreme Glow': 'glowing',
-  'Flat Border': 'flat', 'Flat Sharp': 'flat', 'Flat': 'flat', 'Floating': 'floating', 'Gentle Shadow': 'soft',
-  'Hard Offset Shadow': 'physical', 'Minimal Shadow': 'soft', 'Neon Glow': 'glowing', 'OLED Shadow': 'deep',
-  'Paper Shadow': 'soft', 'Soft Shadow': 'soft', 'Subtle Elevation': 'soft', 'Subtle Glow': 'glowing', 'Subtle Inset': 'inset'
-};
-
-export const MOTION_LABELS: Record<string, MotionType> = {
-  Cinematic: 'expressive', Elastic: 'elastic', Expressive: 'expressive', Instant: 'static',
-  Mechanical: 'mechanical', Smooth: 'smooth', Snappy: 'snappy', Subtle: 'subtle'
-};
-
-export const SVG_LABELS: Record<string, Partial<GeneratedSvgLanguage>> = {
-  'Aurora Mesh': { shapeLanguage: 'curves', gradientType: 'aurora', glowLevel: 0.6, curveStrength: 0.8, blurLevel: 0.6 },
-  'Blob Curves': { shapeLanguage: 'blobs', gradientType: 'radial', curveStrength: 0.9 },
-  'Bold Outline': { shapeLanguage: 'geometry', strokeLanguage: 'bold', gradientType: 'none' },
-  'Clean Grid': { shapeLanguage: 'grid', gridLevel: 0.6, strokeLanguage: 'thin' },
-  'Confetti Dots': { shapeLanguage: 'confetti', particleDensity: 0.8 },
-  'Dark Grid': { shapeLanguage: 'grid', gridLevel: 0.8, glowLevel: 0.3 },
-  'Distorted Lines': { shapeLanguage: 'liquid', strokeLanguage: 'neon', noiseLevel: 0.7, curveStrength: 0.7 },
-  'Fine Lines': { shapeLanguage: 'lines', strokeLanguage: 'thin' },
-  'Grain Overlay': { noiseLevel: 0.8 },
-  'Minimal Lines': { shapeLanguage: 'lines', strokeLanguage: 'minimal' },
-  'Minimal Strokes': { shapeLanguage: 'lines', strokeLanguage: 'minimal' },
-  'Natural Gradients': { gradientType: 'radial', curveStrength: 0.6 },
-  'Natural Texture': { noiseLevel: 0.5, curveStrength: 0.6 },
-  'Neon Stroke': { strokeLanguage: 'neon', glowLevel: 0.9, shapeLanguage: 'geometry' },
-  'Print Grid': { shapeLanguage: 'grid', gridLevel: 0.4, strokeLanguage: 'thin' },
-  'Pure Geometry': { shapeLanguage: 'geometry', gradientType: 'none' },
-  'Reflective Gradients': { gradientType: 'metallic', metallicReflection: 0.9, shapeLanguage: 'liquid' },
-  'Reticle Corners': { shapeLanguage: 'reticle', strokeLanguage: 'thin', gridLevel: 0.5, glowLevel: 0.5 },
-  'Scanlines': { gridLevel: 0.9, noiseLevel: 0.3, strokeLanguage: 'neon' },
-  'Sharp Angles': { shapeLanguage: 'geometry', strokeLanguage: 'bold' },
-  'Soft Curves': { shapeLanguage: 'curves', curveStrength: 0.7, gradientType: 'linear' },
-  'Specular Highlights': { metallicReflection: 0.8, gradientType: 'metallic', glowLevel: 0.4 },
-  'Squiggles': { shapeLanguage: 'confetti', curveStrength: 0.9, particleDensity: 0.6, strokeLanguage: 'bold' }
-};
-
-export const toSurface = (label: string): SurfaceType => SURFACE_LABELS[label] ?? 'solid';
-export const toDepth = (label: string): DepthType => DEPTH_LABELS[label] ?? 'soft';
-export const toMotion = (label: string): MotionType => MOTION_LABELS[label] ?? 'smooth';
-
-export function toSvgLanguage(label: string, base?: GeneratedSvgLanguage): GeneratedSvgLanguage {
-  const defaults: GeneratedSvgLanguage = base ?? {
-    shapeLanguage: 'curves', gradientType: 'linear', strokeLanguage: 'thin',
-    glowLevel: 0.1, noiseLevel: 0, gridLevel: 0, particleDensity: 0, curveStrength: 0.4, metallicReflection: 0, blurLevel: 0
-  };
-  return { ...defaults, ...(SVG_LABELS[label] ?? {}) };
-}
-
-export const radiusToGeometry = (radius: string): GeometryType => {
-  const px = parseInt(radius, 10);
-  if (Number.isNaN(px)) return 'medium';
-  if (px === 0) return 'sharp';
-  if (px <= 6) return 'small';
-  if (px <= 14) return 'medium';
-  if (px <= 24) return 'large';
-  return 'pill';
-};
-
 /* ------------------------------------------------------------------ */
 /* Materializers: semantic value → tokens                               */
 /* ------------------------------------------------------------------ */
@@ -349,43 +247,3 @@ export function materializeTypography(choice: TypographyChoice): TypographyToken
   };
 }
 
-export function materializeSvg(svg: GeneratedSvgLanguage, geometry: GeometryType): SVGLanguage {
-  const corner: SVGLanguage['cornerStyle'] =
-    svg.shapeLanguage === 'reticle' ? 'bevel' :
-    geometry === 'sharp' ? (svg.strokeLanguage === 'bold' ? 'brutalist' : 'sharp') : 'rounded';
-  const pattern =
-    svg.gridLevel > 0.6 ? 'grid' :
-    svg.noiseLevel > 0.6 ? 'noise' :
-    svg.particleDensity > 0.6 ? 'dots' :
-    svg.gradientType === 'aurora' ? 'aurora' : undefined;
-  return {
-    cornerStyle: corner,
-    decorativeShapes: svg.particleDensity > 0.3 || svg.shapeLanguage === 'blobs' || svg.shapeLanguage === 'confetti',
-    patternOverlay: pattern,
-    borderDecoration: svg.shapeLanguage === 'reticle' || svg.strokeLanguage === 'bold'
-  };
-}
-
-export function materializeBehavior(family: BehaviorFamily, depth: DepthType): ComponentBehavior {
-  const hover: Record<BehaviorFamily, ComponentBehavior['buttonHoverAction']> = {
-    soft: 'lift', physical: 'shift', mechanical: 'invert', elastic: 'lift', glowing: 'glow', instant: 'none', cinematic: 'lift'
-  };
-  const focus: Record<BehaviorFamily, ComponentBehavior['focusRingStyle']> = {
-    soft: 'outline', physical: 'solid-border', mechanical: 'solid-border', elastic: 'outline', glowing: 'glow', instant: 'outline', cinematic: 'double-ring'
-  };
-  const card: ComponentBehavior['cardElevationType'] =
-    depth === 'flat' ? 'border' : depth === 'inset' ? 'inset' : depth === 'glowing' ? 'gradient-border' : 'shadow';
-  return { buttonHoverAction: hover[family], cardElevationType: card, focusRingStyle: focus[family] };
-}
-
-export function motionToBehavior(motion: MotionType, depth: DepthType): BehaviorFamily {
-  if (depth === 'glowing') return 'glowing';
-  switch (motion) {
-    case 'static': return 'instant';
-    case 'mechanical': return 'mechanical';
-    case 'elastic': return 'elastic';
-    case 'physical': return 'physical';
-    case 'expressive': return 'cinematic';
-    default: return 'soft';
-  }
-}

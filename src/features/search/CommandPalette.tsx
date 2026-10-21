@@ -41,7 +41,6 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
   const items = useMemo<PaletteItem[]>(() => {
     const commands: PaletteItem[] = [
       { id: 'cmd-compare', group: 'Commands', label: 'Compare styles', hint: 'Ctrl+Shift+C', icon: <Columns size={16} />, keywords: 'compare side by side triple a b c', run: () => { toggleCompare(); close(); } },
-      { id: 'cmd-random', group: 'Commands', label: 'Randomize style', hint: 'Surprise me', icon: <Sparkles size={16} />, keywords: 'random surprise shuffle generate', run: () => go(`/generator?seed=${Math.floor(Math.random() * 900000) + 100000}&surprise=1`) },
       { id: 'cmd-favorite', group: 'Commands', label: isFavorite(currentStyle.metadata.id) ? `Remove ${currentStyle.metadata.name} from favorites` : `Favorite ${currentStyle.metadata.name}`, icon: <Star size={16} />, keywords: 'favorite star bookmark', run: () => { toggleFavorite(currentStyle.metadata.id); close(); } },
       { id: 'cmd-motion', group: 'Commands', label: settings.reduceMotion ? 'Turn motion back on' : 'Reduce motion', icon: <Zap size={16} />, keywords: 'motion animation reduce accessibility', run: () => { updateSettings({ reduceMotion: !settings.reduceMotion }); close(); } },
       { id: 'cmd-experimental', group: 'Commands', label: settings.experimental ? 'Turn off experimental mode' : 'Turn on experimental mode', icon: <Zap size={16} />, keywords: 'experimental effects blur glow', run: () => { updateSettings({ experimental: !settings.experimental }); close(); } },
@@ -86,7 +85,7 @@ export const CommandPalette: React.FC<{ onClose: () => void }> = ({ onClose }) =
       hint: value,
       icon: <Braces size={16} />,
       keywords: `token property ${name.replace(/-/g, ' ')} ${value}`,
-      run: () => { openTool('anatomy'); close(); }
+      run: () => go('/customizer/colors')
     }));
 
     return [...pages, ...tools, ...commands, ...styles, ...tokens];
